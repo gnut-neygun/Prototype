@@ -1,0 +1,6 @@
+{
+  "receive flyer order/deliver bill": false,
+  "receive order and photo/deliver bill": false,
+  "receive order and photo/deliver poster": false,
+  "receive order and photo/print bill": false
+}

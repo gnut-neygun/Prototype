@@ -1,0 +1,29 @@
+{
+  "print bill/print bill": [
+    [
+      [
+        "filling amount2",
+        "<=",
+        5.5
+      ]
+    ]
+  ],
+  "print flyer/print flyer": [
+    [
+      [
+        "filling amount1",
+        "<=",
+        5.5
+      ]
+    ]
+  ],
+  "print poster/print poster": [
+    [
+      [
+        "filling amount1",
+        "<=",
+        5.5
+      ]
+    ]
+  ]
+}

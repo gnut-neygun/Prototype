@@ -1,0 +1,55 @@
+digraph "results\printer_algo_1" {
+	graph [newrank=true]
+	subgraph cluster_billinstances {
+		"write bill"
+		start_billinstances -> "write bill"
+		"deliver bill"
+		"deliver bill" -> end_billinstances
+		"deliver bill"
+		"write bill"
+		"print bill"
+		"write bill" -> "print bill" [label=" (1800) 0.999"]
+		"print bill" -> "deliver bill" [label=" (1800) 0.999"]
+	}
+	subgraph cluster_flyerinstances {
+		"receive flyer order"
+		start_flyerinstances -> "receive flyer order"
+		"deliver flyer"
+		"deliver flyer" -> end_flyerinstances
+		"print flyer"
+		"send draft to customer"
+		"receive flyer order"
+		"deliver flyer"
+		"design flyer"
+		"receive flyer order" -> "design flyer" [label=" (900) 0.999"]
+		"design flyer" -> "send draft to customer" [label=" (1809) 0.331"]
+		"send draft to customer" -> "print flyer" [label=" (900) 0.999"]
+		"print flyer" -> "deliver flyer" [label=" (900) 0.999"]
+	}
+	subgraph cluster_posterinstances {
+		"receive order and photo"
+		start_posterinstances -> "receive order and photo"
+		"deliver poster"
+		"deliver poster" -> end_posterinstances
+		"deliver poster"
+		"print poster"
+		"receive order and photo"
+		"design photo poster"
+		"receive order and photo" -> "design photo poster" [label=" (900) 0.999"]
+		"design photo poster" -> "print poster" [label=" (900) 0.999"]
+		"print poster" -> "deliver poster" [label=" (900) 0.999"]
+	}
+	"deliver poster" [style=filled]
+	"deliver flyer" [style=filled]
+	"deliver bill" [style=filled]
+	"deliver poster" -> "deliver bill" [arrowhead=none color=red style=dashed]
+	"deliver poster" [style=filled]
+	"deliver bill" [style=filled]
+	"deliver bill" -> "deliver flyer" [arrowhead=none color=red style=dashed]
+	"deliver bill" [style=filled]
+	"deliver flyer" [style=filled]
+	"deliver poster" -> "deliver flyer" [arrowhead=none color=red style=dashed]
+	"deliver poster" [style=filled]
+	"deliver flyer" [style=filled]
+{rank=same;"start_billinstances"; "start_flyerinstances"; "start_posterinstances";}
+}

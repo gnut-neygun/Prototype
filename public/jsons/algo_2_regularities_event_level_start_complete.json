@@ -1,0 +1,14 @@
+{
+  "deliver bill/deliver bill": true,
+  "deliver flyer/deliver flyer": true,
+  "deliver poster/deliver poster": true,
+  "design flyer/design flyer": false,
+  "design photo poster/design photo poster": false,
+  "print bill/print bill": true,
+  "print flyer/print flyer": true,
+  "print poster/print poster": true,
+  "receive flyer order/receive flyer order": true,
+  "receive order and photo/receive order and photo": true,
+  "send draft to customer/send draft to customer": false,
+  "write bill/write bill": true
+}
