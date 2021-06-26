@@ -15,12 +15,16 @@
     "@types/material-ui": "^0.21.8",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
+    "@types/react-cytoscapejs": "^1.2.1",
     "@types/react-dom": "^16.9.0",
     "@types/react-redux": "^7.1.7",
     "cytoscape": "^3.19.0",
+    "cytoscape-bubblesets": "^3.0.0",
     "cytoscape-dagre": "^2.3.2",
+    "cytoscape-layers": "2.1.0",
     "graphlib-dot": "^0.6.4",
     "react": "^17.0.2",
+    "react-cytoscapejs": "^1.2.1",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.0",
     "react-scripts": "4.0.3",
@@ -37,16 +41,9 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
