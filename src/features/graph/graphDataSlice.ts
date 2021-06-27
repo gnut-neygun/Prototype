@@ -7,6 +7,7 @@ import {BaseGraphData} from "./BaseGraphData";
 interface GraphDataState {
     elements: ElementDefinition[],
     simultaneousNodes: Array<Array<string>>
+    selectedSimultaneousNodes: Array<Array<string>>
 }
 
 export function generateGraphDataList(): ElementDefinition[] {
@@ -38,7 +39,8 @@ export function generateGraphDataList(): ElementDefinition[] {
 
 const initialState: GraphDataState = {
     elements: generateGraphDataList(),
-    simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]]
+    simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]],
+    selectedSimultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]]
 };
 
 export const graphDataSlice = createSlice({
@@ -47,9 +49,12 @@ export const graphDataSlice = createSlice({
     reducers: {
         setGraphElements: (state, action: PayloadAction<ElementDefinition[]>) => {
             state.elements = action.payload;
+        },
+        setSelectedSimultaneousNodes: (state, action: PayloadAction<Array<Array<string>>>) => {
+            state.selectedSimultaneousNodes = action.payload;
         }
     }
 });
-export const {setGraphElements} = graphDataSlice.actions
+export const reduxActions = graphDataSlice.actions
 export const graphDataSelector = (state: RootState) => state.graphData;
 export default graphDataSlice.reducer;

@@ -6,6 +6,7 @@ import {layoutOptions} from "./CytoscapeInitProperties";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
 import {useAppSelector} from "../../app/hooks";
 import {graphDataSelector} from "./graphDataSlice";
+import {GraphDataPanel} from "./GraphDataPanel";
 
 export function GraphControlPanel({cy}: { cy: Core }) {
     const graphProperty = useAppSelector(graphDataSelector);
@@ -21,10 +22,20 @@ export function GraphControlPanel({cy}: { cy: Core }) {
             const bb = new BubbleSetsPlugin(cy);
             if (bubbleSetInstances === null) {
                 const myBubleSetInstances = []
-                const simultaneousNodes = graphProperty.simultaneousNodes
+                const simultaneousNodes = graphProperty.selectedSimultaneousNodes;
                 for (const simulCluster of simultaneousNodes) {
                     const myNodeCollection = simulCluster.reduce((accumulator, nodeId) => accumulator.union(cy.$id(nodeId)), cy.collection())
-                    myBubleSetInstances.push(bb.addPath(myNodeCollection.nodes(), myNodeCollection.edgesWith(myNodeCollection), null))
+
+                    myBubleSetInstances.push(bb.addPath(myNodeCollection, null, cy.nodes().diff(myNodeCollection).left, {
+                        virtualEdges: true,
+                        // @ts-ignore
+                        style: {
+                            fill: 'rgba(70, 130, 180, 0.2)',
+                            stroke: "#" + Math.floor(Math.random() * 16777215).toString(16),
+                            // @ts-ignore
+                            "stroke-width": 2
+                        },
+                    }))
                 }
                 setBubbleSetInstance(myBubleSetInstances)
             } else {
@@ -37,7 +48,7 @@ export function GraphControlPanel({cy}: { cy: Core }) {
     };
     const [bubbleSetInstances, setBubbleSetInstance] = useState<BubbleSetPath[] | null>(null);
     return (
-        <div id="graph-control-panel" style={{width: "15%"}}>
+        <div id="graph-control-panel" style={{width: "20%"}}>
             <Typography id="node-spacing-slider" gutterBottom>
                 Node spacing
             </Typography>
@@ -75,6 +86,7 @@ export function GraphControlPanel({cy}: { cy: Core }) {
                 }
                 label="Bubble set view"
             />
+            <GraphDataPanel cy={cy}/>
         </div>
-    )
+    );
 }
