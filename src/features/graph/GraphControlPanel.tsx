@@ -1,15 +1,17 @@
 import {Checkbox, FormControlLabel, Grid, Slider, Typography} from "@material-ui/core";
 import {LineStyle, ZoomIn} from "@material-ui/icons";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Core} from "cytoscape";
 import {layoutOptions} from "./CytoscapeInitProperties";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
 import {useAppSelector} from "../../app/hooks";
 import {graphDataSelector} from "./graphDataSlice";
 import {GraphDataPanel} from "./GraphDataPanel";
+import {generateRandomColor} from "../../Utilities";
 
 export function GraphControlPanel({cy}: { cy: Core }) {
     const graphProperty = useAppSelector(graphDataSelector);
+    const bb = new BubbleSetsPlugin(cy);
     const handleNodeSpacingChange = (event: any, newValue: number | number[]) => {
         const myLayoutOptions = {...layoutOptions, nodeSep: newValue as number};
         cy.layout(myLayoutOptions).run();
@@ -17,36 +19,53 @@ export function GraphControlPanel({cy}: { cy: Core }) {
     const handleZoomLevelChange = (event: any, newValue: number | number[]) => {
         cy.zoom(newValue as number);
     };
-    const handleBubbleSetCheckbox = () => {
+    const refreshBubbleSet = function () {
         cy.ready(() => {
-            const bb = new BubbleSetsPlugin(cy);
-            if (bubbleSetInstances === null) {
-                const myBubleSetInstances = []
-                const simultaneousNodes = graphProperty.selectedSimultaneousNodes;
-                for (const simulCluster of simultaneousNodes) {
-                    const myNodeCollection = simulCluster.reduce((accumulator, nodeId) => accumulator.union(cy.$id(nodeId)), cy.collection())
-
-                    myBubleSetInstances.push(bb.addPath(myNodeCollection, null, cy.nodes().diff(myNodeCollection).left, {
-                        virtualEdges: true,
-                        // @ts-ignore
-                        style: {
-                            fill: 'rgba(70, 130, 180, 0.2)',
-                            stroke: "#" + Math.floor(Math.random() * 16777215).toString(16),
-                            // @ts-ignore
-                            "stroke-width": 2
-                        },
-                    }))
-                }
-                setBubbleSetInstance(myBubleSetInstances)
-            } else {
-                for (const instance of bubbleSetInstances) {
-                    instance.remove();
-                }
-                setBubbleSetInstance(null);
+            for (const instance of bubbleSetInstances) {
+                instance.remove();
             }
+            const myBubleSetInstances = [];
+            const simultaneousNodes = graphProperty.selectedSimultaneousNodes;
+            const randomColors = generateRandomColor(simultaneousNodes.length);
+            for (const [index, simulCluster] of simultaneousNodes.entries()) {
+                const myNodeCollection = simulCluster.reduce((accumulator, nodeId) => accumulator.union(cy.$id(nodeId)), cy.collection())
+
+                myBubleSetInstances.push(bb.addPath(myNodeCollection, null, cy.nodes().diff(myNodeCollection).left, {
+                    virtualEdges: true,
+                    // @ts-ignore
+                    style: {
+                        fill: 'rgba(70, 130, 180, 0.2)',
+                        stroke: randomColors[index],
+                        // @ts-ignore
+                        "stroke-width": 2
+                    },
+                }))
+            }
+            setBubbleSetInstance(myBubleSetInstances);
         });
     };
-    const [bubbleSetInstances, setBubbleSetInstance] = useState<BubbleSetPath[] | null>(null);
+    const handleBubbleSetCheckbox = () => {
+        if (isBubbleSetChecked) {
+            //the condition is inverted because this indicate changes in checkbox state
+            for (const instance of bubbleSetInstances) {
+                instance.remove();
+            }
+            setBubbleSetInstance([]);
+        } else refreshBubbleSet();
+        setIsBubbleSetChecked(!isBubbleSetChecked);
+    };
+    const [bubbleSetInstances, setBubbleSetInstance] = useState<BubbleSetPath[]>([]);
+    const [isBubbleSetChecked, setIsBubbleSetChecked] = useState(true);
+    useEffect(() => {
+        if (isBubbleSetChecked)
+            refreshBubbleSet();
+        else {
+            for (const instance of bubbleSetInstances) {
+                instance.remove();
+            }
+            setBubbleSetInstance([]);
+        }
+    }, [JSON.stringify(graphProperty.selectedSimultaneousNodes)]);
     return (
         <div id="graph-control-panel" style={{width: "20%"}}>
             <Typography id="node-spacing-slider" gutterBottom>
@@ -78,7 +97,7 @@ export function GraphControlPanel({cy}: { cy: Core }) {
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={bubbleSetInstances !== null}
+                        checked={isBubbleSetChecked}
                         onChange={handleBubbleSetCheckbox}
                         name="bubbleSetCheckbox"
                         color="primary"

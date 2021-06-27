@@ -39,7 +39,7 @@ export function generateGraphDataList(): ElementDefinition[] {
 
 const initialState: GraphDataState = {
     elements: generateGraphDataList(),
-    simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]],
+    simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"], ["print bill", "print poster", "deliver poster"]],
     selectedSimultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]]
 };
 
