@@ -8,6 +8,7 @@ interface GraphDataState {
     elements: ElementDefinition[],
     simultaneousNodes: Array<Array<string>>
     selectedSimultaneousNodes: Array<Array<string>>
+    isSimulLabelChecked: boolean
 }
 
 export function generateGraphDataList(): ElementDefinition[] {
@@ -29,7 +30,7 @@ export function generateGraphDataList(): ElementDefinition[] {
             }
             for (const edge of outEdges) {
                 generatedElementList.push({
-                    data: {id: `${edge.v}-${edge.w}`, source: node, target: edge.w}
+                    data: {id: `${edge.v}-${edge.w}`, source: node, target: edge.w, label: graph.edge(edge).label}
                 })
             }
         });
@@ -40,7 +41,8 @@ export function generateGraphDataList(): ElementDefinition[] {
 const initialState: GraphDataState = {
     elements: generateGraphDataList(),
     simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"], ["print bill", "print poster", "deliver poster"]],
-    selectedSimultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]]
+    selectedSimultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]],
+    isSimulLabelChecked: true
 };
 
 export const graphDataSlice = createSlice({
@@ -52,6 +54,9 @@ export const graphDataSlice = createSlice({
         },
         setSelectedSimultaneousNodes: (state, action: PayloadAction<Array<Array<string>>>) => {
             state.selectedSimultaneousNodes = action.payload;
+        },
+        setIsSimulLabelChecked: (state, action: PayloadAction<boolean>) => {
+            state.isSimulLabelChecked = action.payload;
         }
     }
 });

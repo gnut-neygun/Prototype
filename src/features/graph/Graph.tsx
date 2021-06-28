@@ -14,6 +14,7 @@ cytoscape.use(dagre)
 export function Graph() {
     const graphData = useAppSelector(graphDataSelector);
     const [cy, setCy] = useState<Core | null>(null);
+
     return (<div id={styles.graphFlexboxContainer}>
         <CytoscapeComponent elements={graphData.elements} style={{width: "80%", height: 1000}}
                             stylesheet={graphStyle} layout={layoutOptions} cy={(cy) => {

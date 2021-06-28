@@ -4,7 +4,16 @@ export const layoutOptions = {
     name: 'dagre',
     nodeSep: 200
 }
-export const graphStyle: string | cytoscape.StylesheetStyle | cytoscape.StylesheetCSS | cytoscape.Stylesheet[] = [
+export const graphStyle: cytoscape.Stylesheet[] = [
+    {
+        selector: '.hasLabel',
+        css: {
+            'label': (ele: { isNode: () => any; data: (arg0: string) => any; isEdge: () => any; }) => {
+                if (ele.isNode()) return ele.data('id');
+                if (ele.isEdge()) return ele.data('label');
+            }
+        }
+    },
     {
         selector: 'node',
         style: {
@@ -21,7 +30,7 @@ export const graphStyle: string | cytoscape.StylesheetStyle | cytoscape.Styleshe
             'target-arrow-shape': 'triangle',
             'curve-style': 'bezier',
             'edge-distances': 'intersection',
-            'target-endpoint': 'outside-to-line-or-label' //avoid intersecting with node label
+            'target-endpoint': 'outside-to-line-or-label', //avoid intersecting with node label
         }
     },
     {

@@ -9,7 +9,6 @@ import {useAppDispatch, useAppSelector} from "../../../app/hooks";
 import {graphDataSelector, reduxActions} from "../graphDataSlice";
 import {Set} from "typescript-collections";
 import cloneDeep from 'lodash.clonedeep';
-import {Core} from "cytoscape";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -21,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function SimulCheckList({cy}: { cy: Core }) {
+export default function SimulCheckList() {
     const classes = useStyles();
     const graphData = useAppSelector(graphDataSelector);
     const dispatch = useAppDispatch();

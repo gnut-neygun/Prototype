@@ -1,4 +1,3 @@
-import {Core} from "cytoscape";
 import {
     Accordion,
     AccordionDetails,
@@ -9,8 +8,8 @@ import {
     Typography
 } from "@material-ui/core";
 import {ExpandMore} from "@material-ui/icons";
-import SimulCheckList from "./simul_data_components/SimulCheckList";
 import React from "react";
+import {SimultaneousPanel} from "./simul_data_components/SimultaneousPanel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function GraphDataPanel({cy}: { cy: Core }) {
+export function GraphDataPanel() {
     const classes = useStyles();
     return <div>
         <Typography variant={"h5"} align={"center"} gutterBottom>Data panel</Typography>
@@ -37,7 +36,7 @@ export function GraphDataPanel({cy}: { cy: Core }) {
                 <Typography className={classes.heading}>Simultaneous constraints</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <SimulCheckList cy={cy}/>
+                <SimultaneousPanel/>
             </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -64,5 +63,5 @@ export function GraphDataPanel({cy}: { cy: Core }) {
                 <Typography className={classes.heading}>Regularity Constraints</Typography>
             </AccordionSummary>
         </Accordion>
-    </div>
+    </div>;
 }
