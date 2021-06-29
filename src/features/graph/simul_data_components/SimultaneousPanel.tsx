@@ -1,17 +1,12 @@
 import {Checkbox, FormControlLabel, Typography} from "@material-ui/core";
 import SimulCheckList from "./SimulCheckList";
-import React, {useContext, useEffect} from "react";
+import React from "react";
 import {useAppDispatch, useAppSelector} from "../../../app/hooks";
 import {graphDataSelector, reduxActions} from "../graphDataSlice";
-import {CytoscapeContext} from "../GraphControlPanel";
 
 export function SimultaneousPanel() {
     const graphData = useAppSelector(graphDataSelector);
-    const cy = useContext(CytoscapeContext);
     const dispatch = useAppDispatch();
-    useEffect(() => {
-        reduxActions.setIsSimulLabelChecked(true)
-    }, []);
     return <div>
         <FormControlLabel
             control={

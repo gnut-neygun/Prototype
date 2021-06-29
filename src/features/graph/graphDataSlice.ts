@@ -1,9 +1,10 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {ElementDefinition} from "cytoscape";
+import {Core, ElementDefinition} from "cytoscape";
 import * as graphlibDot from "graphlib-dot";
 import {BaseGraphData} from "./BaseGraphData";
 
+export const cytoScapeRef: { cy: Core | null } = {cy: null};
 interface GraphDataState {
     elements: ElementDefinition[],
     simultaneousNodes: Array<Array<string>>
@@ -57,6 +58,7 @@ export const graphDataSlice = createSlice({
         },
         setIsSimulLabelChecked: (state, action: PayloadAction<boolean>) => {
             state.isSimulLabelChecked = action.payload;
+            cytoScapeRef.cy?.edges().toggleClass("hasLabel", action.payload);
         }
     }
 });
