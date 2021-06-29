@@ -6,6 +6,12 @@ import {BaseGraphData} from "./BaseGraphData";
 import {layoutOptions} from "../features/graph/CytoscapeInitProperties";
 
 export const cytoScapeRef: { cy: Core | null } = {cy: null};
+
+interface DataSource {
+    name: string,
+    elements: ElementDefinition[]
+}
+
 interface GraphDataState {
     elements: ElementDefinition[],
     layoutOptions: LayoutOptions
