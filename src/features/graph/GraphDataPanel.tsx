@@ -27,7 +27,7 @@ export function GraphDataPanel() {
     const classes = useStyles();
     return <div>
         <Typography variant={"h5"} align={"center"} gutterBottom>Data panel</Typography>
-        <Accordion>
+        <Accordion expanded>
             <AccordionSummary
                 expandIcon={<ExpandMore/>}
                 aria-controls="panel1a-content"

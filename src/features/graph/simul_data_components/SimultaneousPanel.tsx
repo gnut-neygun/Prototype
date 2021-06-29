@@ -21,7 +21,7 @@ export function SimultaneousPanel() {
             }
             label="Show frequency label"
         />
-        <Typography variant={"h5"}>Simultaneous nodes</Typography>
+        <Typography variant={"h6"}>Simultaneous nodes</Typography>
         <SimulCheckList/>
     </div>
 }

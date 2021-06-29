@@ -2,7 +2,8 @@ import cytoscape from "cytoscape";
 
 export const layoutOptions = {
     name: 'dagre',
-    nodeSep: 200
+    nodeSep: 200,
+    rankSep: 50,
 }
 export const graphStyle: cytoscape.Stylesheet[] = [
     {

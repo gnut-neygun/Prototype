@@ -1,11 +1,10 @@
 import {Checkbox, FormControlLabel, Grid, Slider, Typography} from "@material-ui/core";
-import {LineStyle, ZoomIn} from "@material-ui/icons";
+import {FormatLineSpacing, LineStyle, ZoomIn} from "@material-ui/icons";
 import React, {useEffect, useState} from "react";
 import {Core} from "cytoscape";
-import {layoutOptions} from "./CytoscapeInitProperties";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
-import {useAppSelector} from "../../app/hooks";
-import {graphDataSelector} from "../../app/graphDataSlice";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {graphDataSelector, setLayout} from "../../app/graphDataSlice";
 import {GraphDataPanel} from "./GraphDataPanel";
 import {generateRandomColor} from "../../Utilities";
 
@@ -14,10 +13,15 @@ export const CytoscapeContext = React.createContext<Core>({} as Core);
 
 export function GraphControlPanel({cy}: { cy: Core }) {
     const graphProperty = useAppSelector(graphDataSelector);
+    const dispatch = useAppDispatch();
     const bb = new BubbleSetsPlugin(cy);
     const handleNodeSpacingChange = (event: any, newValue: number | number[]) => {
-        const myLayoutOptions = {...layoutOptions, nodeSep: newValue as number};
-        cy.layout(myLayoutOptions).run();
+        const myLayoutOptions = {...graphProperty.layoutOptions, nodeSep: newValue as number};
+        dispatch(setLayout(myLayoutOptions));
+    };
+    const handleRankSpacingChange = (event: any, newValue: number | number[]) => {
+        const myLayoutOptions = {...graphProperty.layoutOptions, rankSep: newValue as number};
+        dispatch(setLayout(myLayoutOptions));
     };
     const handleZoomLevelChange = (event: any, newValue: number | number[]) => {
         cy.zoom(newValue as number);
@@ -80,9 +84,24 @@ export function GraphControlPanel({cy}: { cy: Core }) {
                         <LineStyle/>
                     </Grid>
                     <Grid item xs>
-                        <Slider defaultValue={layoutOptions.nodeSep} onChange={handleNodeSpacingChange}
+                        <Slider defaultValue={(graphProperty.layoutOptions as any).nodeSep}
+                                onChange={handleNodeSpacingChange}
                                 aria-labelledby="node-spacing-slider"
                                 step={1} min={100} max={300} valueLabelDisplay="auto"/>
+                    </Grid>
+                </Grid>
+                <Typography id="rank-spacing-slider" gutterBottom>
+                    Rank spacing
+                </Typography>
+                <Grid container spacing={2}>
+                    <Grid item>
+                        <FormatLineSpacing/>
+                    </Grid>
+                    <Grid item xs>
+                        <Slider defaultValue={(graphProperty.layoutOptions as any).rankSep}
+                                onChange={handleRankSpacingChange}
+                                aria-labelledby="rank-spacing-slider"
+                                step={1} min={10} max={150} valueLabelDisplay="auto"/>
                     </Grid>
                 </Grid>
                 <Typography id="zoom-slider" gutterBottom>

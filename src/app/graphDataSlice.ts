@@ -1,12 +1,14 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk, RootState} from "./store";
-import {Core, ElementDefinition} from "cytoscape";
+import {Core, ElementDefinition, LayoutOptions} from "cytoscape";
 import * as graphlibDot from "graphlib-dot";
 import {BaseGraphData} from "./BaseGraphData";
+import {layoutOptions} from "../features/graph/CytoscapeInitProperties";
 
 export const cytoScapeRef: { cy: Core | null } = {cy: null};
 interface GraphDataState {
     elements: ElementDefinition[],
+    layoutOptions: LayoutOptions
     simultaneousNodes: Array<Array<string>>
     selectedSimultaneousNodes: Array<Array<string>>
     isSimulLabelChecked: boolean
@@ -41,6 +43,7 @@ export function generateGraphDataList(): ElementDefinition[] {
 
 const initialState: GraphDataState = {
     elements: generateGraphDataList(),
+    layoutOptions: layoutOptions,
     simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"], ["print bill", "print poster", "deliver poster"]],
     selectedSimultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]],
     isSimulLabelChecked: true
@@ -58,6 +61,9 @@ export const graphDataSlice = createSlice({
         },
         setIsSimulLabelChecked: (state, action: PayloadAction<boolean>) => {
             state.isSimulLabelChecked = action.payload;
+        },
+        setLayout: (state, action: PayloadAction<LayoutOptions>) => {
+            state.layoutOptions = action.payload;
         }
     }
 });
@@ -69,5 +75,12 @@ export function setSimulAction(isChecked: boolean): AppThunk {
     return (dispatch) => {
         cytoScapeRef.cy?.edges().toggleClass("hasLabel", isChecked);
         dispatch(reduxActions.setIsSimulLabelChecked(isChecked))
+    };
+}
+
+export function setLayout(layoutOptions: LayoutOptions): AppThunk {
+    return (dispatch) => {
+        dispatch(reduxActions.setLayout(layoutOptions))
+        cytoScapeRef.cy?.layout(layoutOptions).run();
     };
 }
