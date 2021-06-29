@@ -2,7 +2,7 @@ import {Checkbox, FormControlLabel, Typography} from "@material-ui/core";
 import SimulCheckList from "./SimulCheckList";
 import React from "react";
 import {useAppDispatch, useAppSelector} from "../../../app/hooks";
-import {graphDataSelector, reduxActions} from "../graphDataSlice";
+import {graphDataSelector, setSimulAction} from "../../../app/graphDataSlice";
 
 export function SimultaneousPanel() {
     const graphData = useAppSelector(graphDataSelector);
@@ -13,7 +13,7 @@ export function SimultaneousPanel() {
                 <Checkbox
                     checked={graphData.isSimulLabelChecked}
                     onChange={() => {
-                        dispatch(reduxActions.setIsSimulLabelChecked(!graphData.isSimulLabelChecked))
+                        dispatch(setSimulAction(!graphData.isSimulLabelChecked))
                     }}
                     name="simulLabelCheckbox"
                     color="primary"

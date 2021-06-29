@@ -7,7 +7,7 @@ import styles from "./Graph.module.css";
 import CytoscapeComponent from "react-cytoscapejs";
 import {graphStyle, layoutOptions} from "./CytoscapeInitProperties";
 import {useAppSelector} from "../../app/hooks";
-import {cytoScapeRef, graphDataSelector} from "./graphDataSlice";
+import {cytoScapeRef, graphDataSelector} from "../../app/graphDataSlice";
 
 cytoscape.use(dagre)
 
@@ -16,7 +16,6 @@ export function Graph() {
     const [cy, setCy] = useState<Core | null>(null);
     //The following effect initalizes everything in cy after the first render
     useEffect(() => {
-        console.log(cytoScapeRef)
         cytoScapeRef.cy?.edges().toggleClass("hasLabel", true);
     }, []);
     return (<div id={styles.graphFlexboxContainer}>

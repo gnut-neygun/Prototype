@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "../../app/store";
+import {AppThunk, RootState} from "./store";
 import {Core, ElementDefinition} from "cytoscape";
 import * as graphlibDot from "graphlib-dot";
 import {BaseGraphData} from "./BaseGraphData";
@@ -58,10 +58,16 @@ export const graphDataSlice = createSlice({
         },
         setIsSimulLabelChecked: (state, action: PayloadAction<boolean>) => {
             state.isSimulLabelChecked = action.payload;
-            cytoScapeRef.cy?.edges().toggleClass("hasLabel", action.payload);
         }
     }
 });
 export const reduxActions = graphDataSlice.actions
 export const graphDataSelector = (state: RootState) => state.graphData;
 export default graphDataSlice.reducer;
+
+export function setSimulAction(isChecked: boolean): AppThunk {
+    return (dispatch) => {
+        cytoScapeRef.cy?.edges().toggleClass("hasLabel", isChecked);
+        dispatch(reduxActions.setIsSimulLabelChecked(isChecked))
+    };
+}

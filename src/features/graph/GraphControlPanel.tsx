@@ -5,7 +5,7 @@ import {Core} from "cytoscape";
 import {layoutOptions} from "./CytoscapeInitProperties";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
 import {useAppSelector} from "../../app/hooks";
-import {graphDataSelector} from "./graphDataSlice";
+import {graphDataSelector} from "../../app/graphDataSlice";
 import {GraphDataPanel} from "./GraphDataPanel";
 import {generateRandomColor} from "../../Utilities";
 

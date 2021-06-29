@@ -6,7 +6,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import {useAppDispatch, useAppSelector} from "../../../app/hooks";
-import {graphDataSelector, reduxActions} from "../graphDataSlice";
+import {graphDataSelector, reduxActions} from "../../../app/graphDataSlice";
 import {Set} from "typescript-collections";
 import cloneDeep from 'lodash.clonedeep';
 

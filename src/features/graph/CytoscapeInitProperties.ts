@@ -9,8 +9,8 @@ export const graphStyle: cytoscape.Stylesheet[] = [
         selector: '.hasLabel',
         css: {
             'label': (ele: { isNode: () => any; data: (arg0: string) => any; isEdge: () => any; }) => {
-                if (ele.isNode()) return ele.data('id');
-                if (ele.isEdge()) return ele.data('label');
+                if (ele.isNode()) return ele.data('id') ?? "";
+                if (ele.isEdge()) return ele.data('label') ?? "";
             }
         }
     },
