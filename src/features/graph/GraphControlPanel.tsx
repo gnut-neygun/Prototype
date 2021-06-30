@@ -1,12 +1,11 @@
 import {Checkbox, FormControlLabel, Grid, Slider, Typography} from "@material-ui/core";
 import {FormatLineSpacing, LineStyle, ZoomIn} from "@material-ui/icons";
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {Core} from "cytoscape";
-import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {graphDataSelector, setLayout} from "../../app/graphDataSlice";
+import {graphDataSelector, reduxActions, setLayout} from "../../app/graphDataSlice";
 import {GraphDataPanel} from "./GraphDataPanel";
-import {generateRandomColor} from "../../Utilities";
+import {bubbleSetInstances} from "../../app/globalVariables";
 
 
 export const CytoscapeContext = React.createContext<Core>({} as Core);
@@ -14,7 +13,6 @@ export const CytoscapeContext = React.createContext<Core>({} as Core);
 export function GraphControlPanel({cy}: { cy: Core }) {
     const graphProperty = useAppSelector(graphDataSelector);
     const dispatch = useAppDispatch();
-    const bb = new BubbleSetsPlugin(cy);
     const handleNodeSpacingChange = (event: any, newValue: number | number[]) => {
         const myLayoutOptions = {...graphProperty.layoutOptions, nodeSep: newValue as number};
         dispatch(setLayout(myLayoutOptions));
@@ -26,51 +24,19 @@ export function GraphControlPanel({cy}: { cy: Core }) {
     const handleZoomLevelChange = (event: any, newValue: number | number[]) => {
         cy.zoom(newValue as number);
     };
-    const refreshBubbleSet = function () {
-        cy.ready(() => {
-            for (const instance of bubbleSetInstances) {
-                instance.remove();
-            }
-            const myBubleSetInstances = [];
-            const simultaneousNodes = graphProperty.selectedSimultaneousNodes;
-            const randomColors = generateRandomColor(simultaneousNodes.length);
-            for (const [index, simulCluster] of simultaneousNodes.entries()) {
-                const myNodeCollection = simulCluster.reduce((accumulator, nodeId) => accumulator.union(cy.$id(nodeId)), cy.collection())
 
-                myBubleSetInstances.push(bb.addPath(myNodeCollection, null, cy.nodes().diff(myNodeCollection).left, {
-                    virtualEdges: true,
-                    // @ts-ignore
-                    style: {
-                        fill: 'rgba(70, 130, 180, 0.2)',
-                        stroke: randomColors[index],
-                        // @ts-ignore
-                        "stroke-width": 2
-                    },
-                }))
-            }
-            setBubbleSetInstance(myBubleSetInstances);
-        });
-    };
     const handleBubbleSetCheckbox = () => {
-        if (isBubbleSetChecked) {
+        if (graphProperty.isSetViewChecked) {
             //the condition is inverted because this indicate changes in checkbox state
-            for (const instance of bubbleSetInstances) {
-                instance.remove();
-            }
-            setBubbleSetInstance([]);
-        } else refreshBubbleSet();
-        setIsBubbleSetChecked(!isBubbleSetChecked);
+            bubbleSetInstances.clear();
+        } else bubbleSetInstances.refreshBubbleset(graphProperty.selectedSimultaneousNodes)
+        dispatch(reduxActions.setBubbleSetView(!graphProperty.isSetViewChecked));
     };
-    const [bubbleSetInstances, setBubbleSetInstance] = useState<BubbleSetPath[]>([]);
-    const [isBubbleSetChecked, setIsBubbleSetChecked] = useState(true);
     useEffect(() => {
-        if (isBubbleSetChecked)
-            refreshBubbleSet();
+        if (graphProperty.isSetViewChecked)
+            bubbleSetInstances.refreshBubbleset(graphProperty.selectedSimultaneousNodes)
         else {
-            for (const instance of bubbleSetInstances) {
-                instance.remove();
-            }
-            setBubbleSetInstance([]);
+            bubbleSetInstances.clear();
         }
     }, [JSON.stringify(graphProperty.selectedSimultaneousNodes)]);
     return (
@@ -84,7 +50,7 @@ export function GraphControlPanel({cy}: { cy: Core }) {
                         <LineStyle/>
                     </Grid>
                     <Grid item xs>
-                        <Slider defaultValue={(graphProperty.layoutOptions as any).nodeSep}
+                        <Slider value={(graphProperty.layoutOptions as any).nodeSep}
                                 onChange={handleNodeSpacingChange}
                                 aria-labelledby="node-spacing-slider"
                                 step={1} min={100} max={300} valueLabelDisplay="auto"/>
@@ -98,7 +64,7 @@ export function GraphControlPanel({cy}: { cy: Core }) {
                         <FormatLineSpacing/>
                     </Grid>
                     <Grid item xs>
-                        <Slider defaultValue={(graphProperty.layoutOptions as any).rankSep}
+                        <Slider value={(graphProperty.layoutOptions as any).rankSep}
                                 onChange={handleRankSpacingChange}
                                 aria-labelledby="rank-spacing-slider"
                                 step={1} min={10} max={150} valueLabelDisplay="auto"/>
@@ -120,7 +86,7 @@ export function GraphControlPanel({cy}: { cy: Core }) {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            checked={isBubbleSetChecked}
+                            checked={graphProperty.isSetViewChecked}
                             onChange={handleBubbleSetCheckbox}
                             name="bubbleSetCheckbox"
                             color="primary"

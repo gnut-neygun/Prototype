@@ -1,6 +1,8 @@
 import {createStyles, makeStyles} from "@material-ui/core/styles";
 import {FormControl, InputLabel, MenuItem, Select, Theme} from "@material-ui/core";
 import React from "react";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {reduxActions} from "../../app/graphDataSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -16,10 +18,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function DataSourceChooser() {
     const classes = useStyles();
-    const [age, setAge] = React.useState('');
-
+    const availableSources = useAppSelector(state => state.graphData.dataSource)
+    const choosenSource = useAppSelector(state => state.graphData.choosenSource);
+    const dispatch = useAppDispatch()
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setAge(event.target.value as string);
+        dispatch(reduxActions.setChoosenSource(event.target.value as string));
     };
 
     return <FormControl className={classes.formControl}>
@@ -27,12 +30,10 @@ export default function DataSourceChooser() {
         <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={age}
+            value={choosenSource}
             onChange={handleChange}
         >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {availableSources.map(source => <MenuItem key={source.name} value={source.name}>{source.name}</MenuItem>)}
         </Select>
     </FormControl>
 };
