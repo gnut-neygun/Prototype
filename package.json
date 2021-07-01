@@ -21,6 +21,7 @@
     "@types/react-redux": "^7.1.7",
     "cytoscape": "^3.19.0",
     "cytoscape-bubblesets": "^3.0.0",
+    "cytoscape-cose-bilkent": "^4.1.0",
     "cytoscape-dagre": "^2.3.2",
     "cytoscape-layers": "2.1.0",
     "graphlib-dot": "^0.6.4",

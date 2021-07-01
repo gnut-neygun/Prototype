@@ -5,6 +5,7 @@ import * as graphlibDot from "graphlib-dot";
 import {BaseGraphData} from "./BaseGraphData";
 import {layoutOptions} from "../features/graph/CytoscapeInitProperties";
 import {cytoscapeRef} from "./globalVariables";
+import ManufacturingGraphData from "./ManufacturingGraphData";
 
 interface DataSource {
     name: string
@@ -21,8 +22,8 @@ interface GraphDataState {
     isSetViewChecked: boolean
 }
 
-export function generateGraphDataList(): ElementDefinition[] {
-    const graph = graphlibDot.read(BaseGraphData);
+export function generateGraphDataList(inputData: string): ElementDefinition[] {
+    const graph = graphlibDot.read(inputData);
     const subgraphs = graph.children();
     const generatedElementList: ElementDefinition[] = [];
     for (const subgraph of subgraphs) {
@@ -51,11 +52,11 @@ export function generateGraphDataList(): ElementDefinition[] {
 const initialState: GraphDataState = {
     dataSource: [{
         name: "printer",
-        elements: generateGraphDataList()
+        elements: generateGraphDataList(BaseGraphData)
     },
         {
-            name: "printer2",
-            elements: []
+            name: "manufacturing",
+            elements: generateGraphDataList(ManufacturingGraphData)
         }],
     choosenSource: "printer",
     layoutOptions: layoutOptions,

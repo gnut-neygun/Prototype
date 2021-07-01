@@ -10,12 +10,16 @@ import {useAppSelector} from "../../app/hooks";
 import {graphDataSelector} from "../../app/graphDataSlice";
 import assert from "assert";
 import {bubbleSetInstances, cytoscapeRef} from "../../app/globalVariables";
+import coseBilkent from 'cytoscape-cose-bilkent';
+
 
 cytoscape.use(dagre)
+cytoscape.use(coseBilkent);
 
 export function Graph() {
-    console.log("Im being rerenderd")
-    const graphData = useAppSelector(graphDataSelector);
+    const graphData = useAppSelector(graphDataSelector, (oldState, newState) => {
+        return oldState.choosenSource === newState.choosenSource;
+    });
     const [cy, setCy] = useState<Core | null>(null);
     const choosenSource = graphData.dataSource.filter(source => source.name === graphData.choosenSource)
     assert(choosenSource.length === 1);
