@@ -25,7 +25,7 @@ export function Graph() {
     const [cy, setCy] = useState<Core | null>(null);
     useEffect(() => {
         cytoscapeRef.cy?.edges().toggleClass("hasLabel", true);
-    }, [])
+    }, [graphViewData.choosenSource])
     return (<div id={styles.graphFlexboxContainer}>
         <CytoscapeComponent elements={graphData.elements} style={{width: "80%", height: 1000}}
                             stylesheet={defaultGraphStyle} layout={graphData.layout} cy={(cy) => {
