@@ -1,4 +1,4 @@
-export const BaseGraphData = `digraph "results\\printer_algo_1" {
+export const PrinterGraphData = `digraph "results\\printer_algo_1" {
 \tgraph [newrank=true]
 \tsubgraph cluster_billinstances {
 \t\t"write bill"

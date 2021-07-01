@@ -1,92 +1,53 @@
-import {Checkbox, FormControlLabel, Grid, Slider, Typography} from "@material-ui/core";
-import {FormatLineSpacing, LineStyle, ZoomIn} from "@material-ui/icons";
+import {Button, Checkbox, Divider, FormControlLabel} from "@material-ui/core";
 import React, {useEffect} from "react";
 import {Core} from "cytoscape";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {graphDataSelector, reduxActions, setLayout} from "../../app/graphDataSlice";
-import {GraphDataPanel} from "./GraphDataPanel";
+import {graphDataSelector, reduxActions} from "../../app/graphDataSlice";
+import {ISCPanel} from "./ISCPanel";
 import {bubbleSetInstances} from "../../app/globalVariables";
+import {LayoutMenu} from "../../layout/LayoutMenu";
+import ZoomSlider from "./ZoomSlider";
 
 
 export const CytoscapeContext = React.createContext<Core>({} as Core);
 
+
 export function GraphControlPanel({cy}: { cy: Core }) {
     const graphProperty = useAppSelector(graphDataSelector);
+    const isSetChecked = useAppSelector(state => state.graphData.isSetViewChecked)
     const dispatch = useAppDispatch();
-    const handleNodeSpacingChange = (event: any, newValue: number | number[]) => {
-        const myLayoutOptions = {...graphProperty.layoutOptions, nodeSep: newValue as number};
-        dispatch(setLayout(myLayoutOptions));
-    };
-    const handleRankSpacingChange = (event: any, newValue: number | number[]) => {
-        const myLayoutOptions = {...graphProperty.layoutOptions, rankSep: newValue as number};
-        dispatch(setLayout(myLayoutOptions));
-    };
-    const handleZoomLevelChange = (event: any, newValue: number | number[]) => {
-        cy.zoom(newValue as number);
-    };
 
     const handleBubbleSetCheckbox = () => {
-        if (graphProperty.isSetViewChecked) {
+        if (isSetChecked) {
             //the condition is inverted because this indicate changes in checkbox state
             bubbleSetInstances.clear();
         } else bubbleSetInstances.refreshBubbleset(graphProperty.selectedSimultaneousNodes)
-        dispatch(reduxActions.setBubbleSetView(!graphProperty.isSetViewChecked));
+        dispatch(reduxActions.setBubbleSetView(!isSetChecked));
     };
     useEffect(() => {
-        if (graphProperty.isSetViewChecked)
+        if (isSetChecked)
             bubbleSetInstances.refreshBubbleset(graphProperty.selectedSimultaneousNodes)
         else {
             bubbleSetInstances.clear();
         }
     }, [JSON.stringify(graphProperty.selectedSimultaneousNodes)]);
+
+    const handleZoomFit = () => {
+        cy.fit();
+        cy.center();
+    }
+
     return (
         <CytoscapeContext.Provider value={cy}>
             <div id="graph-control-panel" style={{width: "20%"}}>
-                <Typography id="node-spacing-slider" gutterBottom>
-                    Node spacing
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item>
-                        <LineStyle/>
-                    </Grid>
-                    <Grid item xs>
-                        <Slider value={(graphProperty.layoutOptions as any).nodeSep}
-                                onChange={handleNodeSpacingChange}
-                                aria-labelledby="node-spacing-slider"
-                                step={1} min={100} max={300} valueLabelDisplay="auto"/>
-                    </Grid>
-                </Grid>
-                <Typography id="rank-spacing-slider" gutterBottom>
-                    Rank spacing
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item>
-                        <FormatLineSpacing/>
-                    </Grid>
-                    <Grid item xs>
-                        <Slider value={(graphProperty.layoutOptions as any).rankSep}
-                                onChange={handleRankSpacingChange}
-                                aria-labelledby="rank-spacing-slider"
-                                step={1} min={10} max={150} valueLabelDisplay="auto"/>
-                    </Grid>
-                </Grid>
-                <Typography id="zoom-slider" gutterBottom>
-                    Zoom level
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item>
-                        <ZoomIn/>
-                    </Grid>
-                    <Grid item xs>
-                        <Slider defaultValue={1} onChange={handleZoomLevelChange}
-                                aria-labelledby="zoom-slider"
-                                step={0.001} min={0.3} max={3} valueLabelDisplay="auto"/>
-                    </Grid>
-                </Grid>
+                <LayoutMenu/>
+                <Divider/>
+                <ZoomSlider/>
+                <Button variant={"text"} style={{margin: "10px"}} onClick={handleZoomFit}>Zoom fit and center</Button>
                 <FormControlLabel
                     control={
                         <Checkbox
-                            checked={graphProperty.isSetViewChecked}
+                            checked={isSetChecked}
                             onChange={handleBubbleSetCheckbox}
                             name="bubbleSetCheckbox"
                             color="primary"
@@ -94,7 +55,7 @@ export function GraphControlPanel({cy}: { cy: Core }) {
                     }
                     label="Bubble set view"
                 />
-                <GraphDataPanel/>
+                <ISCPanel/>
             </div>
         </CytoscapeContext.Provider>
 

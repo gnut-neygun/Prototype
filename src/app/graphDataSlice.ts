@@ -2,22 +2,22 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk, RootState} from "./store";
 import {ElementDefinition, LayoutOptions} from "cytoscape";
 import * as graphlibDot from "graphlib-dot";
-import {BaseGraphData} from "./BaseGraphData";
-import {layoutOptions} from "../features/graph/CytoscapeInitProperties";
+import {PrinterGraphData} from "./PrinterGraphData";
 import {cytoscapeRef} from "./globalVariables";
 import ManufacturingGraphData from "./ManufacturingGraphData";
+import {layoutOptions} from "../layout/defaultLayout";
 
 interface DataSource {
     name: string
     elements: ElementDefinition[]
+    simultaneousNodes: Array<Array<string>>
+    selectedSimultaneousNodes: Array<Array<string>>
+    layout: LayoutOptions
 }
 
 interface GraphDataState {
     dataSource: Array<DataSource>
     choosenSource: string
-    layoutOptions: LayoutOptions
-    simultaneousNodes: Array<Array<string>>
-    selectedSimultaneousNodes: Array<Array<string>>
     isSimulLabelChecked: boolean
     isSetViewChecked: boolean
 }
@@ -52,16 +52,19 @@ export function generateGraphDataList(inputData: string): ElementDefinition[] {
 const initialState: GraphDataState = {
     dataSource: [{
         name: "printer",
-        elements: generateGraphDataList(BaseGraphData)
+        elements: generateGraphDataList(PrinterGraphData),
+        layout: layoutOptions,
+        simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"], ["print bill", "print poster", "deliver poster"]],
+        selectedSimultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]],
     },
         {
             name: "manufacturing",
-            elements: generateGraphDataList(ManufacturingGraphData)
+            elements: generateGraphDataList(ManufacturingGraphData),
+            layout: layoutOptions,
+            simultaneousNodes: [],
+            selectedSimultaneousNodes: [],
         }],
     choosenSource: "printer",
-    layoutOptions: layoutOptions,
-    simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"], ["print bill", "print poster", "deliver poster"]],
-    selectedSimultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"]],
     isSimulLabelChecked: true,
     isSetViewChecked: true
 };
@@ -71,13 +74,15 @@ export const graphDataSlice = createSlice({
     initialState,
     reducers: {
         setSelectedSimultaneousNodes: (state, action: PayloadAction<Array<Array<string>>>) => {
-            state.selectedSimultaneousNodes = action.payload;
+            const currentSource = state.dataSource.filter(e => e.name === state.choosenSource)[0]
+            currentSource.selectedSimultaneousNodes = action.payload;
         },
         setIsSimulLabelChecked: (state, action: PayloadAction<boolean>) => {
             state.isSimulLabelChecked = action.payload;
         },
         setLayout: (state, action: PayloadAction<LayoutOptions>) => {
-            state.layoutOptions = action.payload;
+            const currentSource = state.dataSource.filter(e => e.name === state.choosenSource)[0]
+            currentSource.layout = action.payload;
         },
         setChoosenSource: (state, action: PayloadAction<string>) => {
             state.choosenSource = action.payload;
@@ -91,7 +96,7 @@ export const graphDataSlice = createSlice({
     }
 });
 export const reduxActions = graphDataSlice.actions
-export const graphDataSelector = (state: RootState) => state.graphData;
+export const graphDataSelector = (state: RootState) => state.graphData.dataSource.filter(e => e.name === state.graphData.choosenSource)[0];
 export default graphDataSlice.reducer;
 
 export function setSimulAction(isChecked: boolean): AppThunk {

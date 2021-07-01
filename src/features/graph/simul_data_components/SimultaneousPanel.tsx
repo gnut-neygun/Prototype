@@ -1,19 +1,19 @@
-import {Checkbox, FormControlLabel, Typography} from "@material-ui/core";
+import {Checkbox, Divider, FormControlLabel, Typography} from "@material-ui/core";
 import SimulCheckList from "./SimulCheckList";
 import React from "react";
 import {useAppDispatch, useAppSelector} from "../../../app/hooks";
-import {graphDataSelector, setSimulAction} from "../../../app/graphDataSlice";
+import {setSimulAction} from "../../../app/graphDataSlice";
 
 export function SimultaneousPanel() {
-    const graphData = useAppSelector(graphDataSelector);
+    const isSimulChecked = useAppSelector(state => state.graphData.isSimulLabelChecked);
     const dispatch = useAppDispatch();
     return <div>
         <FormControlLabel
             control={
                 <Checkbox
-                    checked={graphData.isSimulLabelChecked}
+                    checked={isSimulChecked}
                     onChange={() => {
-                        dispatch(setSimulAction(!graphData.isSimulLabelChecked))
+                        dispatch(setSimulAction(!isSimulChecked))
                     }}
                     name="simulLabelCheckbox"
                     color="primary"
@@ -21,7 +21,8 @@ export function SimultaneousPanel() {
             }
             label="Show frequency label"
         />
-        <Typography variant={"h6"}>Simultaneous nodes</Typography>
+        <Divider/>
+        <Typography variant={"button"}>Simultaneous nodes</Typography>
         <SimulCheckList/>
     </div>
 }

@@ -23,10 +23,9 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function GraphDataPanel() {
+export function ISCPanel() {
     const classes = useStyles();
     return <div>
-        <Typography variant={"h5"} align={"center"} gutterBottom>Constraint panel</Typography>
         <Accordion expanded>
             <AccordionSummary
                 expandIcon={<ExpandMore/>}
