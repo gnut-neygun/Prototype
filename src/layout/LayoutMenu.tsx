@@ -4,6 +4,7 @@ import {useAppDispatch, useAppSelector} from "../app/hooks";
 import {graphDataSelector, setLayout} from "../app/graphDataSlice";
 import React from "react";
 import DagreLayoutControl from "./DagreLayoutControl";
+import {LayoutOptions} from "cytoscape";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,10 +23,25 @@ export function LayoutMenu() {
     const currentLayout = useAppSelector(state => graphDataSelector(state).layout)
     const dispatch = useAppDispatch()
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        dispatch(setLayout({
-            ...currentLayout,
-            name: event.target.value as string
-        }))
+        const newLayoutName = event.target.value as string
+        let layoutOptions: LayoutOptions
+        if (newLayoutName === "klay") {
+            layoutOptions = {
+                ...currentLayout,
+                name: newLayoutName,
+                // @ts-ignore
+                nodeDimensionsIncludeLabels: true,
+                klay: {
+                    layoutHierarchy: false
+                }
+            };
+        } else {
+            layoutOptions = {
+                ...currentLayout,
+                name: newLayoutName
+            };
+        }
+        dispatch(setLayout(layoutOptions));
     };
 
     function renderPanelItem() {
@@ -47,6 +63,7 @@ export function LayoutMenu() {
             >
                 <MenuItem value={"dagre"}>dagre</MenuItem>
                 <MenuItem value={"cose-bilkent"}>cose-bilkent</MenuItem>
+                <MenuItem value={"klay"}>klay</MenuItem>
             </Select>
         </FormControl>
         {renderPanelItem()}

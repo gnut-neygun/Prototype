@@ -13,9 +13,12 @@ import coseBilkent from 'cytoscape-cose-bilkent';
 import composeLayout from "../../layout/composeLayout";
 import {store} from "../../app/store";
 
+import klay from 'cytoscape-klay';
+
 
 cytoscape.use(dagre)
 cytoscape.use(coseBilkent);
+cytoscape.use(klay);
 
 export function Graph() {
     const graphData = graphDataSelector(store.getState()) //Optimization, if we use useSelector it renders too much

@@ -23,6 +23,7 @@
     "cytoscape-bubblesets": "^3.0.0",
     "cytoscape-cose-bilkent": "^4.1.0",
     "cytoscape-dagre": "^2.3.2",
+    "cytoscape-klay": "^3.1.4",
     "cytoscape-layers": "2.1.0",
     "graphlib-dot": "^0.6.4",
     "lodash.clonedeep": "^4.5.0",
