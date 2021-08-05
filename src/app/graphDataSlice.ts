@@ -9,6 +9,7 @@ import {layoutOptions} from "../layout/defaultLayout";
 
 interface DataSource {
     name: string
+    inputFiles: FileList | null
     elements: ElementDefinition[]
     simultaneousNodes: Array<Array<string>>
     selectedSimultaneousNodes: Array<Array<string>>
@@ -52,6 +53,7 @@ export function generateGraphDataList(inputData: string): ElementDefinition[] {
 const initialState: GraphDataState = {
     dataSource: [{
         name: "printer",
+        inputFiles: null,
         elements: generateGraphDataList(PrinterGraphData),
         layout: layoutOptions,
         simultaneousNodes: [["deliver bill", "deliver poster", "deliver flyer"], ["print bill", "print poster", "deliver poster"]],
@@ -59,6 +61,7 @@ const initialState: GraphDataState = {
     },
         {
             name: "manufacturing",
+            inputFiles: null,
             elements: generateGraphDataList(ManufacturingGraphData),
             layout: layoutOptions,
             simultaneousNodes: [],
@@ -92,6 +95,9 @@ export const graphDataSlice = createSlice({
         },
         setBubbleSetView: (state, action: PayloadAction<boolean>) => {
             state.isSetViewChecked = action.payload;
+        },
+        setFiles: (state, action: PayloadAction<{ source: string, files: FileList | null }>) => {
+            state.dataSource.filter(source => source.name === action.payload.source)[0].inputFiles = action.payload.files
         }
     }
 });

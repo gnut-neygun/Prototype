@@ -1,7 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
 import {createStyles, makeStyles, Theme, useTheme} from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,6 +9,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {Fab, Typography} from "@material-ui/core";
 import DataSourceChooser from "./DataSourceChooser";
+import {FilePicker} from "./FilePicker";
+import {ResizeableSidebar} from "./ResizeableSidebar";
 
 const drawerWidth = 240;
 
@@ -83,6 +84,7 @@ export default function PersistentDrawerLeft() {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
 
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -101,15 +103,14 @@ export default function PersistentDrawerLeft() {
                  onClick={handleDrawerOpen}>
                 <MenuIcon/>
             </Fab>
-            <Drawer
+            <ResizeableSidebar
                 className={classes.drawer}
                 variant="persistent"
                 anchor="left"
                 open={open}
                 classes={{
                     paper: classes.drawerPaper,
-                }}
-            >
+                }}>
                 <div className={classes.drawerHeader}>
                     <Typography variant={"h5"}>Data Panel</Typography>
                     <IconButton onClick={handleDrawerClose}>
@@ -118,7 +119,8 @@ export default function PersistentDrawerLeft() {
                 </div>
                 <Divider/>
                 <DataSourceChooser/>
-            </Drawer>
+                <FilePicker/>
+            </ResizeableSidebar>
         </>
     );
 }
