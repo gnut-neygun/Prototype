@@ -19,6 +19,7 @@
     "@types/react-cytoscapejs": "^1.2.1",
     "@types/react-dom": "^16.9.0",
     "@types/react-redux": "^7.1.7",
+    "axios": "^0.21.1",
     "cytoscape": "^3.19.0",
     "cytoscape-bubblesets": "^3.0.0",
     "cytoscape-cose-bilkent": "^4.1.0",

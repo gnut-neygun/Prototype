@@ -23,6 +23,10 @@ interface GraphDataState {
     isSetViewChecked: boolean
 }
 
+/**
+ * Take in a graphviz string in dot language and output ElementDefinition Array for cytoscape
+ * @param inputData Graphviz string in dot language
+ */
 export function generateGraphDataList(inputData: string): ElementDefinition[] {
     const graph = graphlibDot.read(inputData);
     const subgraphs = graph.children();
@@ -90,8 +94,20 @@ export const graphDataSlice = createSlice({
         setChoosenSource: (state, action: PayloadAction<string>) => {
             state.choosenSource = action.payload;
         },
-        addDataSource: (state, action: PayloadAction<DataSource>) => {
-            state.dataSource.push(action.payload);
+        addDataSource: (state, action: PayloadAction<DataSource | string>) => {
+            if (typeof action.payload === "string") {
+                //empty data soruce with just its name
+                state.dataSource.push({
+                    name: action.payload,
+                    inputFiles: null,
+                    elements: [],
+                    simultaneousNodes: [],
+                    selectedSimultaneousNodes: [],
+                    layout: layoutOptions
+                });
+            } else {
+                state.dataSource.push(action.payload);
+            }
         },
         setBubbleSetView: (state, action: PayloadAction<boolean>) => {
             state.isSetViewChecked = action.payload;

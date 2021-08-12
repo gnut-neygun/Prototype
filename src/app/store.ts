@@ -4,11 +4,18 @@ import graphDataReducer from "./graphDataSlice";
 
 
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    graphData: graphDataReducer
-  },
-  devTools: true,
+    reducer: {
+        counter: counterReducer,
+        graphData: graphDataReducer
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                // Ignore these action types
+                ignoredActions: ['graphProperty/setFiles'],
+            },
+        }),
+    devTools: true,
 });
 
 export type AppDispatch = typeof store.dispatch;

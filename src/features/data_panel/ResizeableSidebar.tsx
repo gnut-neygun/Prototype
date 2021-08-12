@@ -55,17 +55,16 @@ export function ResizeableSidebar(props: React.ComponentProps<typeof Drawer>) {
     const handleMousemove = (e: MouseEvent) => {
         if (e.buttons === 0)
             return
-        console.log(e.clientX)
         setNewWidth(e.clientX)
     };
 
 
-    const handleMouseup = (e: MouseEvent) => {
+    const handleMouseup = () => {
         document.removeEventListener("mousemove", handleMousemove)
         document.removeEventListener("mouseup", handleMouseup)
     }
 
-    const handleMousedown = (e: React.MouseEvent) => {
+    const handleMousedown = () => {
         document.addEventListener('mousemove', handleMousemove);
         document.addEventListener('mouseup', handleMouseup);
     };
