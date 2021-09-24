@@ -11,10 +11,11 @@ import {Fab, Typography} from "@material-ui/core";
 import DataSourceChooser from "./DataSourceChooser";
 import {FilePicker} from "./FilePicker";
 import {ResizeableSidebar} from "./ResizeableSidebar";
+import {NavigationMenu} from "./NavigationMenu";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = (isOpen: boolean) => makeStyles((theme: Theme) =>
     createStyles({
         fixedPosition: {
             position: 'fixed',
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'none',
         },
         drawer: {
-            width: drawerWidth,
+            flexBasis: isOpen? drawerWidth : 0,
             flexShrink: 0,
         },
         drawerPaper: {
@@ -80,10 +81,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function PersistentDrawerLeft() {
-    const classes = useStyles();
-    const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-
+    const classes = useStyles(open)();
+    const theme = useTheme();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -120,6 +120,7 @@ export default function PersistentDrawerLeft() {
                 <Divider/>
                 <DataSourceChooser/>
                 <FilePicker/>
+                <NavigationMenu/>
             </ResizeableSidebar>
         </>
     );

@@ -1,5 +1,5 @@
 import {parseXESFromString, parseXesFromStrings} from "../parser/XESParser";
-import {discoverSimultaneousIsc} from "../simultaneousIsc";
+import {discoverSimultaneousIsc, fastDiscoverSimultaneousIsc} from "../simultaneousIsc";
 import fs from "fs";
 import path from "path";
 
@@ -40,4 +40,13 @@ it("simultaneous ISC", () => {
     const content = readFile("post", "billinstances.xes")
     const log = parseXESFromString(content);
     console.log(discoverSimultaneousIsc(log));
+});
+
+it('fast discover ISC', () => {
+    const bill = readFile("post", "billinstances.xes");
+    const flyer = readFile("post", "flyerinstances.xes");
+    const post = readFile("post", "posterinstances.xes");
+    const mergedLog = parseXesFromStrings(bill, flyer, post);
+    const isc = fastDiscoverSimultaneousIsc(mergedLog);
+    console.log("debug point)");
 });
