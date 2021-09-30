@@ -13,9 +13,9 @@ import {
     Typography
 } from "@material-ui/core";
 import React, {useState} from "react";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {reduxActions} from "../../app/graphDataSlice";
 import {Add} from "@material-ui/icons";
+import {useAppDispatch, useAppSelector} from "../../shared/hooks";
+import {reduxActions} from "../../shared/graphDataSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

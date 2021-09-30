@@ -2,10 +2,10 @@ import {Button, Container, createStyles, IconButton, List, ListItem, ListItemTex
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import React, {useRef} from "react";
 import {Delete} from "@material-ui/icons";
-import {GraphType} from "../../server_api/types";
-import {requestHeuristicMiner} from "../../server_api/api";
+import {GraphType} from "../../shared/server_api/types";
+import {requestHeuristicMiner} from "../../shared/server_api/api";
 import {observer} from "mobx-react-lite";
-import {fileStore} from "../../app/store/FileStore";
+import {fileStore} from "../../shared/store/FileStore";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,7 +37,11 @@ export const FilePicker= observer(() => {
         else {
             for (const file of fileList) {
                 const fileContent = await file.text()
-                const response = await requestHeuristicMiner(GraphType.heuristic_net, fileContent)
+                try {
+                    const response = await requestHeuristicMiner(GraphType.heuristic_net, fileContent);
+                } catch (e){
+                    console.log(e);
+                }
             }
         }
     }

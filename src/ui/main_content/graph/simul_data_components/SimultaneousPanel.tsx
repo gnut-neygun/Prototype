@@ -1,8 +1,8 @@
 import {Checkbox, Divider, FormControlLabel, Typography} from "@material-ui/core";
 import SimulCheckList from "./SimulCheckList";
 import React from "react";
-import {useAppDispatch, useAppSelector} from "../../../app/hooks";
-import {setSimulAction} from "../../../app/graphDataSlice";
+import {useAppDispatch, useAppSelector} from "../../../../shared/hooks";
+import {setSimulAction} from "../../../../shared/graphDataSlice";
 
 export function SimultaneousPanel() {
     const isSimulChecked = useAppSelector(state => state.graphData.isSimulLabelChecked);

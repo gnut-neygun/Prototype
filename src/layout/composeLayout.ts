@@ -1,7 +1,7 @@
-import {cytoscapeRef} from "../app/globalVariables";
 import {Core} from "cytoscape";
-import {store} from "../app/store";
-import {graphDataSelector} from "../app/graphDataSlice";
+import {cytoscapeRef} from "../shared/globalVariables";
+import {store} from "../shared/store";
+import {graphDataSelector} from "../shared/graphDataSlice";
 
 /*
 type NodeBoundingBox = {

@@ -6,14 +6,14 @@ import {GraphControlPanel} from "./GraphControlPanel";
 import styles from "./Graph.module.css";
 import CytoscapeComponent from "react-cytoscapejs";
 import {defaultGraphStyle} from "./GraphDefaultStyle";
-import {useAppSelector} from "../../app/hooks";
-import {graphDataSelector} from "../../app/graphDataSlice";
-import {bubbleSetInstances, cytoscapeRef} from "../../app/globalVariables";
 import coseBilkent from 'cytoscape-cose-bilkent';
-import composeLayout from "../../layout/composeLayout";
-import {store} from "../../app/store";
+import composeLayout from "../../../layout/composeLayout";
 
 import klay from 'cytoscape-klay';
+import {graphDataSelector} from "../../../shared/graphDataSlice";
+import {useAppSelector} from "../../../shared/hooks";
+import {bubbleSetInstances, cytoscapeRef} from "../../../shared/globalVariables";
+import {store} from "../../../shared/store";
 
 
 cytoscape.use(dagre)

@@ -3,7 +3,7 @@ import {createStyles} from "@material-ui/core";
 import Chart from 'chart.js/auto';
 import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
-import {simulKPIStore} from "../../app/store/SimulKPIStore";
+import {simulKPIStore} from "../../../shared/store/SimulKPIStore";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

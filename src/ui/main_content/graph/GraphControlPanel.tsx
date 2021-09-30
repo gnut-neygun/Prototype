@@ -1,12 +1,12 @@
 import {Button, Checkbox, Divider, FormControlLabel} from "@material-ui/core";
 import React, {useEffect} from "react";
 import {Core} from "cytoscape";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {graphDataSelector, reduxActions} from "../../app/graphDataSlice";
 import {ISCPanel} from "./ISCPanel";
-import {bubbleSetInstances} from "../../app/globalVariables";
-import {LayoutMenu} from "../../layout/LayoutMenu";
+import {LayoutMenu} from "../../../layout/LayoutMenu";
 import ZoomSlider from "./ZoomSlider";
+import {useAppDispatch, useAppSelector} from "../../../shared/hooks";
+import {graphDataSelector, reduxActions} from "../../../shared/graphDataSlice";
+import {bubbleSetInstances} from "../../../shared/globalVariables";
 
 
 export const CytoscapeContext = React.createContext<Core>({} as Core);

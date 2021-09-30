@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import {Graph} from "./features/graph/Graph";
 import {MuiThemeProvider, unstable_createMuiStrictModeTheme} from "@material-ui/core";
-import PersistentDrawerLeft from "./features/data_panel/DataPanel";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
-import {SimultaneousKPI} from "./features/simul_kpi/SimultaneousKPI";
-import {ExecutionKPI} from "./features/simul_kpi/ExecutionKPI";
+import PersistentDrawerLeft from "./ui/left_side_panel/DataPanel";
+import {Graph} from "./ui/main_content/graph/Graph";
+import {ExecutionKPI} from "./ui/main_content/simul_kpi/ExecutionKPI";
+import {SimultaneousKPI} from "./ui/main_content/simul_kpi/SimultaneousKPI";
 
 const theme = unstable_createMuiStrictModeTheme();
 function App() {
@@ -18,7 +18,7 @@ function App() {
                         <Route exact path="/">
                             <Graph/>
                         </Route>
-                        <Route exact path="/simul">
+                        <Route exact path="/simul/events">
                             <SimultaneousKPI/>
                         </Route>
                         <Route exact path="/execution">

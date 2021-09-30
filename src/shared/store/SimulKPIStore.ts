@@ -2,7 +2,7 @@ import {EventLog, XesEvent} from "../../algorithm/parser/XESModels";
 import {fastDiscoverSimultaneousIsc} from "../../algorithm/SimulConstraint";
 import {action, autorun, computed, makeObservable, observable, trace} from "mobx";
 import {fileStore} from "./FileStore";
-import {generateRandomColor} from "../../Utilities";
+import {generateRandomColor} from "../../utilities/colorGenerator";
 
 type ChartJSDataSet= {backgroundColor: string, data: {x: number, y: number}[], label: string}[]
 

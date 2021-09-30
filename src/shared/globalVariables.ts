@@ -1,6 +1,6 @@
 import {Core} from "cytoscape";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
-import {generateRandomColor} from "../Utilities";
+import {generateRandomColor} from "../utilities/colorGenerator";
 
 interface MyBubbleSetArray extends Array<BubbleSetPath> {
     bb?: BubbleSetsPlugin//store a reference for cleaning purpose

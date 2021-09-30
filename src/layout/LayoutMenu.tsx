@@ -1,10 +1,10 @@
 import {FormControl, InputLabel, makeStyles, MenuItem, Select} from "@material-ui/core";
 import {createStyles, Theme} from "@material-ui/core/styles";
-import {useAppDispatch, useAppSelector} from "../app/hooks";
-import {graphDataSelector, setLayout} from "../app/graphDataSlice";
 import React from "react";
 import DagreLayoutControl from "./DagreLayoutControl";
 import {LayoutOptions} from "cytoscape";
+import {useAppDispatch, useAppSelector} from "../shared/hooks";
+import {graphDataSelector, setLayout} from "../shared/graphDataSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

@@ -1,8 +1,8 @@
 import {Grid, Slider, Typography} from "@material-ui/core";
 import {FormatLineSpacing, LineStyle} from "@material-ui/icons";
 import React from "react";
-import {useAppDispatch, useAppSelector} from "../app/hooks";
-import {graphDataSelector, setLayout} from "../app/graphDataSlice";
+import {useAppDispatch, useAppSelector} from "../shared/hooks";
+import {graphDataSelector, setLayout} from "../shared/graphDataSlice";
 
 export default function DagreLayoutControl() {
 

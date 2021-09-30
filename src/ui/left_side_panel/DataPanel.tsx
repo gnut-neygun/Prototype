@@ -120,6 +120,7 @@ export default function PersistentDrawerLeft() {
                 <Divider/>
                 <DataSourceChooser/>
                 <FilePicker/>
+                <br/>
                 <NavigationMenu/>
             </ResizeableSidebar>
         </>

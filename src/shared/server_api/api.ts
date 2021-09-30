@@ -10,5 +10,7 @@ const myAxios = axios.create({
 export async function requestHeuristicMiner(graphType: GraphType, xesString: string) {
     return myAxios.post<ServerResponse>("/heuristic_miner", {
         graph_type: graphType, data: xesString
+    }).catch(e => {
+        throw e
     });
 }
