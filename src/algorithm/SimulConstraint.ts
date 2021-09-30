@@ -140,7 +140,7 @@ export function fastDiscoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeco
     }
 
     const filteredEventLabels = filterEventLabels();
-    const simActivities: { [key: string]: Array<XesEvent[]> } = {}
+    const simActivities: Map<string, Array<XesEvent[]>> = new Map()
     for (let start=0, end = 1;end < events.length;) {
         if (filteredEventLabels.includes(events[start].name())) {
             const cluster= events.slice(start, end)
@@ -157,9 +157,11 @@ export function fastDiscoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeco
             if (cluster.length > 1 && hasChanged) {
                 const foo = new Set(cluster.map(event => event.name()));
                 const key = [...foo].join(";")
-                if (simActivities[key] === undefined)
-                    simActivities[key] = []
-                simActivities[key].push(cluster);
+                if (simActivities.get(key) === undefined)
+                    simActivities.set(key, []);
+                else {
+                    simActivities.get(key)?.push(cluster);
+                }
             }
         }
         start++;

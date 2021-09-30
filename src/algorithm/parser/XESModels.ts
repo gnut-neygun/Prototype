@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 export class XesEvent {
     [attribute: string]: any
 
@@ -34,6 +36,18 @@ export class Trace {
 
     public append(event: XesEvent) {
         this.events.push(event)
+    }
+
+    public appendSorted(event: XesEvent) {
+        this.events.pushSorted(event, (event1, event2) => event1.time().valueOf()-event2.time().valueOf())
+    }
+
+    public cloneWithFilter(filter?: (x: XesEvent) => boolean ): Trace {
+        const cloned=[...this.events]
+        if (filter===undefined)
+            return new Trace(this.attributes, cloned);
+        else
+            return new Trace(this.attributes, cloned.filter(filter))
     }
 }
 

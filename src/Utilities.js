@@ -37,7 +37,7 @@ export function generateRandomColor(number) {
         lastLoadedReduction = Math.floor(Math.random() * 3),//set a random value to be the first to decrease
         rgbToHSL = function (rgb) {//converts [r,g,b] into [h,s,l]
             let r = rgb[0], g = rgb[1], b = rgb[2], cMax = Math.max(r, g, b), cMin = Math.min(r, g, b),
-                delta = cMax - cMin, l = (cMax + cMin) / 2, h = 0, s = 0;
+                delta = cMax - cMin, l = (cMax + cMin) / 2, h, s;
             if (delta === 0) h = 0; else if (cMax == r) h = 60 * ((g - b) / delta % 6); else if (cMax === g) h = 60 * ((b - r) / delta + 2); else h = 60 * ((r - g) / delta + 4);
             if (delta === 0) s = 0; else s = delta / (1 - Math.abs(2 * l - 1));
             return [h, s, l]

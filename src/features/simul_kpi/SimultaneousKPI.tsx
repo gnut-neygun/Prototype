@@ -1,7 +1,9 @@
-import {makeStyles, Theme, useTheme} from "@material-ui/core/styles";
+import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 import Chart from 'chart.js/auto';
 import {useEffect} from "react";
+import {observer} from "mobx-react-lite";
+import {simulKPIStore} from "../../app/store/SimulKPIStore";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -14,29 +16,13 @@ const useStyles = makeStyles((theme: Theme) =>
     )
 );
 
-export function SimultaneousKPI() {
+export const SimultaneousKPI= observer(() => {
+    console.log("Rerendering KPI Graphs");
     const classes = useStyles();
-    const theme = useTheme();
     useEffect(() => {
         const ctx = document.getElementById('chart') as HTMLCanvasElement;
         const data = {
-            datasets: [{
-                label: 'Scatter Dataset',
-                data: [{
-                    x: -10,
-                    y: 0
-                }, {
-                    x: 0,
-                    y: 10
-                }, {
-                    x: 10,
-                    y: 5
-                }, {
-                    x: 0.5,
-                    y: 5.5
-                }],
-                backgroundColor: 'rgb(255, 99, 132)'
-            }],
+            datasets: simulKPIStore.dataSets,
         };
         const config = {
             type: "scatter",
@@ -53,13 +39,13 @@ export function SimultaneousKPI() {
         // @ts-ignore
         const myChart = new Chart(ctx, config);
         return () => {
-            console.log("im destroyed");
+            console.log("Freeing up reference to old charts");
             myChart.destroy();
         };
-    }, []);
+    }, [simulKPIStore.dataSets]);
     return <>
         <div className={classes.chartContainer} >
             <canvas id="chart">No canvas</canvas>
         </div>
     </>
-}
+})

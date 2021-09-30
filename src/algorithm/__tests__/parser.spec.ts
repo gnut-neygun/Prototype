@@ -1,9 +1,10 @@
 import {parseXESFromString, parseXesFromStrings} from "../parser/XESParser";
-import {discoverSimultaneousIsc, fastDiscoverSimultaneousIsc} from "../simultaneousIsc";
+import {discoverSimultaneousIsc} from "../SimulConstraint";
 import fs from "fs";
 import path from "path";
+import {createPairs} from "../ContrainedExecution";
 
-function readFile(type: string = "post", name: string): string {
+export function readFile(type: string = "post", name: string): string {
     const options = {
         encoding: "utf8",
 
@@ -36,17 +37,9 @@ it("datetime parser", () => {
     console.log(date - date2);
 });
 
-it("simultaneous ISC", () => {
-    const content = readFile("post", "billinstances.xes")
-    const log = parseXESFromString(content);
-    console.log(discoverSimultaneousIsc(log));
-});
-
-it('fast discover ISC', () => {
-    const bill = readFile("post", "billinstances.xes");
-    const flyer = readFile("post", "flyerinstances.xes");
-    const post = readFile("post", "posterinstances.xes");
-    const mergedLog = parseXesFromStrings(bill, flyer, post);
-    const isc = fastDiscoverSimultaneousIsc(mergedLog);
-    console.log("debug point)");
+it('create pairs', () => {
+    const content = readFile("post", "billinstances.xes");
+    const xesModel = parseXESFromString(content);
+    const pairs = createPairs(xesModel)
+    console.log("debug point");
 });
