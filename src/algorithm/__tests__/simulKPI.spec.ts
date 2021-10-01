@@ -1,8 +1,8 @@
 import {parseXESFromString, parseXesFromStrings} from "../parser/XESParser";
 import {discoverSimultaneousIsc, fastDiscoverSimultaneousIsc} from "../SimulConstraint";
 import {readFile} from "./parser.spec";
-import {SimulKPIStore} from "../../app/store/SimulKPIStore";
-import {fileStore} from "../../app/store/FileStore";
+import {SimulKPIStore} from "../../shared/store/SimulKPIStore";
+import {fileStore} from "../../shared/store/FileStore";
 
 
 const bill = readFile("post", "billinstances.xes");

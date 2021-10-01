@@ -16,25 +16,31 @@ const useStyles = makeStyles((theme: Theme) =>
     )
 );
 
-export const SimultaneousKPI= observer(() => {
+export const BoxPlot= observer(() => {
     console.log("Rerendering KPI Graphs");
     const classes = useStyles();
     useEffect(() => {
-        const ctx = document.getElementById('chart') as HTMLCanvasElement;
+        const ctx = document.getElementById('boxplotChart') as HTMLCanvasElement;
         const data = {
-            datasets: simulKPIStore.dataSets,
+            datasets: simulKPIStore.boxPlotDataSets,
         };
         const config = {
-            type: "scatter",
+            type: 'scatter',
             data: data,
             options: {
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom'
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context: any) {
+                                const datetime = new Date(context.parsed.x);
+                                let ret: string=
+                                    `Events num: ${context.parsed.y}, Median date time: ${datetime.toDateString()} at ${datetime.toTimeString()}`
+                                return ret;
+                            }
+                        }
                     }
                 }
-            }
+            },
         };
         // @ts-ignore
         const myChart = new Chart(ctx, config);
@@ -42,10 +48,10 @@ export const SimultaneousKPI= observer(() => {
             console.log("Freeing up reference to old charts");
             myChart.destroy();
         };
-    }, [simulKPIStore.dataSets]);
+    }, [simulKPIStore.boxPlotDataSets]);
     return <>
         <div className={classes.chartContainer} >
-            <canvas id="chart">No canvas</canvas>
+            <canvas id="boxplotChart">No canvas</canvas>
         </div>
     </>
 })

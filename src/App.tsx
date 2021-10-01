@@ -5,7 +5,8 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import PersistentDrawerLeft from "./ui/left_side_panel/DataPanel";
 import {Graph} from "./ui/main_content/graph/Graph";
 import {ExecutionKPI} from "./ui/main_content/simul_kpi/ExecutionKPI";
-import {SimultaneousKPI} from "./ui/main_content/simul_kpi/SimultaneousKPI";
+import {JitterPlot} from "./ui/main_content/simul_kpi/JitterPlot";
+import {BoxPlot} from "./ui/main_content/simul_kpi/BoxPlot";
 
 const theme = unstable_createMuiStrictModeTheme();
 function App() {
@@ -19,10 +20,13 @@ function App() {
                             <Graph/>
                         </Route>
                         <Route exact path="/simul/events">
-                            <SimultaneousKPI/>
+                            <JitterPlot/>
                         </Route>
                         <Route exact path="/execution">
                             <ExecutionKPI/>
+                        </Route>
+                        <Route exact path="/simul/boxplot">
+                            <BoxPlot/>
                         </Route>
                     </Switch>
                 </div>

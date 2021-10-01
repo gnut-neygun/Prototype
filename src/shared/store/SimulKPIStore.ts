@@ -7,6 +7,7 @@ import {generateRandomColor} from "../../utilities/colorGenerator";
 type ChartJSDataSet= {backgroundColor: string, data: {x: number, y: number}[], label: string}[]
 
 export class SimulKPIStore {
+    @observable
     constraint: ReturnType<typeof fastDiscoverSimultaneousIsc> = new Map()
     @observable
     timeDeltaInSec: number=0.1
@@ -22,7 +23,7 @@ export class SimulKPIStore {
     constructor() {
         makeObservable(this)
         autorun(() => {
-            this.constraint = fastDiscoverSimultaneousIsc(fileStore.mergedLog, this.timeDeltaInSec, this.relativeEventOccurence, fileStore.lifecycleOption);
+            this.computeConstraint();
             this.activitiesName = this.computeActivitiesName();
             this.filteredLog=fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle())));
             this.computeAbsoluteOccurenceMap()
@@ -32,6 +33,11 @@ export class SimulKPIStore {
     private computeActivitiesName(): string[] {
          const stringArrayWithDuplicates=Array.from(this.constraint.keys()).map(stringKey => stringKey.split(";")).flat()
         return Array.from(new Set(stringArrayWithDuplicates))
+    }
+
+    @action
+    computeConstraint() {
+        this.constraint= fastDiscoverSimultaneousIsc(fileStore.mergedLog, this.timeDeltaInSec, this.relativeEventOccurence, fileStore.lifecycleOption);
     }
 
     @action
@@ -50,7 +56,7 @@ export class SimulKPIStore {
     }
 
     @computed
-    get dataSets(): ChartJSDataSet {
+    get jitterPlotData(): ChartJSDataSet {
         trace();
         console.log("Computing chartjs datasets")
         const colors= generateRandomColor(simulKPIStore.absoluteOccurenceMap.size)
@@ -71,6 +77,26 @@ export class SimulKPIStore {
                 }
             }
         );
+    }
+
+    @computed
+    get boxPlotDataSets() {
+        const colors= generateRandomColor(Array.from(this.constraint.keys()).length)
+        let colorIndex = -1;
+        return Array.from(this.constraint.entries()).map(entry => {
+            const [name, clusters]=entry
+            return {
+                label: name,
+                data: clusters.map(cluster => {
+
+                    return {
+                        x: cluster[Math.floor(cluster.length/2)].time(),
+                        y: cluster.length,
+                    }
+                }),
+                backgroundColor: colors[++colorIndex]
+            }
+        })
     }
 }
 

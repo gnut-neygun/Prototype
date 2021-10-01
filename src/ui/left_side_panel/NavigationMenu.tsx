@@ -37,9 +37,14 @@ export function NavigationMenu() {
                 <Typography className={classes.heading}>Simultaneous Constraints</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <Typography>
-                    <Link to="/simul/events">Event Distribution</Link>
-                </Typography>
+                <ul>
+                    <li>
+                        <Link to="/simul/events">Event Distribution</Link>
+                    </li>
+                    <li>
+                        <Link to="/simul/boxplot">Simultaneous Clusters</Link>
+                    </li>
+                </ul>
             </AccordionDetails>
         </Accordion>
         <Accordion>
