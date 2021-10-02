@@ -1,4 +1,4 @@
-import {action, makeObservable, observable} from "mobx";
+import {action, makeObservable, observable, runInAction} from "mobx";
 import {EventLog} from "../../algorithm/parser/XESModels";
 import {parseXesFromStrings} from "../../algorithm/parser/XESParser";
 
@@ -30,7 +30,9 @@ class FileStore {
                 const content = await file.text();
                 contentList.push(content);
             }
-            this.mergedLog=parseXesFromStrings(...contentList)
+            runInAction(() => {
+                this.mergedLog = parseXesFromStrings(...contentList)
+            });
         }
     }
 

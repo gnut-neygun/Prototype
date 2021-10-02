@@ -1,6 +1,6 @@
 import {EventLog, XesEvent} from "../../algorithm/parser/XESModels";
 import {fastDiscoverSimultaneousIsc} from "../../algorithm/SimulConstraint";
-import {action, autorun, computed, makeObservable, observable, trace} from "mobx";
+import {action, computed, makeObservable, observable, reaction, trace} from "mobx";
 import {fileStore} from "./FileStore";
 import {generateRandomColor} from "../../utilities/colorGenerator";
 
@@ -22,7 +22,7 @@ export class SimulKPIStore {
 
     constructor() {
         makeObservable(this)
-        autorun(() => {
+        reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
             this.computeConstraint();
             this.activitiesName = this.computeActivitiesName();
             this.filteredLog=fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle())));
