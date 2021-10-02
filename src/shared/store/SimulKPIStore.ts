@@ -1,8 +1,8 @@
 import {EventLog, XesEvent} from "../../algorithm/parser/XESModels";
 import {fastDiscoverSimultaneousIsc} from "../../algorithm/SimulConstraint";
-import {action, computed, makeObservable, observable, reaction, trace} from "mobx";
-import {fileStore} from "./FileStore";
+import {action, computed, IReactionDisposer, makeObservable, observable, reaction, trace} from "mobx";
 import {generateRandomColor} from "../../utilities/colorGenerator";
+import {FileStore} from "./FileStore";
 
 type ChartJSDataSet= {backgroundColor: string, data: {x: number, y: number}[], label: string}[]
 
@@ -20,15 +20,17 @@ export class SimulKPIStore {
     @observable
     absoluteOccurenceMap: Map<string, XesEvent[]> = new Map()
 
-    constructor() {
+    constructor(private fileStore: FileStore) {
         makeObservable(this)
-        reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
+        this.dispose=reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
             this.computeConstraint();
             this.activitiesName = this.computeActivitiesName();
             this.filteredLog=fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle())));
             this.computeAbsoluteOccurenceMap()
-        });
+        })
     }
+
+    public dispose: IReactionDisposer;
 
     private computeActivitiesName(): string[] {
          const stringArrayWithDuplicates=Array.from(this.constraint.keys()).map(stringKey => stringKey.split(";")).flat()
@@ -37,7 +39,7 @@ export class SimulKPIStore {
 
     @action
     computeConstraint() {
-        this.constraint= fastDiscoverSimultaneousIsc(fileStore.mergedLog, this.timeDeltaInSec, this.relativeEventOccurence, fileStore.lifecycleOption);
+        this.constraint= fastDiscoverSimultaneousIsc(this.fileStore.mergedLog, this.timeDeltaInSec, this.relativeEventOccurence, this.fileStore.lifecycleOption);
     }
 
     @action
@@ -58,10 +60,9 @@ export class SimulKPIStore {
     @computed
     get jitterPlotData(): ChartJSDataSet {
         trace();
-        console.log("Computing chartjs datasets")
-        const colors= generateRandomColor(simulKPIStore.absoluteOccurenceMap.size)
+        const colors= generateRandomColor(this.absoluteOccurenceMap.size)
         let colorIndex = -1;
-        return Array.from(simulKPIStore.absoluteOccurenceMap.entries()).map(
+        return Array.from(this.absoluteOccurenceMap.entries()).map(
             entry => {
                 const [name, events] = entry;
                 return {
@@ -99,5 +100,3 @@ export class SimulKPIStore {
         })
     }
 }
-
-export const simulKPIStore = new SimulKPIStore();

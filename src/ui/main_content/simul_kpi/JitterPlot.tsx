@@ -4,8 +4,8 @@ import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
 import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
-import {simulKPIStore} from "../../../shared/store/SimulKPIStore";
 import {autorun} from "mobx";
+import {datasourceStore} from "../../../shared/store/DatasourceStore";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,12 +19,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 let chart: Chart | null = null;
 export const JitterPlot= observer(() => {
-    console.log("Rerendering KPI Graphs");
     const classes = useStyles();
     useEffect(() => autorun(() =>{
         const ctx = document.getElementById('chart') as HTMLCanvasElement;
         const data = {
-            datasets: simulKPIStore.jitterPlotData,
+            datasets: datasourceStore.currentFileStore.simulKPIStore.jitterPlotData, // full reference for tracking
         };
         const config = {
             type: "scatter" as const,

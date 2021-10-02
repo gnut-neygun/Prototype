@@ -4,8 +4,8 @@ import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
 import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
-import {simulKPIStore} from "../../../shared/store/SimulKPIStore";
 import {autorun} from "mobx";
+import {datasourceStore} from "../../../shared/store/DatasourceStore";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -24,7 +24,7 @@ export const BoxPlot= observer(() => {
     useEffect(() => autorun(() =>{
         const ctx = document.getElementById('boxplotChart') as HTMLCanvasElement;
         const data = {
-            datasets: simulKPIStore.boxPlotDataSets,
+            datasets: datasourceStore.currentFileStore.simulKPIStore.boxPlotDataSets,
         };
         const config = {
             type: 'scatter' as const,

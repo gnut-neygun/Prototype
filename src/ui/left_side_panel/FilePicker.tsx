@@ -7,7 +7,7 @@ import {Delete} from "@mui/icons-material";
 import {GraphType} from "../../shared/server_api/types";
 import {requestHeuristicMiner} from "../../shared/server_api/api";
 import {observer} from "mobx-react-lite";
-import {fileStore} from "../../shared/store/FileStore";
+import {datasourceStore} from "../../shared/store/DatasourceStore";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const FilePicker= observer(() => {
+    const fileStore = datasourceStore.currentFileStore;
     const classes = useStyles();
     const uploadButtonRef = useRef<HTMLInputElement>(null)
 

@@ -16,8 +16,9 @@ import {
 } from "@mui/material";
 import React, {useState} from "react";
 import {Add} from "@mui/icons-material";
-import {useAppDispatch, useAppSelector} from "../../shared/hooks";
-import {reduxActions} from "../../shared/graphDataSlice";
+import {datasourceStore} from "../../shared/store/DatasourceStore";
+import {observer} from "mobx-react-lite";
+import {runInAction} from "mobx";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,17 +37,20 @@ const useStyles = makeStyles((theme: Theme) =>
         }
     }),
 );
-export default function DataSourceChooser() {
+export default observer(() => {
     const newSourceStringMarker = "#new_source"
     const classes = useStyles();
-    const availableSources = useAppSelector(state => state.graphData.dataSource)
-    const choosenSource = useAppSelector(state => state.graphData.choosenSource);
-    const dispatch = useAppDispatch()
-    const handleChange = (event: SelectChangeEvent<string>) => {
+    const availableSources = datasourceStore.availableSources;
+    const choosenSource = datasourceStore.currentDataSource;
+    const handleChange = (event: SelectChangeEvent) => {
         const value = event.target.value
         if (value === newSourceStringMarker) {
-            setDialogOpen(true)
-        } else dispatch(reduxActions.setChoosenSource(event.target.value as string));
+            setDialogOpen(true);
+        } else {
+            runInAction(() => {
+                datasourceStore.currentDataSource = value
+            });
+        }
     };
     const [isDialogOpen, setDialogOpen] = useState<boolean>(false)
     const [textFieldValue, setTextFieldValue] = useState<string>("")
@@ -56,13 +60,15 @@ export default function DataSourceChooser() {
     }
 
     function handleAddDataSource() {
-        if (textFieldValue === "")
+        if (textFieldValue === "" || availableSources.includes(textFieldValue))
             return;
         else {
-            dispatch(reduxActions.addDataSource(textFieldValue));
+            datasourceStore.addNewDataSource(textFieldValue);
         }
         setDialogOpen(false)
-        dispatch(reduxActions.setChoosenSource(textFieldValue));
+        runInAction(() => {
+            datasourceStore.currentDataSource = textFieldValue;
+        });
     }
 
     return <FormControl className={classes.formControl}>
@@ -73,7 +79,7 @@ export default function DataSourceChooser() {
             value={choosenSource}
             onChange={handleChange}
         >
-            {availableSources.map(source => <MenuItem key={source.name} value={source.name}>{source.name}</MenuItem>)}
+            {availableSources.map(source => <MenuItem key={source} value={source}>{source}</MenuItem>)}
             <MenuItem key={newSourceStringMarker} value={newSourceStringMarker}>
                 <Add/>
                 <Typography>new data source</Typography>
@@ -90,4 +96,4 @@ export default function DataSourceChooser() {
             </DialogContent>
         </Dialog>
     </FormControl>
-}
+})

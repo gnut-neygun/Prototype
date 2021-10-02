@@ -1,18 +1,22 @@
 import {action, makeObservable, observable, runInAction} from "mobx";
 import {EventLog} from "../../algorithm/parser/XESModels";
 import {parseXesFromStrings} from "../../algorithm/parser/XESParser";
+import {SimulKPIStore} from "./SimulKPIStore";
 
-class FileStore {
+export class FileStore {
 
     @observable
-    fileList: FileList | null = null
+    public fileList: FileList | null = null
     @observable
     public mergedLog: EventLog = []
     @observable
     lifecycleOption: string[] = ["start"]
 
+    simulKPIStore:SimulKPIStore
+
     constructor() {
         makeObservable(this);
+        this.simulKPIStore = new SimulKPIStore(this); //Make sure this is called after makeObservable
     }
 
     @action
@@ -45,5 +49,3 @@ class FileStore {
         this.mergedLog = log;
     }
 }
-
-export const fileStore = new FileStore();

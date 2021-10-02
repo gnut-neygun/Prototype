@@ -7,9 +7,11 @@ import {Graph} from "./ui/main_content/graph/Graph";
 import {ExecutionKPI} from "./ui/main_content/simul_kpi/ExecutionKPI";
 import {JitterPlot} from "./ui/main_content/simul_kpi/JitterPlot";
 import {BoxPlot} from "./ui/main_content/simul_kpi/BoxPlot";
+import {observer} from "mobx-react-lite";
 
 const theme = unstable_createMuiStrictModeTheme();
-function App() {
+
+export const App= observer(() =>{
     return (
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
@@ -35,6 +37,6 @@ function App() {
             </ThemeProvider>
         </StyledEngineProvider>
     );
-}
+})
 
 export default App;
