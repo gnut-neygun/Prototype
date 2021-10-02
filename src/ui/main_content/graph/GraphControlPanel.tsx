@@ -1,4 +1,4 @@
-import {Button, Checkbox, Divider, FormControlLabel} from "@material-ui/core";
+import {Button, Checkbox, Divider, FormControlLabel} from "@mui/material";
 import React, {useEffect} from "react";
 import {Core} from "cytoscape";
 import {ISCPanel} from "./ISCPanel";

@@ -1,7 +1,9 @@
-import {Button, Container, createStyles, IconButton, List, ListItem, ListItemText} from "@material-ui/core";
-import {makeStyles, Theme} from "@material-ui/core/styles";
+import {Button, Container, IconButton, List, ListItem, ListItemText} from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import {Theme} from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import React, {useRef} from "react";
-import {Delete} from "@material-ui/icons";
+import {Delete} from "@mui/icons-material";
 import {GraphType} from "../../shared/server_api/types";
 import {requestHeuristicMiner} from "../../shared/server_api/api";
 import {observer} from "mobx-react-lite";
@@ -46,39 +48,42 @@ export const FilePicker= observer(() => {
         }
     }
 
-    return <Container>
-        <Button
-            variant="outlined"
-            component="label"
-        >
-            Upload File
-            <input
-                ref={uploadButtonRef}
-                type="file"
-                onChange={handleFile}
-                accept=".xes"
-                hidden
-                multiple
-            />
-        </Button>
-        <div className={classes.demo}>
-            <List>
-                {[...Array(fileStore.fileList?.length ?? 0).keys()].map(index => {
-                    const file = fileStore.fileList?.item(index)
-                    return (
-                        <ListItem key={file?.name}>
-                            <IconButton aria-label="delete">
-                                <Delete/>
-                            </IconButton>
-                            <ListItemText
-                                primary={file?.name ?? "undefined"}
-                                secondary={file?.type ?? "undefined"}
-                            />
-                        </ListItem>)
-                })
-                }
-            </List>
-        </div>
-        <Button variant="outlined" onClick={handleSubmit}>Submit</Button>
-    </Container>;
+    return (
+        <Container>
+            <Button
+                variant="outlined"
+                component="label"
+            >
+                Upload File
+                <input
+                    ref={uploadButtonRef}
+                    type="file"
+                    onChange={handleFile}
+                    accept=".xes"
+                    hidden
+                    multiple
+                />
+            </Button>
+            <div className={classes.demo}>
+                <List>
+                    {[...Array(fileStore.fileList?.length ?? 0).keys()].map(index => {
+                        const file = fileStore.fileList?.item(index)
+                        return (
+                            <ListItem key={file?.name}>
+                                <IconButton aria-label="delete" size="large">
+                                    <Delete/>
+                                </IconButton>
+                                <ListItemText
+                                    primary={file?.name ?? "undefined"}
+                                    secondary={file?.type ?? "undefined"}
+                                />
+                            </ListItem>
+                        );
+                    })
+                    }
+                </List>
+            </div>
+            <Button variant="outlined" onClick={handleSubmit}>Submit</Button>
+        </Container>
+    );
 })

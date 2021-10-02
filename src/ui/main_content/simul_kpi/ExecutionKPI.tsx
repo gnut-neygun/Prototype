@@ -1,5 +1,6 @@
-import {makeStyles, Theme, useTheme} from "@material-ui/core/styles";
-import {createStyles} from "@material-ui/core";
+import {Theme, useTheme} from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
 import {useEffect} from "react";
 

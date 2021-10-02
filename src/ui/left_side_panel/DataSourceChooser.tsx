@@ -1,4 +1,5 @@
-import {createStyles, makeStyles} from "@material-ui/core/styles";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
     Button,
     Dialog,
@@ -8,12 +9,13 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    SelectChangeEvent,
     TextField,
     Theme,
     Typography
-} from "@material-ui/core";
+} from "@mui/material";
 import React, {useState} from "react";
-import {Add} from "@material-ui/icons";
+import {Add} from "@mui/icons-material";
 import {useAppDispatch, useAppSelector} from "../../shared/hooks";
 import {reduxActions} from "../../shared/graphDataSlice";
 
@@ -40,8 +42,8 @@ export default function DataSourceChooser() {
     const availableSources = useAppSelector(state => state.graphData.dataSource)
     const choosenSource = useAppSelector(state => state.graphData.choosenSource);
     const dispatch = useAppDispatch()
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const value = event.target.value as string
+    const handleChange = (event: SelectChangeEvent<string>) => {
+        const value = event.target.value
         if (value === newSourceStringMarker) {
             setDialogOpen(true)
         } else dispatch(reduxActions.setChoosenSource(event.target.value as string));
@@ -88,4 +90,4 @@ export default function DataSourceChooser() {
             </DialogContent>
         </Dialog>
     </FormControl>
-};
+}

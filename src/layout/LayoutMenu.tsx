@@ -1,5 +1,7 @@
-import {FormControl, InputLabel, makeStyles, MenuItem, Select} from "@material-ui/core";
-import {createStyles, Theme} from "@material-ui/core/styles";
+import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import {Theme} from "@mui/material/styles";
+import createStyles from '@mui/styles/createStyles';
 import React from "react";
 import DagreLayoutControl from "./DagreLayoutControl";
 import {LayoutOptions} from "cytoscape";
@@ -22,8 +24,8 @@ export function LayoutMenu() {
     const classes = useStyles();
     const currentLayout = useAppSelector(state => graphDataSelector(state).layout)
     const dispatch = useAppDispatch()
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const newLayoutName = event.target.value as string
+    const handleChange = (event: SelectChangeEvent<string>) => {
+        const newLayoutName = event.target.value
         let layoutOptions: LayoutOptions
         if (newLayoutName === "klay") {
             layoutOptions = {

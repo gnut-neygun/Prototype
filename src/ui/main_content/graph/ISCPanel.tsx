@@ -1,13 +1,7 @@
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    createStyles,
-    makeStyles,
-    Theme,
-    Typography
-} from "@material-ui/core";
-import {ExpandMore} from "@material-ui/icons";
+import {Accordion, AccordionDetails, AccordionSummary, Theme, Typography} from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import {ExpandMore} from "@mui/icons-material";
 import React from "react";
 import {SimultaneousPanel} from "./simul_data_components/SimultaneousPanel";
 

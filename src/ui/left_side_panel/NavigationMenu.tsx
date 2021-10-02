@@ -1,7 +1,9 @@
-import {makeStyles, Theme, useTheme} from "@material-ui/core/styles";
-import {Accordion, AccordionDetails, AccordionSummary, createStyles, Typography} from "@material-ui/core";
+import {Theme, useTheme} from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
+import {Accordion, AccordionDetails, AccordionSummary, Typography} from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
 import {Link} from 'react-router-dom';
-import {ExpandMore} from "@material-ui/icons";
+import {ExpandMore} from "@mui/icons-material";
 import React from "react";
 
 const useStyles = makeStyles((theme: Theme) =>

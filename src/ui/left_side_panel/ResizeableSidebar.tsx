@@ -1,6 +1,9 @@
 import React, {useState} from "react";
-import {createStyles, Drawer} from "@material-ui/core";
-import {makeStyles, Theme} from "@material-ui/core/styles";
+import {Drawer} from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import {Theme} from "@mui/material/styles";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>

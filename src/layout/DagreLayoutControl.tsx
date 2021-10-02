@@ -1,5 +1,5 @@
-import {Grid, Slider, Typography} from "@material-ui/core";
-import {FormatLineSpacing, LineStyle} from "@material-ui/icons";
+import {Grid, Slider, Typography} from "@mui/material";
+import {FormatLineSpacing, LineStyle} from "@mui/icons-material";
 import React from "react";
 import {useAppDispatch, useAppSelector} from "../shared/hooks";
 import {graphDataSelector, setLayout} from "../shared/graphDataSlice";

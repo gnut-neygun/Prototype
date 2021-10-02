@@ -1,5 +1,5 @@
-import {Grid, Slider, Typography} from "@material-ui/core";
-import {ZoomIn} from "@material-ui/icons";
+import {Grid, Slider, Typography} from "@mui/material";
+import {ZoomIn} from "@mui/icons-material";
 import React, {useContext, useState} from "react";
 import {CytoscapeContext} from "./GraphControlPanel";
 

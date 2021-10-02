@@ -1,4 +1,4 @@
-import {Checkbox, Divider, FormControlLabel, Typography} from "@material-ui/core";
+import {Checkbox, Divider, FormControlLabel, Typography} from "@mui/material";
 import SimulCheckList from "./SimulCheckList";
 import React from "react";
 import {useAppDispatch, useAppSelector} from "../../../../shared/hooks";

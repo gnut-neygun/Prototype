@@ -1,13 +1,15 @@
 import React from 'react';
 import clsx from 'clsx';
-import {createStyles, makeStyles, Theme, useTheme} from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import {Fab, Typography} from "@material-ui/core";
+import {Theme, useTheme} from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import {Fab, Typography} from "@mui/material";
 import DataSourceChooser from "./DataSourceChooser";
 import {FilePicker} from "./FilePicker";
 import {ResizeableSidebar} from "./ResizeableSidebar";
@@ -93,36 +95,34 @@ export default function PersistentDrawerLeft() {
         setOpen(false);
     };
 
-    return (
-        <>
-            <CssBaseline/>
-            <Fab className={clsx(classes.menuButton, open && classes.hide)} color="secondary" aria-label="add"
-                 classes={{
-                     root: classes.fixedPosition
-                 }}
-                 onClick={handleDrawerOpen}>
-                <MenuIcon/>
-            </Fab>
-            <ResizeableSidebar
-                className={classes.drawer}
-                variant="persistent"
-                anchor="left"
-                open={open}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}>
-                <div className={classes.drawerHeader}>
-                    <Typography variant={"h5"}>Data Panel</Typography>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
-                    </IconButton>
-                </div>
-                <Divider/>
-                <DataSourceChooser/>
-                <FilePicker/>
-                <br/>
-                <NavigationMenu/>
-            </ResizeableSidebar>
-        </>
-    );
+    return <>
+        <CssBaseline/>
+        <Fab className={clsx(classes.menuButton, open && classes.hide)} color="secondary" aria-label="add"
+             classes={{
+                 root: classes.fixedPosition
+             }}
+             onClick={handleDrawerOpen}>
+            <MenuIcon/>
+        </Fab>
+        <ResizeableSidebar
+            className={classes.drawer}
+            variant="persistent"
+            anchor="left"
+            open={open}
+            classes={{
+                paper: classes.drawerPaper,
+            }}>
+            <div className={classes.drawerHeader}>
+                <Typography variant={"h5"}>Data Panel</Typography>
+                <IconButton onClick={handleDrawerClose} size="large">
+                    {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
+                </IconButton>
+            </div>
+            <Divider/>
+            <DataSourceChooser/>
+            <FilePicker/>
+            <br/>
+            <NavigationMenu/>
+        </ResizeableSidebar>
+    </>;
 }

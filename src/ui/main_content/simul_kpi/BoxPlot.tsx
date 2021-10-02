@@ -1,9 +1,11 @@
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles} from "@material-ui/core";
+import {Theme} from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
 import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {simulKPIStore} from "../../../shared/store/SimulKPIStore";
+import {autorun} from "mobx";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -15,17 +17,17 @@ const useStyles = makeStyles((theme: Theme) =>
         }
     )
 );
-
+let chart: Chart | null = null;
 export const BoxPlot= observer(() => {
     console.log("Rerendering KPI Graphs");
     const classes = useStyles();
-    useEffect(() => {
+    useEffect(() => autorun(() =>{
         const ctx = document.getElementById('boxplotChart') as HTMLCanvasElement;
         const data = {
             datasets: simulKPIStore.boxPlotDataSets,
         };
         const config = {
-            type: 'scatter',
+            type: 'scatter' as const,
             data: data,
             options: {
                 plugins: {
@@ -42,13 +44,13 @@ export const BoxPlot= observer(() => {
                 }
             },
         };
-        // @ts-ignore
-        const myChart = new Chart(ctx, config);
-        return () => {
+        if (chart !== null) {
             console.log("Freeing up reference to old charts");
-            myChart.destroy();
-        };
-    }, [simulKPIStore.boxPlotDataSets]);
+            chart.destroy();
+        }
+        // @ts-ignore
+        chart = new Chart(ctx, config);
+    }), []);
     return <>
         <div className={classes.chartContainer} >
             <canvas id="boxplotChart">No canvas</canvas>
