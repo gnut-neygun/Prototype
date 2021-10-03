@@ -1,7 +1,7 @@
 import {action, makeObservable, observable, runInAction,} from "mobx";
 import {FileStore} from "./FileStore";
 import cytoscape, {Core, ElementDefinition, LayoutOptions} from "cytoscape";
-import {layoutOptions} from "../../layout/defaultLayout";
+import {layoutOptions} from "../../ui/main_content/graph/layout/defaultLayout";
 import {defaultGraphStyle} from "../../ui/main_content/graph/GraphDefaultStyle";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
 import {generateRandomColor} from "../../utilities/colorGenerator";
@@ -28,6 +28,25 @@ export class GraphDataStore {
 
     constructor(public fileStore: FileStore) {
         makeObservable(this);
+    }
+
+    public changeZoomLevel(value: number) {
+        this.cytoscapeReference?.zoom(value);
+    }
+
+    public getZoomLevel(): number{
+        return Number(this.cytoscapeReference?.zoom().toFixed(2));
+    }
+
+    public zoomFit() {
+        this.cytoscapeReference?.fit();
+        this.cytoscapeReference?.center();
+    }
+
+    @action
+    public toggleFrequencyLabel() {
+        this.isSimulLabelChecked = !this.isSimulLabelChecked;
+        this.cytoscapeReference?.edges()?.toggleClass('hasLabel', this.isSimulLabelChecked);
     }
 
     @action
@@ -104,5 +123,11 @@ export class GraphDataStore {
             layout: this.layout
         })
         return this.cytoscapeReference;
+    }
+
+    @action
+    setLayout(layoutOptions: LayoutOptions) {
+        this.layout = layoutOptions;
+        this.cytoscapeReference?.layout(layoutOptions).run();
     }
 }

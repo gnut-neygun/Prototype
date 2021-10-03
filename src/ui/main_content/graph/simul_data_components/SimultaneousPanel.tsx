@@ -1,20 +1,17 @@
 import {Checkbox, Divider, FormControlLabel, Typography} from "@mui/material";
 import SimulCheckList from "./SimulCheckList";
 import React from "react";
-import {useAppDispatch, useAppSelector} from "../../../../shared/hooks";
-import {setSimulAction} from "../../../../shared/graphDataSlice";
+import {observer} from "mobx-react-lite";
+import {datasourceStore} from "../../../../shared/store/DatasourceStore";
 
-export function SimultaneousPanel() {
-    const isSimulChecked = useAppSelector(state => state.graphData.isSimulLabelChecked);
-    const dispatch = useAppDispatch();
+export const SimultaneousPanel = observer(() => {
+    const graphStore = datasourceStore.currentFileStore.graphDataStore;
     return <div>
         <FormControlLabel
             control={
                 <Checkbox
-                    checked={isSimulChecked}
-                    onChange={() => {
-                        dispatch(setSimulAction(!isSimulChecked))
-                    }}
+                    checked={graphStore.isSimulLabelChecked}
+                    onChange={graphStore.toggleFrequencyLabel.bind(graphStore)}
                     name="simulLabelCheckbox"
                     color="primary"
                 />
@@ -24,5 +21,5 @@ export function SimultaneousPanel() {
         <Divider/>
         <Typography variant={"button"}>Simultaneous nodes</Typography>
         <SimulCheckList/>
-    </div>
-}
+    </div>;
+});

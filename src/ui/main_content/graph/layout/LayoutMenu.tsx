@@ -5,8 +5,8 @@ import createStyles from '@mui/styles/createStyles';
 import React from "react";
 import DagreLayoutControl from "./DagreLayoutControl";
 import {LayoutOptions} from "cytoscape";
-import {useAppDispatch, useAppSelector} from "../shared/hooks";
-import {graphDataSelector, setLayout} from "../shared/graphDataSlice";
+import {datasourceStore} from "../../../../shared/store/DatasourceStore";
+import {observer} from "mobx-react-lite";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,16 +20,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function LayoutMenu() {
+export const LayoutMenu = observer(() => {
     const classes = useStyles();
-    const currentLayout = useAppSelector(state => graphDataSelector(state).layout)
-    const dispatch = useAppDispatch()
-    const handleChange = (event: SelectChangeEvent<string>) => {
+    const graphStore = datasourceStore.currentFileStore.graphDataStore;
+    const handleChange = (event: SelectChangeEvent) => {
+        const graphStore = datasourceStore.currentFileStore.graphDataStore;
         const newLayoutName = event.target.value
         let layoutOptions: LayoutOptions
         if (newLayoutName === "klay") {
             layoutOptions = {
-                ...currentLayout,
+                ...graphStore.layout,
                 name: newLayoutName,
                 // @ts-ignore
                 nodeDimensionsIncludeLabels: true,
@@ -39,15 +39,15 @@ export function LayoutMenu() {
             };
         } else {
             layoutOptions = {
-                ...currentLayout,
+                ...graphStore.layout,
                 name: newLayoutName
             };
         }
-        dispatch(setLayout(layoutOptions));
+        graphStore.setLayout(layoutOptions);
     };
 
     function renderPanelItem() {
-        if (currentLayout.name === "dagre")
+        if (graphStore.layout.name === "dagre")
             return <DagreLayoutControl/>
         else
             return <></>
@@ -59,7 +59,7 @@ export function LayoutMenu() {
             <Select
                 labelId="demo-simple-select-outlined-label"
                 id="demo-simple-select-outlined"
-                value={currentLayout.name}
+                value={graphStore.layout.name}
                 onChange={handleChange}
                 label="Layout"
             >
@@ -70,4 +70,4 @@ export function LayoutMenu() {
         </FormControl>
         {renderPanelItem()}
     </>
-}
+})

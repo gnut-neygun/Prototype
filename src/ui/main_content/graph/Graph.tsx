@@ -27,6 +27,6 @@ export const Graph = observer(() =>{
     }), [])
     return <div id={styles.graphFlexboxContainer}>
         <div id="cytoscape-container" style={{width: "80%", height: 1000}}></div>
-        {datasourceStore.currentFileStore.graphDataStore.cytoscapeReference !== null && <GraphControlPanel cy={datasourceStore.currentFileStore.graphDataStore.cytoscapeReference}/>}
+        {datasourceStore.currentFileStore.graphDataStore.cytoscapeReference !== null && <GraphControlPanel/>}
     </div>;
 })

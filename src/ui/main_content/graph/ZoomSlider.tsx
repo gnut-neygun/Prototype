@@ -1,14 +1,14 @@
 import {Grid, Slider, Typography} from "@mui/material";
 import {ZoomIn} from "@mui/icons-material";
-import React, {useContext, useState} from "react";
-import {CytoscapeContext} from "./GraphControlPanel";
+import React, {useState} from "react";
+import {datasourceStore} from "../../../shared/store/DatasourceStore";
 
 export default function ZoomSlider() {
-    const cy = useContext(CytoscapeContext)
-    const [zoomState, setZoomState] = useState<number>(Number(cy.zoom().toFixed(2)));
+    const graphStore = datasourceStore.currentFileStore.graphDataStore;
+    const [zoomState, setZoomState] = useState<number>(graphStore.getZoomLevel());
     const handleZoomLevelChange = (event: any, newValue: number | number[]) => {
-        cy.zoom(newValue as number);
-        setZoomState(Number(cy.zoom().toFixed(2)))
+        graphStore.changeZoomLevel(newValue as number);
+        setZoomState(graphStore.getZoomLevel());
     };
     return <>
         <Typography id="zoom-slider" gutterBottom>

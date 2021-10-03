@@ -1,18 +1,14 @@
 import {Button, Checkbox, Divider, FormControlLabel} from "@mui/material";
 import React from "react";
-import {Core} from "cytoscape";
 import {ISCPanel} from "./ISCPanel";
-import {LayoutMenu} from "../../../layout/LayoutMenu";
+import {LayoutMenu} from "./layout/LayoutMenu";
 import ZoomSlider from "./ZoomSlider";
 import {observer} from "mobx-react-lite";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import {runInAction} from "mobx";
 
-
-export const CytoscapeContext = React.createContext<Core>({} as Core);
-
-
-export const GraphControlPanel = observer(({cy}: { cy: Core }) => {
+export const GraphControlPanel = observer(() => {
+    const graphStore = datasourceStore.currentFileStore.graphDataStore;
     const handleBubbleSetCheckbox = () => {
         runInAction(
             () => {
@@ -28,18 +24,11 @@ export const GraphControlPanel = observer(({cy}: { cy: Core }) => {
 
     };
 
-    const handleZoomFit = () => {
-        cy.fit();
-        cy.center();
-    }
-
-    return (
-        <CytoscapeContext.Provider value={cy}>
-            <div id="graph-control-panel" style={{width: "20%"}}>
+    return <div id="graph-control-panel" style={{width: "20%"}}>
                 <LayoutMenu/>
                 <Divider/>
                 <ZoomSlider/>
-                <Button variant={"text"} style={{margin: "10px"}} onClick={handleZoomFit}>Zoom fit and center</Button>
+                <Button variant={"text"} style={{margin: "10px"}} onClick={graphStore.zoomFit.bind(graphStore)}>Zoom fit and center</Button>
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -53,7 +42,4 @@ export const GraphControlPanel = observer(({cy}: { cy: Core }) => {
                 />
                 <ISCPanel/>
             </div>
-        </CytoscapeContext.Provider>
-
-    );
 })

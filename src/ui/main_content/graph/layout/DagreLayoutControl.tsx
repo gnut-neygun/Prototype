@@ -1,20 +1,22 @@
 import {Grid, Slider, Typography} from "@mui/material";
 import {FormatLineSpacing, LineStyle} from "@mui/icons-material";
 import React from "react";
-import {useAppDispatch, useAppSelector} from "../shared/hooks";
-import {graphDataSelector, setLayout} from "../shared/graphDataSlice";
+import {datasourceStore} from "../../../../shared/store/DatasourceStore";
+import {observer} from "mobx-react-lite";
 
-export default function DagreLayoutControl() {
-
-    const dispatch = useAppDispatch();
-    const currentLayout = useAppSelector(state => graphDataSelector(state).layout);
+export default observer(() =>{
+    const currentLayout = datasourceStore.currentFileStore.graphDataStore.layout;
     const handleNodeSpacingChange = (event: any, newValue: number | number[]) => {
+        const graphStore = datasourceStore.currentFileStore.graphDataStore;
+        const currentLayout = datasourceStore.currentFileStore.graphDataStore.layout;
         const myLayoutOptions = {...currentLayout, nodeSep: newValue as number};
-        dispatch(setLayout(myLayoutOptions));
+        graphStore.setLayout(myLayoutOptions);
     };
     const handleRankSpacingChange = (event: any, newValue: number | number[]) => {
+        const graphStore = datasourceStore.currentFileStore.graphDataStore;
+        const currentLayout = datasourceStore.currentFileStore.graphDataStore.layout;
         const myLayoutOptions = {...currentLayout, rankSep: newValue as number};
-        dispatch(setLayout(myLayoutOptions));
+        graphStore.setLayout(myLayoutOptions);
     };
     return <>
         <Typography id="node-spacing-slider" gutterBottom>
@@ -46,4 +48,4 @@ export default function DagreLayoutControl() {
             </Grid>
         </Grid>
     </>
-};
+})

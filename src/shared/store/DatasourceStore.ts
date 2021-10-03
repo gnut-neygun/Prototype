@@ -1,7 +1,7 @@
 import {action, computed, makeObservable, observable, runInAction, trace} from "mobx";
 import {FileStore} from "./FileStore";
 import {PrinterGraphData} from "../PrinterGraphData";
-import {generateGraphDataList} from "../graphDataSlice";
+import {generateGraphDataList} from "../GraphVizDataParser";
 
 class DatasourceStore {
     @observable
