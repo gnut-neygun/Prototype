@@ -99,4 +99,9 @@ export class SimulKPIStore {
             }
         })
     }
+
+    @computed
+    get simultaneousNodes() : string[][]{
+        return Array.from(this.constraint.keys()).map(string => string.split(";"));
+    }
 }

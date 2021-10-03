@@ -1,36 +1,32 @@
 import {Button, Checkbox, Divider, FormControlLabel} from "@mui/material";
-import React, {useEffect} from "react";
+import React from "react";
 import {Core} from "cytoscape";
 import {ISCPanel} from "./ISCPanel";
 import {LayoutMenu} from "../../../layout/LayoutMenu";
 import ZoomSlider from "./ZoomSlider";
-import {useAppDispatch, useAppSelector} from "../../../shared/hooks";
-import {graphDataSelector, reduxActions} from "../../../shared/graphDataSlice";
-import {bubbleSetInstances} from "../../../shared/globalVariables";
+import {observer} from "mobx-react-lite";
+import {datasourceStore} from "../../../shared/store/DatasourceStore";
+import {runInAction} from "mobx";
 
 
 export const CytoscapeContext = React.createContext<Core>({} as Core);
 
 
-export function GraphControlPanel({cy}: { cy: Core }) {
-    const graphProperty = useAppSelector(graphDataSelector);
-    const isSetChecked = useAppSelector(state => state.graphData.isSetViewChecked)
-    const dispatch = useAppDispatch();
-
+export const GraphControlPanel = observer(({cy}: { cy: Core }) => {
     const handleBubbleSetCheckbox = () => {
-        if (isSetChecked) {
-            //the condition is inverted because this indicate changes in checkbox state
-            bubbleSetInstances.clear();
-        } else bubbleSetInstances.refreshBubbleset(graphProperty.selectedSimultaneousNodes)
-        dispatch(reduxActions.setBubbleSetView(!isSetChecked));
+        runInAction(
+            () => {
+                const graphStore = datasourceStore.currentFileStore.graphDataStore;
+                const isSetChecked = datasourceStore.currentFileStore.graphDataStore.isSetChecked
+                if (isSetChecked) {
+                    //the condition is inverted because this indicate changes in checkbox state
+                    graphStore.clearBubbleSet();
+                } else graphStore.refreshBubbleSet()
+                datasourceStore.currentFileStore.graphDataStore.isSetChecked = !isSetChecked;
+            }
+        );
+
     };
-    useEffect(() => {
-        if (isSetChecked)
-            bubbleSetInstances.refreshBubbleset(graphProperty.selectedSimultaneousNodes)
-        else {
-            bubbleSetInstances.clear();
-        }
-    }, [JSON.stringify(graphProperty.selectedSimultaneousNodes)]);
 
     const handleZoomFit = () => {
         cy.fit();
@@ -47,7 +43,7 @@ export function GraphControlPanel({cy}: { cy: Core }) {
                 <FormControlLabel
                     control={
                         <Checkbox
-                            checked={isSetChecked}
+                            checked={datasourceStore.currentFileStore.graphDataStore.isSetChecked}
                             onChange={handleBubbleSetCheckbox}
                             name="bubbleSetCheckbox"
                             color="primary"
@@ -60,4 +56,4 @@ export function GraphControlPanel({cy}: { cy: Core }) {
         </CytoscapeContext.Provider>
 
     );
-}
+})

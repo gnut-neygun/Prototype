@@ -7,10 +7,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
-import {Set} from "typescript-collections";
-import cloneDeep from 'lodash.clonedeep';
-import {useAppDispatch, useAppSelector} from "../../../../shared/hooks";
-import {graphDataSelector, reduxActions} from "../../../../shared/graphDataSlice";
+import {observer} from "mobx-react-lite";
+import {datasourceStore} from "../../../../shared/store/DatasourceStore";
+import {runInAction} from "mobx";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,30 +21,24 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function SimulCheckList() {
+export default observer(() =>{
     const classes = useStyles();
-    const graphData = useAppSelector(graphDataSelector);
-    const dispatch = useAppDispatch();
+    const graphData = datasourceStore.currentFileStore.graphDataStore;
     const handleToggle = (value: string[]) => () => {
-        const selectedNodes = new Set<string[]>();
-        graphData.selectedSimultaneousNodes.forEach(nodeName => selectedNodes.add(nodeName));
-        const isAlreadyChoosen = selectedNodes.contains(value);
-        const clonedState = cloneDeep(selectedNodes);
-        if (isAlreadyChoosen) {
-            clonedState.remove(value);
-            dispatch(reduxActions.setSelectedSimultaneousNodes(clonedState.toArray()));
-        } else {
-            clonedState.add(value);
-            dispatch(reduxActions.setSelectedSimultaneousNodes(clonedState.toArray()));
-        }
+        runInAction(() => {
+            const graphData = datasourceStore.currentFileStore.graphDataStore;
+            const isAlreadyChoosen = graphData.hasSimultaneousNode(value);
+            if (isAlreadyChoosen) {
+                graphData.removeSimultaneousNode(value);
+            } else {
+                graphData.addSimultaneousNode(value);
+            }
+        });
     };
-
-    const selectedNodes = new Set<string[]>();
-    graphData.selectedSimultaneousNodes.forEach(nodeName => selectedNodes.add(nodeName));
 
     return (
         <List className={classes.root}>
-            {graphData.simultaneousNodes.map((nodeNameArray) => {
+            {datasourceStore.currentFileStore.simulKPIStore.simultaneousNodes.map((nodeNameArray) => {
                 const labelId = `checkbox-list-label-${nodeNameArray}`;
 
                 return (
@@ -53,7 +46,7 @@ export default function SimulCheckList() {
                         <ListItemIcon>
                             <Checkbox
                                 edge="start"
-                                checked={selectedNodes.contains(nodeNameArray)}
+                                checked={graphData.hasSimultaneousNode(nodeNameArray)}
                                 tabIndex={-1}
                                 disableRipple
                                 inputProps={{'aria-labelledby': labelId}}
@@ -65,4 +58,4 @@ export default function SimulCheckList() {
             })}
         </List>
     );
-}
+})

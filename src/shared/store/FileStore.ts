@@ -2,6 +2,7 @@ import {action, makeObservable, observable, runInAction} from "mobx";
 import {EventLog} from "../../algorithm/parser/XESModels";
 import {parseXesFromStrings} from "../../algorithm/parser/XESParser";
 import {SimulKPIStore} from "./SimulKPIStore";
+import {GraphDataStore} from "./GraphDataStore";
 
 export class FileStore {
 
@@ -12,11 +13,14 @@ export class FileStore {
     @observable
     lifecycleOption: string[] = ["start"]
 
-    simulKPIStore:SimulKPIStore
+    simulKPIStore: SimulKPIStore
+    graphDataStore: GraphDataStore
 
     constructor() {
         makeObservable(this);
-        this.simulKPIStore = new SimulKPIStore(this); //Make sure this is called after makeObservable
+        //Make sure these are called after makeObservable
+        this.simulKPIStore = new SimulKPIStore(this);
+        this.graphDataStore = new GraphDataStore(this);
     }
 
     @action

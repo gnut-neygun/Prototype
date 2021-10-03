@@ -1,5 +1,7 @@
-import {action, computed, makeObservable, observable, trace} from "mobx";
+import {action, computed, makeObservable, observable, runInAction, trace} from "mobx";
 import {FileStore} from "./FileStore";
+import {PrinterGraphData} from "../PrinterGraphData";
+import {generateGraphDataList} from "../graphDataSlice";
 
 class DatasourceStore {
     @observable
@@ -9,6 +11,10 @@ class DatasourceStore {
     constructor() {
         makeObservable(this)
         this.fileStoreMap.set("printer", new FileStore());
+        runInAction(() => {
+            this.currentFileStore.graphDataStore.elements = generateGraphDataList(PrinterGraphData)
+            this.currentFileStore.graphDataStore.setSelectedSimultaneousNodes([["deliver bill", "deliver poster", "deliver flyer"]])
+        });
     }
 
     @computed
