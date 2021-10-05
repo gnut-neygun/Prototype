@@ -4,8 +4,6 @@ import {Theme} from "@mui/material/styles";
 import makeStyles from '@mui/styles/makeStyles';
 import React, {useRef} from "react";
 import {Delete} from "@mui/icons-material";
-import {GraphType} from "../../shared/server_api/types";
-import {requestHeuristicMiner} from "../../shared/server_api/api";
 import {observer} from "mobx-react-lite";
 import {datasourceStore} from "../../shared/store/DatasourceStore";
 
@@ -34,19 +32,7 @@ export const FilePicker= observer(() => {
 
     async function handleSubmit() {
         await fileStore.updateMergedLog()
-        const fileList = uploadButtonRef?.current?.files
-        if (fileList === null || fileList === undefined)
-            return;
-        else {
-            for (const file of fileList) {
-                const fileContent = await file.text()
-                try {
-                    const response = await requestHeuristicMiner(GraphType.heuristic_net, fileContent);
-                } catch (e){
-                    console.log(e);
-                }
-            }
-        }
+        await fileStore.requestGvizData();
     }
 
     return (

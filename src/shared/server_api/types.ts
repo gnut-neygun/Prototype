@@ -1,10 +1,10 @@
 export interface ServerResponse {
-
+    data: string;
 }
 
 export interface ClientMessage {
     graph_type: GraphType,
-    data: string
+    data: string[]
 }
 
 export enum GraphType {

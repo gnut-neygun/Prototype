@@ -1,5 +1,5 @@
 import axios from "axios";
-import {GraphType, ServerResponse} from "./types";
+import {ClientMessage, GraphType, ServerResponse} from "./types";
 
 const {REACT_APP_SERVER_ENDPOINT} = process.env
 const myAxios = axios.create({
@@ -7,9 +7,13 @@ const myAxios = axios.create({
     timeout: 10_000,
 });
 
-export async function requestHeuristicMiner(graphType: GraphType, xesString: string) {
-    return myAxios.post<ServerResponse>("/heuristic_miner", {
-        graph_type: graphType, data: xesString
-    }).catch(e => {
+export async function requestHeuristicMiner(type: GraphType = GraphType.heuristic_net, ...xesStrings: string[]) {
+    const data : ClientMessage = {
+        graph_type: GraphType.heuristic_net,
+        data: xesStrings
+    }
+    const response= await myAxios.post<ServerResponse>("/heuristic_miner", data).catch(e => {
+        throw e;
     });
+    return response;
 }

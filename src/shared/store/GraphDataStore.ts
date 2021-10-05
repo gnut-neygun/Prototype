@@ -26,8 +26,17 @@ export class GraphDataStore {
     @observable
     bubbleSetPluginInstance: BubbleSetsPlugin | null = null;
 
+    private cytoscapeContainer: HTMLElement | null = null;
+
     constructor(public fileStore: FileStore) {
         makeObservable(this);
+    }
+
+    @action
+    public setElements(elements: ElementDefinition[]) {
+        this.elements = elements;
+        //refresh cytoscape reference
+        this.getCytoscapeReference(this.cytoscapeContainer!!);
     }
 
     public changeZoomLevel(value: number) {
@@ -114,6 +123,7 @@ export class GraphDataStore {
 
     @action
     getCytoscapeReference(container: HTMLElement) {
+        this.cytoscapeContainer = container;
         if (this.cytoscapeReference!==null)
             this.cytoscapeReference.destroy();
         this.cytoscapeReference= cytoscape({
