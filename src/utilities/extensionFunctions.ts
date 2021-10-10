@@ -4,6 +4,9 @@ declare global {
     }
 
     interface Map<K, V> {
+        /**
+         * Set a value on a key of a the map. If the key is not present, set to an array and push it. If the array at the specified key is present, push the value into the array.
+         */
         pushIntoKey(key: K, value: V extends Array<infer T> ? T : never): void
     }
 }
