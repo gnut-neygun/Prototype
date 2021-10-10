@@ -1,15 +1,15 @@
 import {parseXESFromString, parseXesFromStrings} from "../parser/XESParser";
 import {discoverSimultaneousIsc, fastDiscoverSimultaneousIsc} from "../SimulConstraint";
 import {readFile} from "./parser.spec";
-import {SimulKPIStore} from "../../shared/store/SimulKPIStore";
-import {fileStore} from "../../shared/store/FileStore";
+import {FileStore} from "../../shared/store/FileStore";
 
 
 const bill = readFile("post", "billinstances.xes");
 const flyer = readFile("post", "flyerinstances.xes");
 const post = readFile("post", "posterinstances.xes");
 const mergedLog = parseXesFromStrings(bill, flyer, post);
-const kpiStore = new SimulKPIStore();
+const fileStore = new FileStore();
+const kpiStore = fileStore.simulKPIStore;
 fileStore.setMergedLog(mergedLog);
 
 it('fast discover ISC', () => {

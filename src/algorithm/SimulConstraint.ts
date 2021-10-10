@@ -30,18 +30,18 @@ export function discoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeconds:
     function filterEventLabels(): string[] {
         const ret: string[] = [];
         const simultaneousEventOccurences = {...absEventOccurences};
-        let hit: boolean = false;
+        let found: boolean = false;
         for (let [count, event] of events.entries()) {
             if (count < events.length - 1) {
                 for (let j = count + 1; j < events.length; j++) {
                     if (timeDifferences(events[j], event) <= timeDeltaInSeconds * 1000) {
                         if (events[j].trace !== event.trace) {
-                            hit = true;
+                            found = true;
                             break;
                         }
                     } else {
-                        if (hit) {
-                            hit = false;
+                        if (found) {
+                            found = false;
                         } else {
                             simultaneousEventOccurences[event.name()] -= 1;
                         }
@@ -61,35 +61,37 @@ export function discoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeconds:
     }
 
     const filteredEventLabels = filterEventLabels()
-    const simActivities: { [key: string]: Array<XesEvent[]> } = {}
+    const simActivities: Map<string, Array<XesEvent[]>> = new Map()
     for (const [i, event] of events.entries()) {
         if (!filteredEventLabels.includes(event.name()))
             continue
-        const x = [event]
+        const cluster = [event]
         for (let j = i + 1; j < events.length; j++) {
             if (!filteredEventLabels.includes(events[j].name()))
                 continue
             if (timeDifferences(events[j], event) <= timeDeltaInSeconds * 1000) {
                 if (events[j].trace !== event.trace) {
-                    x.push(events[j]);
+                    cluster.push(events[j]);
                 }
             } else {
                 break;
             }
         }
-        if (x.length > 1) {
-            const foo = new Set(x.map(event => event.name()));
-            const key = [...foo].join(";")
-            if (simActivities[key] === undefined)
-                simActivities[key] = []
-            simActivities[key].push(x);
+        if (cluster.length > 1) {
+            const eventNameClusterSet = new Set(cluster.map(event => event.name()));
+            const key = [...eventNameClusterSet].join(";")
+            if (simActivities.get(key) === undefined)
+                simActivities.set(key, []);
+            else {
+                simActivities.get(key)?.push(cluster);
+            }
         }
     }
 
     return simActivities
 }
 
-export function fastDiscoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeconds: number = 0.1, relativeEventOccurence: number = 0.95, lifecycle: string[] = ["start"]) {
+export function fastDiscoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeconds: number = 10, relativeEventOccurence: number = 0.6, lifecycle: string[] = ["start"]) {
     const events: XesEvent[] = []
     const absEventOccurences: { [key: string]: number } = {}
     for (let trace of mergedLog) {
@@ -109,18 +111,18 @@ export function fastDiscoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeco
     function filterEventLabels(): string[] {
         const ret: string[] = [];
         const simultaneousEventOccurences = {...absEventOccurences};
-        let hit: boolean = false;
+        let found: boolean = false;
         for (let [count, event] of events.entries()) {
             if (count < events.length - 1) {
                 for (let j = count + 1; j < events.length; j++) {
                     if (timeDifferences(events[j], event) <= timeDeltaInSeconds * 1000) {
                         if (events[j].trace !== event.trace) {
-                            hit = true;
+                            found = true;
                             break;
                         }
                     } else {
-                        if (hit) {
-                            hit = false;
+                        if (found) {
+                            found = false;
                         } else {
                             simultaneousEventOccurences[event.name()] -= 1;
                         }
@@ -155,8 +157,8 @@ export function fastDiscoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeco
                 }
             }
             if (cluster.length > 1 && hasChanged) {
-                const foo = new Set(cluster.map(event => event.name()));
-                const key = [...foo].join(";")
+                const eventNameClusterSet = new Set(cluster.map(event => event.name()));
+                const key = [...eventNameClusterSet].join(";")
                 if (simActivities.get(key) === undefined)
                     simActivities.set(key, []);
                 else {

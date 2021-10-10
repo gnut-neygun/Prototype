@@ -1,7 +1,7 @@
 import axios from "axios";
 import {ClientMessage, GraphType, ServerResponse} from "./types";
 
-const {REACT_APP_SERVER_ENDPOINT} = process.env
+const REACT_APP_SERVER_ENDPOINT = "localhost"
 const myAxios = axios.create({
     baseURL: REACT_APP_SERVER_ENDPOINT,
     timeout: 10_000,

@@ -12,31 +12,31 @@ import {observer} from "mobx-react-lite";
 const theme = unstable_createMuiStrictModeTheme();
 
 export const App= observer(() =>{
-    return (
-        <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
-                <BrowserRouter>
-                    <div className="App">
-                        <PersistentDrawerLeft/>
-                        <Switch>
-                            <Route exact path="/">
-                                <Graph/>
-                            </Route>
-                            <Route exact path="/simul/events">
-                                <JitterPlot/>
-                            </Route>
-                            <Route exact path="/execution">
-                                <ExecutionKPI/>
-                            </Route>
-                            <Route exact path="/simul/boxplot">
-                                <BoxPlot/>
-                            </Route>
-                        </Switch>
-                    </div>
-                </BrowserRouter>
-            </ThemeProvider>
-        </StyledEngineProvider>
-    );
+  return (
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <div className="App">
+              <PersistentDrawerLeft/>
+              <Switch>
+                <Route exact path="/">
+                  <Graph/>
+                </Route>
+                <Route exact path="/simul/events">
+                  <JitterPlot/>
+                </Route>
+                <Route exact path="/execution">
+                  <ExecutionKPI/>
+                </Route>
+                <Route exact path="/simul/boxplot">
+                  <BoxPlot/>
+                </Route>
+              </Switch>
+            </div>
+          </BrowserRouter>
+        </ThemeProvider>
+      </StyledEngineProvider>
+  );
 })
 
 export default App;
