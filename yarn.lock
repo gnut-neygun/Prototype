@@ -1714,6 +1714,11 @@ chart.js@^3.5.1:
   resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.5.1.tgz#73e24d23a4134a70ccdb5e79a917f156b6f3644a"
   integrity sha512-m5kzt72I1WQ9LILwQC4syla/LD/N413RYv2Dx2nnTkRS9iv/ey1xLTt0DnPc/eWV4zI+BgEgDYBIzbQhZHc/PQ==
 
+chartjs-chart-matrix@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/chartjs-chart-matrix/-/chartjs-chart-matrix-1.1.0.tgz#766aed36eb938e6c48d023e50ca6e41c78e66b86"
+  integrity sha512-u/4zYtvwhH5C4Q8eXBvB8GlIagNNZj+Wg7daEEbwq2/rkdgxlN0IMrSdds4BWZM5B3CsNq7h+jCe9Sv1LLRZ0A==
+
 ci-info@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"

@@ -1,8 +1,8 @@
-import {EventLog, XesEvent} from "./parser/XESModels";
+import {EventLog, Trace, XesEvent} from "./parser/XESModels";
 import "../utilities/extensionFunctions"
 
-type EventPair = [XesEvent, XesEvent, number]
-type PairDict = Map<string, EventPair[]>
+export type EventPair = [XesEvent, XesEvent, number]
+export type PairDict = Map<string, EventPair[]>
 
 export function createPairs(mergedLog: EventLog) {
     const begin_end: PairDict = new Map<string, EventPair[]>()
@@ -65,4 +65,13 @@ export function detectRegularities<Occurence extends number | undefined, Time ex
         }
         return result as any;
     }
+}
+
+export function detectExecutionConstraint(mergedLog: EventLog, relativeOccurence: number, groupFunction: (trace: Trace) => string) {
+    const result: Map<string, Trace[]> = new Map();
+    mergedLog.reduce((currentMap, trace) => {
+        currentMap.pushIntoKey(groupFunction(trace), trace);
+        return currentMap;
+    }, result);
+    return result;
 }

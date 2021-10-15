@@ -15,6 +15,7 @@
     "@sgratzl/chartjs-chart-boxplot": "^3.5.1",
     "axios": "^0.21.1",
     "chart.js": "^3.5.1",
+    "chartjs-chart-matrix": "^1.1.0",
     "cytoscape": "^3.19.0",
     "cytoscape-bubblesets": "^3.0.0",
     "cytoscape-cose-bilkent": "^4.1.0",

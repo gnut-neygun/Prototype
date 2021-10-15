@@ -9,11 +9,13 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {Fab, Typography} from "@mui/material";
+import {Button, Checkbox, Fab, FormControlLabel, FormGroup, Typography} from "@mui/material";
 import DataSourceChooser from "./DataSourceChooser";
 import {FilePicker} from "./FilePicker";
 import {ResizeableSidebar} from "./ResizeableSidebar";
 import {NavigationMenu} from "./NavigationMenu";
+import {datasourceStore} from "../../shared/store/DatasourceStore";
+import {observer} from "mobx-react-lite";
 
 const drawerWidth = 240;
 
@@ -82,10 +84,11 @@ const useStyles = (isOpen: boolean) => makeStyles((theme: Theme) =>
     }),
 );
 
-export default function PersistentDrawerLeft() {
+export const DataPanel = observer(() => {
     const [open, setOpen] = React.useState(false);
     const classes = useStyles(open)();
     const theme = useTheme();
+    const fileStore = datasourceStore.currentFileStore;
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -95,6 +98,13 @@ export default function PersistentDrawerLeft() {
         setOpen(false);
     };
 
+    function handleMergeCheckboxChange(event: any, value: boolean){
+        datasourceStore.currentFileStore.setMergeStrategy(value);
+    }
+    async function handleSubmit() {
+        await fileStore.updateParsedLog()
+        await fileStore.requestGvizData();
+    }
     return <>
         <CssBaseline/>
         <Fab className={clsx(classes.menuButton, open && classes.hide)} color="secondary" aria-label="add"
@@ -121,8 +131,12 @@ export default function PersistentDrawerLeft() {
             <Divider/>
             <DataSourceChooser/>
             <FilePicker/>
+            <FormGroup>
+                <FormControlLabel control={<Checkbox checked={fileStore.isMergeLog} onChange={handleMergeCheckboxChange}/>} label="Auto merge log" />
+            </FormGroup>
+            <Button variant="contained" onClick={handleSubmit}>Submit</Button>
             <br/>
             <NavigationMenu/>
         </ResizeableSidebar>
     </>;
-}
+})

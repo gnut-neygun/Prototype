@@ -71,6 +71,11 @@ export function NavigationMenu() {
             >
                 <Typography className={classes.heading}>Regularity Constraints</Typography>
             </AccordionSummary>
+            <AccordionDetails>
+                <Typography>
+                    <Link to="/regularity/raw">Regularity raw data</Link>
+                </Typography>
+            </AccordionDetails>
         </Accordion>
     </>
 }

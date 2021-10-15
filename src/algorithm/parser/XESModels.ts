@@ -3,14 +3,7 @@
 export class XesEvent {
     [attribute: string]: any
 
-    readonly #trace: Trace;
-
-    constructor(trace: Trace) {
-        this.#trace = trace;
-    }
-
-    get trace(): Trace {
-        return this.#trace;
+    constructor(public trace: Trace) {
     }
 
     name(): string {
@@ -23,6 +16,10 @@ export class XesEvent {
 
     time(): Date {
         return this["time:timestamp"]
+    }
+
+    resource(): string {
+        return this["org:resource"]
     }
 
     toString(): string {

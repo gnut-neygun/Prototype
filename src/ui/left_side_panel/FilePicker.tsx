@@ -30,11 +30,6 @@ export const FilePicker= observer(() => {
         }
     };
 
-    async function handleSubmit() {
-        await fileStore.updateMergedLog()
-        await fileStore.requestGvizData();
-    }
-
     return (
         <Container>
             <Button
@@ -70,7 +65,6 @@ export const FilePicker= observer(() => {
                     }
                 </List>
             </div>
-            <Button variant="outlined" onClick={handleSubmit}>Submit</Button>
         </Container>
     );
 })
