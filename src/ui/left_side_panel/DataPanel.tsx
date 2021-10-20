@@ -103,7 +103,6 @@ export const DataPanel = observer(() => {
     }
     async function handleSubmit() {
         await fileStore.updateParsedLog()
-        await fileStore.requestGvizData();
     }
     return <>
         <CssBaseline/>

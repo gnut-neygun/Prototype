@@ -1,4 +1,4 @@
-import {action, entries, IReactionDisposer, makeObservable, observable, reaction} from "mobx";
+import {action, IReactionDisposer, makeObservable, observable, reaction, runInAction} from "mobx";
 import {FileStore} from "./FileStore";
 import {createPairs, detectRegularities, PairDict} from "../../algorithm/ContrainedExecution";
 
@@ -10,8 +10,6 @@ export class RegularityKPIStore {
     @observable
     constraint: ReturnType<typeof detectRegularities> = new Map()
     @observable
-    colorHue: number=30
-    @observable
     relativeEventOccurence: number | undefined =0.95
     @observable
     timeDeltaInMilis: number | undefined = 600_000
@@ -19,7 +17,10 @@ export class RegularityKPIStore {
     constructor(private fileStore: FileStore) {
         makeObservable(this)
         this.dispose=reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInMilis] as const, ([mergedLog, relativeOccurence]) => {
-            this.pairs = createPairs(mergedLog);
+            runInAction(() => {
+                this.pairs = createPairs(mergedLog)
+                this.currentPair = this.pairs[1]
+            });
             this.updateConstraint();
         })
     }
@@ -29,6 +30,5 @@ export class RegularityKPIStore {
     @action
     updateConstraint() {
         this.constraint = detectRegularities(this.currentPair, this.relativeEventOccurence, this.timeDeltaInMilis);
-        console.log(entries(this.constraint));
     }
 }

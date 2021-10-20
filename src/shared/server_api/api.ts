@@ -1,16 +1,30 @@
 import axios from "axios";
-import {ClientMessage, GraphType, ServerResponse} from "./types";
 
-const REACT_APP_SERVER_ENDPOINT = "localhost"
+const REACT_APP_SERVER_ENDPOINT = "http://localhost:5000/"
 const myAxios = axios.create({
     baseURL: REACT_APP_SERVER_ENDPOINT,
     timeout: 10_000,
 });
 
-export async function requestHeuristicMiner(type: GraphType = GraphType.heuristic_net, ...xesStrings: string[]) {
+export interface ServerResponse {
+    content: string,
+}
+
+export interface ClientMessage {
+    graph_type: GraphType,
+    data: string
+}
+
+export enum GraphType {
+    heuristic_net = "heuristic_net",
+    petri_net = "petri_net",
+    alpha_miner = "alpha_miner"
+}
+
+export async function requestHeuristicMiner(type: GraphType = GraphType.heuristic_net, xesString: string) {
     const data : ClientMessage = {
         graph_type: GraphType.heuristic_net,
-        data: xesStrings
+        data: xesString
     }
     const response= await myAxios.post<ServerResponse>("/heuristic_miner", data).catch(e => {
         throw e;

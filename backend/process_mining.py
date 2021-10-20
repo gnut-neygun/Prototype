@@ -7,6 +7,8 @@ from pm4py.algo.filtering.log.attributes import attributes_filter
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 
+from backend.log_filter import filter_lifecycle_transition
+
 
 def inductive_miner_with_petri_net(log):
     inductive_petri_net, initial_marking, final_marking = inductive_miner.apply(log)
@@ -19,7 +21,6 @@ def inductive_miner_with_heuristic_net(log, mineRelative: float = 0.3):
     heu_net = heuristics_miner.apply_heu(log, parameters={
         heuristics_miner.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH: mineRelative,
         heuristics_miner.Variants.CLASSIC.value.Parameters.MIN_ACT_COUNT: 100})
-    # gviz = hn_visualizer.apply(heu_net)
     # hn_visualizer.view(gviz)
     return heu_net
 
@@ -31,7 +32,7 @@ if __name__=="__main__":
     # log = xes_importer.apply(os.path.join("data", "manufacturing", "MT45AuxOn.xes"))
     log = xes_importer.apply(os.path.join("data", "post", "billinstances.xes"))
     # print(log.classifiers)
-    filtered_log = log
+    filtered_log = filter_lifecycle_transition(log, ["start"])
     activities = attributes_filter.get_attribute_values(filtered_log, "lifecycle:transition")
     print(activities)
 

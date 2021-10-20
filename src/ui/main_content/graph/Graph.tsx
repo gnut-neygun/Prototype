@@ -26,7 +26,7 @@ export const Graph = observer(() =>{
             graphStore.refreshBubbleSet();
     }), [])
     return <div id={styles.graphFlexboxContainer}>
-        <div id="cytoscape-container" style={{width: "80%", height: 1000}}></div>
+        <div id="cytoscape-container" style={{width: "80%", height: "100vh"}}></div>
         {datasourceStore.currentFileStore.graphDataStore.cytoscapeReference !== null && <GraphControlPanel/>}
     </div>;
 })

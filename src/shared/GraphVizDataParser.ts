@@ -31,3 +31,31 @@ export function generateGraphDataList(inputData: string): ElementDefinition[] {
     }
     return generatedElementList;
 }
+
+export type GraphGenerationInput = {
+    name: string,
+    content: string
+}
+export function generateGraph(inputData: GraphGenerationInput[]): ElementDefinition[] {
+    debugger;
+    const generatedElementList: ElementDefinition[] = [];
+    for (let input of inputData) {
+        //Generate a cluster for each file.
+        generatedElementList.push({data: {id: input.name}})
+        const dfgMatrix = JSON.parse(input.content)
+        for (let activity of Object.keys(dfgMatrix)) {
+            const myNode = {
+                data: {id: activity, parent: input.name}
+            }
+            generatedElementList.push(myNode);
+            for (let outVertex of Object.keys(dfgMatrix[activity])) {
+                if (outVertex===activity)
+                    continue;
+                generatedElementList.push({
+                    data: {id: `${activity}-${outVertex}`, source: activity, target: outVertex, label: dfgMatrix[activity][outVertex]}
+                })
+            }
+        }
+    }
+    return generatedElementList;
+}

@@ -1,10 +1,11 @@
-import {action, makeObservable, observable, runInAction,} from "mobx";
+import {action, IReactionDisposer, makeObservable, observable, reaction, runInAction,} from "mobx";
 import {FileStore} from "./FileStore";
 import cytoscape, {Core, ElementDefinition, LayoutOptions} from "cytoscape";
 import {layoutOptions} from "../../ui/main_content/graph/layout/defaultLayout";
 import {defaultGraphStyle} from "../../ui/main_content/graph/GraphDefaultStyle";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
 import {generateRandomColor} from "../../utilities/colorGenerator";
+import {generateGraph} from "../GraphVizDataParser";
 
 export class GraphDataStore {
     @observable
@@ -27,9 +28,12 @@ export class GraphDataStore {
     bubbleSetPluginInstance: BubbleSetsPlugin | null = null;
 
     private cytoscapeContainer: HTMLElement | null = null;
-
+    private readonly disposer: IReactionDisposer;
     constructor(public fileStore: FileStore) {
         makeObservable(this);
+        this.disposer=reaction(() => [fileStore.contentList] as const, () => {
+            this.setElements(generateGraph(this.fileStore.contentList));
+        })
     }
 
     @action
@@ -132,6 +136,11 @@ export class GraphDataStore {
             style: defaultGraphStyle,
             layout: this.layout
         })
+        // @ts-ignore
+        window.cy = this.cytoscapeReference
+        this.cytoscapeReference.center();
+        this.cytoscapeReference?.edges()?.toggleClass('hasLabel', this.isSimulLabelChecked);
+        this.refreshBubbleSet();
         return this.cytoscapeReference;
     }
 

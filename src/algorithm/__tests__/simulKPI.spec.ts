@@ -10,7 +10,7 @@ const post = readFile("post", "posterinstances.xes");
 const mergedLog = parseXesFromStrings(bill, flyer, post);
 const fileStore = new FileStore();
 const kpiStore = fileStore.simulKPIStore;
-fileStore.setMergedLog(mergedLog);
+fileStore.setParsedLog(mergedLog);
 
 it('fast discover ISC', () => {
     const isc = fastDiscoverSimultaneousIsc(mergedLog);
