@@ -34,6 +34,8 @@ export class GraphDataStore {
     constructor(public fileStore: FileStore) {
         makeObservable(this);
         this.disposer=reaction(() => [fileStore.contentList] as const, () => {
+            if (fileStore.contentList.length===0)
+                return;
             this.setElements(generateGraph(this.fileStore.contentList));
         })
     }

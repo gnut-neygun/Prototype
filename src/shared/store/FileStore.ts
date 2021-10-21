@@ -55,21 +55,29 @@ export class FileStore {
                 for (let file of this.fileList) {
                     const content = await file.text();
                     const response = await requestHeuristicMiner(GraphType.heuristic_net, content);
+                    console.log(response.data);
                     _contentList.push({
                         name: file.name,
-                        content: response.data.content
+                        content: response.data.content,
+                        startActivities: response.data.startActivities,
+                        endActivities: response.data.endActivities,
                     });
                     contentStrings.push(content);
                 }
             } catch (e){
                 console.log(e);
                 this.graphDataStore.setIsLoading(false);
-                return;
+                //Run parsed log anyway
+                for (let file of this.fileList) {
+                    const content = await file.text();
+                    contentStrings.push(content);
+                }
+            } finally {
+                runInAction(() => {
+                    this.parsedLog = parseXesFromStrings(...contentStrings)
+                    this.contentList = _contentList;
+                });
             }
-            runInAction(() => {
-                this.parsedLog = parseXesFromStrings(...contentStrings)
-                this.contentList = _contentList;
-            });
         }
     }
 

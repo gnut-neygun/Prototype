@@ -34,14 +34,19 @@ export function generateGraphDataList(inputData: string): ElementDefinition[] {
 
 export type GraphGenerationInput = {
     name: string,
-    content: string
+    content: string,
+    startActivities: string[],
+    endActivities: string[],
 }
 export function generateGraph(inputData: GraphGenerationInput[]): ElementDefinition[] {
-    debugger;
     const generatedElementList: ElementDefinition[] = [];
     for (let input of inputData) {
         //Generate a cluster for each file.
+        const startName= `start_${input.name}`
+        const endName = `end_${input.name}`
         generatedElementList.push({data: {id: input.name}})
+        generatedElementList.push({data: {id: startName, parent: input.name}})
+        generatedElementList.push({data: {id: endName, parent: input.name}})
         const dfgMatrix = JSON.parse(input.content)
         for (let activity of Object.keys(dfgMatrix)) {
             const myNode = {
@@ -55,6 +60,16 @@ export function generateGraph(inputData: GraphGenerationInput[]): ElementDefinit
                     data: {id: `${activity}-${outVertex}`, source: activity, target: outVertex, label: dfgMatrix[activity][outVertex]}
                 })
             }
+        }
+        for (let startActivitiy of input.startActivities) {
+            generatedElementList.push({
+                data: {id: `${startName}-${startActivitiy}`, source: startName, target: startActivitiy}
+            })
+        }
+        for (let endActivitiy of input.endActivities) {
+            generatedElementList.push({
+                data: {id: `${endActivitiy}-${endName}`, source: endActivitiy, target: endName}
+            })
         }
     }
     return generatedElementList;

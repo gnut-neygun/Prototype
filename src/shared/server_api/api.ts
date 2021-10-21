@@ -8,6 +8,8 @@ const myAxios = axios.create({
 
 export interface ServerResponse {
     content: string,
+    startActivities: string[],
+    endActivities: string[]
 }
 
 export interface ClientMessage {

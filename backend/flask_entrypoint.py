@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -14,6 +15,8 @@ CORS(app)  # Enable CORS for all route
 api = Api(app)
 
 response_format = {
+    'startActivities': fields.List(fields.String),
+    'endActivities': fields.List(fields.String),
     'content': fields.String,
 }
 
@@ -27,6 +30,8 @@ response_format = {
 @app.route('/<string:miner_algo>', methods = ['POST'])
 def post(miner_algo):
     graphData: str = ""
+    startActivities: List[str] = []
+    endActivities: List[str] = []
     json_object = request.get_json(force=True)
     graphType = GraphType[json_object["graph_type"]]
     graphData : str = json_object["data"]
@@ -37,11 +42,13 @@ def post(miner_algo):
             graphData = "petri_net"
         elif graphType is GraphType.heuristic_net:
             graphData = json.dumps(heuNets.dfg_matrix)
+            startActivities = [list(x.keys())[0] for x in heuNets.start_activities]
+            endActivities = [list(x.keys())[0] for x in heuNets.end_activities]
     elif miner_algo == "alpha_miner":
         graphData = "alpha_miner" + json_object["data"]
     else:
         graphData = "undefined"
-    return {"content": graphData}
+    return {"content": graphData, "startActivities": startActivities, "endActivities": endActivities}
 
 if __name__ == '__main__':
     app.run(debug=True)
