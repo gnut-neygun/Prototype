@@ -16,7 +16,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "experimentalDecorators": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "types": ["vite/client", "@emotion/react/types/css-prop"],
   },
   "include": ["./src"]
 }

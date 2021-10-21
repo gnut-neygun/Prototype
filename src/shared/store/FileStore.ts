@@ -21,8 +21,6 @@ export class FileStore {
     contentList: GraphGenerationInput[] = []
     @observable
     isMergeLog: boolean = false;
-    @observable
-    isLoading: boolean = false;
 
     simulKPIStore: SimulKPIStore
     executionKPIStore: ExecutionKPIStore
@@ -45,20 +43,28 @@ export class FileStore {
 
     @action
     async updateParsedLog() {
-        const contentStrings: string[] = [];
-        const _contentList: GraphGenerationInput[] = []; //use this to batch mutation
         if (this.fileList === null) {
             this.parsedLog = [];
+            return;
         } else {
+            this.graphDataStore.setIsLoading(true);
+            const contentStrings: string[] = [];
+            const _contentList: GraphGenerationInput[] = []; //use this to batch mutation
             this.contentList.length=0;
-            for (let file of this.fileList) {
-                const content = await file.text();
-                const response = await requestHeuristicMiner(GraphType.heuristic_net, content);
-                _contentList.push({
-                    name: file.name,
-                    content: response.data.content
-                });
-                contentStrings.push(content);
+            try {
+                for (let file of this.fileList) {
+                    const content = await file.text();
+                    const response = await requestHeuristicMiner(GraphType.heuristic_net, content);
+                    _contentList.push({
+                        name: file.name,
+                        content: response.data.content
+                    });
+                    contentStrings.push(content);
+                }
+            } catch (e){
+                console.log(e);
+                this.graphDataStore.setIsLoading(false);
+                return;
             }
             runInAction(() => {
                 this.parsedLog = parseXesFromStrings(...contentStrings)

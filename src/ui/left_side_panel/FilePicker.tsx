@@ -46,12 +46,14 @@ export const FilePicker= observer(() => {
                     multiple
                 />
             </Button>
-            <div className={classes.demo}>
+            <div >
                 <List>
                     {[...Array(fileStore.fileList?.length ?? 0).keys()].map(index => {
                         const file = fileStore.fileList?.item(index)
                         return (
-                            <ListItem key={file?.name}>
+                            <ListItem key={file?.name} sx={{
+                                marginLeft: '-40px'
+                            }}>
                                 <IconButton aria-label="delete" size="large">
                                     <Delete/>
                                 </IconButton>

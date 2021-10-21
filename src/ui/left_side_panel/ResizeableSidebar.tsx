@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export function ResizeableSidebar(props: React.ComponentProps<typeof Drawer>) {
     const classes = useStyles();
 
-    const [newWidth, setNewWidth] = useState(200)
+    const [newWidth, setNewWidth] = useState(240)
 
     const handleMousemove = (e: MouseEvent) => {
         if (e.buttons === 0)

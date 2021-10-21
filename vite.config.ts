@@ -7,7 +7,8 @@ export default defineConfig({
     babel: {
       parserOpts: {
         plugins: ['decorators-legacy']
-      }
+      },
+      babelrc: true,
     }
-  })]
+  })],
 })

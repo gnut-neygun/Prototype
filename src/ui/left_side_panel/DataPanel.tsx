@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import {Theme, useTheme} from '@mui/material/styles';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -19,7 +18,7 @@ import {observer} from "mobx-react-lite";
 
 const drawerWidth = 240;
 
-const useStyles = (isOpen: boolean) => makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         fixedPosition: {
             position: 'fixed',
@@ -30,32 +29,11 @@ const useStyles = (isOpen: boolean) => makeStyles((theme: Theme) =>
         root: {
             display: 'flex',
         },
-        appBar: {
-            transition: theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-        },
-        appBarShift: {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginLeft: drawerWidth,
-            transition: theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
         menuButton: {
             marginRight: theme.spacing(2),
         },
         hide: {
             display: 'none',
-        },
-        drawer: {
-            flexBasis: isOpen? drawerWidth : 0,
-            flexShrink: 0,
-        },
-        drawerPaper: {
-            width: drawerWidth,
         },
         drawerHeader: {
             display: 'flex',
@@ -86,7 +64,7 @@ const useStyles = (isOpen: boolean) => makeStyles((theme: Theme) =>
 
 export const DataPanel = observer(() => {
     const [open, setOpen] = React.useState(false);
-    const classes = useStyles(open)();
+    const classes = useStyles();
     const theme = useTheme();
     const fileStore = datasourceStore.currentFileStore;
 
@@ -105,7 +83,6 @@ export const DataPanel = observer(() => {
         await fileStore.updateParsedLog()
     }
     return <>
-        <CssBaseline/>
         <Fab className={clsx(classes.menuButton, open && classes.hide)} color="secondary" aria-label="add"
              classes={{
                  root: classes.fixedPosition
@@ -114,13 +91,14 @@ export const DataPanel = observer(() => {
             <MenuIcon/>
         </Fab>
         <ResizeableSidebar
-            className={classes.drawer}
+            sx={{
+                flexBasis: open? drawerWidth : 0,
+                flexShrink: 0,
+            }}
             variant="persistent"
             anchor="left"
             open={open}
-            classes={{
-                paper: classes.drawerPaper,
-            }}>
+            >
             <div className={classes.drawerHeader}>
                 <Typography variant={"h5"}>Data Panel</Typography>
                 <IconButton onClick={handleDrawerClose} size="large">

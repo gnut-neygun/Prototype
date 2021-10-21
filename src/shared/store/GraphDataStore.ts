@@ -26,6 +26,8 @@ export class GraphDataStore {
     bubbleSetInstances: Array<BubbleSetPath> = [];
     @observable
     bubbleSetPluginInstance: BubbleSetsPlugin | null = null;
+    @observable
+    isLoading: boolean = false;
 
     private cytoscapeContainer: HTMLElement | null = null;
     private readonly disposer: IReactionDisposer;
@@ -41,6 +43,12 @@ export class GraphDataStore {
         this.elements = elements;
         //refresh cytoscape reference
         this.getCytoscapeReference(this.cytoscapeContainer!!);
+        this.isLoading = false; //It will be set to true in file store.
+    }
+
+    @action
+    setIsLoading(isLoad: boolean) {
+        this.isLoading = isLoad;
     }
 
     public changeZoomLevel(value: number) {

@@ -26,8 +26,5 @@ export async function requestHeuristicMiner(type: GraphType = GraphType.heuristi
         graph_type: GraphType.heuristic_net,
         data: xesString
     }
-    const response= await myAxios.post<ServerResponse>("/heuristic_miner", data).catch(e => {
-        throw e;
-    });
-    return response;
+    return await myAxios.post<ServerResponse>("/heuristic_miner", data);
 }
