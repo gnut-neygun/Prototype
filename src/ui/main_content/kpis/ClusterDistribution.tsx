@@ -18,34 +18,42 @@ const useStyles = makeStyles((theme: Theme) =>
     )
 );
 let chart: Chart | null = null;
-export const JitterPlot= observer(() => {
+export const ClusterDistribution= observer(() => {
+    console.log("Rerendering KPI Graphs");
     const classes = useStyles();
     useEffect(() => autorun(() =>{
-        const ctx = document.getElementById('chart') as HTMLCanvasElement;
+        const ctx = document.getElementById('boxplotChart') as HTMLCanvasElement;
         const data = {
-            datasets: datasourceStore.currentFileStore.simulKPIStore.jitterPlotData, // full reference for tracking
+            datasets: datasourceStore.currentFileStore.simulKPIStore.clusterDistributionData,
         };
         const config = {
-            type: "scatter" as const,
+            type: 'scatter' as const,
             data: data,
             options: {
-                scales: {
-                    x: {
-                        type: 'linear' as const,
-                        position: 'bottom' as const
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context: any) {
+                                const datetime = new Date(context.parsed.x);
+                                let ret: string=
+                                    `Events num: ${context.parsed.y}, Median date time: ${datetime.toDateString()} at ${datetime.toTimeString()}`
+                                return ret;
+                            }
+                        }
                     }
                 }
-            }
+            },
         };
         if (chart !== null) {
             console.log("Freeing up reference to old charts");
             chart.destroy();
         }
+        // @ts-ignore
         chart = new Chart(ctx, config);
     }), []);
     return <>
         <div className={classes.chartContainer} >
-            <canvas id="chart">No canvas</canvas>
+            <canvas id="boxplotChart">No canvas</canvas>
         </div>
     </>
 })

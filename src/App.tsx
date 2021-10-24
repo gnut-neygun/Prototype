@@ -4,8 +4,8 @@ import {StyledEngineProvider, ThemeProvider, unstable_createMuiStrictModeTheme,}
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {Graph} from "./ui/main_content/graph/Graph";
 import {ExecutionKPI} from "./ui/main_content/kpis/ExecutionKPI";
-import {JitterPlot} from "./ui/main_content/kpis/JitterPlot";
-import {BoxPlot} from "./ui/main_content/kpis/BoxPlot";
+import {EventDistribution} from "./ui/main_content/kpis/EventDistribution";
+import {ClusterDistribution} from "./ui/main_content/kpis/ClusterDistribution";
 import {observer} from "mobx-react-lite";
 import "./utilities/kotlinScopeFunction"
 import {DataPanel} from "./ui/left_side_panel/DataPanel";
@@ -25,13 +25,13 @@ export const App= observer(() =>{
                   <Graph/>
                 </Route>
                 <Route exact path="/simul/events">
-                  <JitterPlot/>
+                  <EventDistribution/>
                 </Route>
                 <Route exact path="/execution">
                   <ExecutionKPI/>
                 </Route>
                 <Route exact path="/simul/boxplot">
-                  <BoxPlot/>
+                  <ClusterDistribution/>
                 </Route>
                 <Route exact path="/regularity/raw">
                   <RegularityKPI/>

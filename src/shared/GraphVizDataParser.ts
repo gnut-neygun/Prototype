@@ -4,6 +4,7 @@
  */
 import {ElementDefinition} from "cytoscape";
 import * as graphlibDot from "graphlib-dot";
+import {ServerResponse} from "./server_api/api";
 
 export function generateGraphDataList(inputData: string): ElementDefinition[] {
     const graph = graphlibDot.read(inputData);
@@ -32,12 +33,10 @@ export function generateGraphDataList(inputData: string): ElementDefinition[] {
     return generatedElementList;
 }
 
-export type GraphGenerationInput = {
+export interface GraphGenerationInput extends ServerResponse {
     name: string,
-    content: string,
-    startActivities: string[],
-    endActivities: string[],
 }
+
 export function generateGraph(inputData: GraphGenerationInput[]): ElementDefinition[] {
     const generatedElementList: ElementDefinition[] = [];
     for (let input of inputData) {

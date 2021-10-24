@@ -31,7 +31,7 @@ const CenterCircularProgress = styled(CircularProgress)`
 export const Graph = observer(() =>{
     useEffect(() => autorun(()=>{
         const graphStore = datasourceStore.currentFileStore.graphDataStore;
-        const cy= graphStore.getCytoscapeReference(document.getElementById("cytoscape-container")!!)
+        const cy= graphStore.initializeCytoscape(document.getElementById("cytoscape-container")!!)
         graphStore.clearBubbleSet();
         cy.edges().toggleClass("hasLabel", true);
         if (graphStore.isSetViewChecked)

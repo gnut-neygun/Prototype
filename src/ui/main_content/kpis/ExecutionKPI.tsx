@@ -1,31 +1,36 @@
-import {Theme} from "@mui/material/styles";
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
 import {useEffect, useState} from "react";
 import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
-import {Slider, Stack, Typography} from "@mui/material";
+import {
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Slider,
+    Stack,
+    Typography
+} from "@mui/material";
 import {Palette} from "@mui/icons-material";
 import {observer} from "mobx-react-lite";
-import {autorun, runInAction} from "mobx";
+import {action, autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
+import styled from "@emotion/styled";
+import EnhancedTable from "../../../shared/XesEventTableComponent";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-            chartContainer: {
-                padding: 10,
-                marginTop: 45,
-                position: "relative",
-                height: "40vh",
-                width: "80vw",
-            }
-        }
-    )
-);
+const ContainerDiv=styled.div`
+                padding: 10px;
+                margin-top: 45px;
+                position: relative;
+                height: 40vh;
+                width: 80vw;
+                display: flex;
+                flex-direction: column;
+`
 let chart: Chart | null = null;
 export const ExecutionKPI = observer(() => {
     const executionKPIStore = datasourceStore.currentFileStore.executionKPIStore
-    const classes = useStyles();
     useEffect(() => autorun(() => {
         const ctx = document.getElementById('heatmap-chart') as HTMLCanvasElement;
         Chart.register(MatrixController, MatrixElement);
@@ -76,25 +81,80 @@ export const ExecutionKPI = observer(() => {
         chart = new Chart(ctx, config);
     }), []);
     const [colorValue, setColorValue] = useState<number>(executionKPIStore.colorHue)
+    const [relValue, setRelValue] = useState<number>(executionKPIStore.relativeEventOccurence)
 
     function handleColorChange(event: any, newValue: number | number[]) {
-        runInAction(() => {
-            executionKPIStore.colorHue = newValue as number;
-        });
         setColorValue(newValue as number);
     }
 
+    function handleOccurenceChange(event: any, newValue: number | number[]) {
+        setRelValue(newValue as number);
+    }
+
     return <>
-        <div className={classes.chartContainer}>
+        <ContainerDiv>
             <canvas id="heatmap-chart">No canvas</canvas>
-        </div>
-        <div style={{marginLeft: 10, padding: 20}}>
+            <EnhancedTable data={datasourceStore.currentFileStore.sortedEventList}/>
+        </ContainerDiv>
+        <div style={{marginLeft: 10, padding: 20, display:"flex", flexDirection: "column", gap: "25px"}}>
             <Stack spacing={2} direction="row" sx={{mb: 1, width: 320, marginTop: 10}} alignItems="center">
                 <Palette/>
                 <Typography>Color</Typography>
                 <Slider aria-label="color" value={colorValue} min={0} max={360} onChange={handleColorChange}
+                        onMouseUp={action(() => {
+                            executionKPIStore.colorHue = colorValue;
+                        })}
                         valueLabelDisplay={"auto"}/>
             </Stack>
+            <Stack spacing={2} direction="row" sx={{mb: 1, width: 320}} alignItems="center">
+                <Palette/>
+                <Typography>Relative occurence</Typography>
+                <Slider aria-label="color" value={relValue} min={0} max={1} step={0.01} onChange={handleOccurenceChange}
+                        onMouseUp={action(() => {
+                            executionKPIStore.relativeEventOccurence = relValue;
+                        })}
+                        valueLabelDisplay={"auto"}/>
+            </Stack>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="per-time">Per time</InputLabel>
+                <Select
+                    labelId="per-time"
+                    id="per-time"
+                    value={executionKPIStore.perTime}
+                    label="Per time"
+                    onChange={action((event: SelectChangeEvent) => {
+                        executionKPIStore.perTime = event.target.value as "day"|"month"|"none";
+                    })}
+                >
+                    <MenuItem key="day" value={"day"}>Day</MenuItem>
+                    <MenuItem key="month" value={"month"}>Month</MenuItem>
+                    <MenuItem key="none" value={"none"}>
+                        <em>None</em>
+                    </MenuItem>
+                </Select>
+                <FormHelperText>Per time</FormHelperText>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="per-activity">Per activity</InputLabel>
+                <Select
+                    labelId="per-activity"
+                    id="per-activity"
+                    value={executionKPIStore.perActivity === "" ? "none": executionKPIStore.perActivity}
+                    label="Per activity"
+                    onChange={action((event: SelectChangeEvent) => {
+                        if (event.target.value === "none") {
+                            executionKPIStore.perActivity=""
+                        }
+                        executionKPIStore.perActivity = event.target.value;
+                    })}
+                >
+                    {Array.from(new Set(datasourceStore.currentFileStore.contentList.map(element => element.activities).flat())).map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}
+                    <MenuItem key="none" value={"none"}>
+                        <em>None</em>
+                    </MenuItem>
+                </Select>
+                <FormHelperText>Per activity</FormHelperText>
+            </FormControl>
         </div>
-    </>
+    </>;
 })

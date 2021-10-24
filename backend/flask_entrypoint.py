@@ -15,6 +15,7 @@ CORS(app)  # Enable CORS for all route
 api = Api(app)
 
 response_format = {
+    'activities': fields.List(fields.String),
     'startActivities': fields.List(fields.String),
     'endActivities': fields.List(fields.String),
     'content': fields.String,
@@ -29,26 +30,27 @@ response_format = {
 @marshal_with(response_format)
 @app.route('/<string:miner_algo>', methods = ['POST'])
 def post(miner_algo):
-    graphData: str = ""
+    content: str = ""
+    activities: List[str] = []
     startActivities: List[str] = []
     endActivities: List[str] = []
     json_object = request.get_json(force=True)
     graphType = GraphType[json_object["graph_type"]]
-    graphData : str = json_object["data"]
-    log=xes_importer.deserialize(graphData)
+    log=xes_importer.deserialize(json_object["data"])
     heuNets= inductive_miner_with_heuristic_net(log)
     if miner_algo == "heuristic_miner":
         if graphType is GraphType.petri_net:
-            graphData = "petri_net"
+            content = "petri_net"
         elif graphType is GraphType.heuristic_net:
-            graphData = json.dumps(heuNets.dfg_matrix)
+            content = json.dumps(heuNets.dfg_matrix)
             startActivities = [list(x.keys())[0] for x in heuNets.start_activities]
             endActivities = [list(x.keys())[0] for x in heuNets.end_activities]
+            activities = heuNets.activities
     elif miner_algo == "alpha_miner":
-        graphData = "alpha_miner" + json_object["data"]
+        content = "alpha_miner" + json_object["data"]
     else:
-        graphData = "undefined"
-    return {"content": graphData, "startActivities": startActivities, "endActivities": endActivities}
+        content = "undefined"
+    return {"content": content, "startActivities": startActivities, "endActivities": endActivities, "activities": activities}
 
 if __name__ == '__main__':
     app.run(debug=True)

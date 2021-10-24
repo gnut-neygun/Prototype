@@ -58,7 +58,7 @@ export class SimulKPIStore {
     }
 
     @computed
-    get jitterPlotData(): ChartJSDataSet {
+    get eventDistributionPlotData(): ChartJSDataSet {
         trace();
         const colors= generateRandomColor(this.absoluteOccurenceMap.size)
         let colorIndex = -1;
@@ -81,7 +81,7 @@ export class SimulKPIStore {
     }
 
     @computed
-    get boxPlotDataSets() {
+    get clusterDistributionData() {
         const colors= generateRandomColor(Array.from(this.constraint.keys()).length)
         let colorIndex = -1;
         return Array.from(this.constraint.entries()).map(entry => {

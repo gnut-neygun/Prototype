@@ -1,5 +1,5 @@
 import {action, computed, makeObservable, observable, runInAction, trace} from "mobx";
-import {EventLog} from "../../algorithm/parser/XESModels";
+import {EventLog, XesEvent} from "../../algorithm/parser/XESModels";
 import {parseXesFromStrings} from "../../algorithm/parser/XESParser";
 import {SimulKPIStore} from "./SimulKPIStore";
 import {GraphDataStore} from "./GraphDataStore";
@@ -61,6 +61,7 @@ export class FileStore {
                         content: response.data.content,
                         startActivities: response.data.startActivities,
                         endActivities: response.data.endActivities,
+                        activities: response.data.activities,
                     });
                     contentStrings.push(content);
                 }
@@ -74,6 +75,7 @@ export class FileStore {
                 }
             } finally {
                 runInAction(() => {
+                    //Setting these both will trigger some initialization in other KPI stores
                     this.parsedLog = parseXesFromStrings(...contentStrings)
                     this.contentList = _contentList;
                 });
@@ -90,6 +92,21 @@ export class FileStore {
             )
         else
             return this.parsedLog;
+    }
+
+    @computed
+    get sortedEventList(): XesEvent[] {
+        trace();
+        const events: XesEvent[] = []
+        for (let trace of this.mergedLog) {
+            for (let event of trace.events) {
+                if (this.lifecycleOption.includes(event.lifecycle())) {
+                    events.push(event)
+                }
+            }
+        }
+        events.sort((event1, event2) => event1.time().valueOf() - event2.time().valueOf())
+        return events;
     }
 
     @action

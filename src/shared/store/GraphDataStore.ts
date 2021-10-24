@@ -44,7 +44,10 @@ export class GraphDataStore {
     public setElements(elements: ElementDefinition[]) {
         this.elements = elements;
         //refresh cytoscape reference
-        this.getCytoscapeReference(this.cytoscapeContainer!!);
+        //Cytoscape container can be null when the user goes directly to a non-graph route.
+        if (this.cytoscapeContainer !== null) {
+            this.initializeCytoscape(this.cytoscapeContainer);
+        }
         this.isLoading = false; //It will be set to true in file store.
     }
 
@@ -136,7 +139,7 @@ export class GraphDataStore {
     }
 
     @action
-    getCytoscapeReference(container: HTMLElement) {
+    initializeCytoscape(container: HTMLElement) {
         this.cytoscapeContainer = container;
         if (this.cytoscapeReference!==null)
             this.cytoscapeReference.destroy();
@@ -150,6 +153,7 @@ export class GraphDataStore {
         window.cy = this.cytoscapeReference
         this.cytoscapeReference.center();
         this.cytoscapeReference?.edges()?.toggleClass('hasLabel', this.isSimulLabelChecked);
+        this.cytoscapeReference.zoomingEnabled(false);
         this.refreshBubbleSet();
         return this.cytoscapeReference;
     }

@@ -6,24 +6,35 @@ export class XesEvent {
     constructor(public trace: Trace) {
     }
 
+    instance(): string {
+        return this["concept:instance"]
+    }
+
     name(): string {
         return this["concept:name"]
     }
 
-    lifecycle(): string {
+    lifecycle(): string | undefined {
         return this["lifecycle:transition"]
     }
 
-    time(): Date {
+    time(): number {
         return this["time:timestamp"]
     }
 
-    resource(): string {
+    timeString(): string {
+        return new Date(this["time:timestamp"]).toISOString()
+    }
+
+    resource(): string | undefined {
         return this["org:resource"]
     }
 
+    /**
+     * Used to generate unique key for XES table, should be unique for each event
+     */
     toString(): string {
-        return `{${this.name()}, ${this.time()}}`
+        return `{${this.instance()},${this.name()},${this.time()},${this.lifecycle()},${this.resource()??""}}`
     }
 }
 
