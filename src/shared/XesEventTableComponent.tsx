@@ -132,12 +132,8 @@ function XesEventTable(props: EnhancedTableProps) {
     );
 }
 
-interface EnhancedTableToolbarProps {
-    numSelected: number;
-}
-
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-    const {numSelected} = props;
+const EnhancedTableToolbar = (props: {numSelected: number, title: string}) => {
+    const {numSelected, title} = props;
 
     return (
         <Toolbar
@@ -166,7 +162,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
                     id="tableTitle"
                     component="div"
                 >
-                    XES Event Table
+                    {title}
                 </Typography>
             )}
             {numSelected > 0 ? (
@@ -186,7 +182,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     );
 };
 
-export default function EnhancedTable(props: { data: XesEvent[] }) {
+export default function EnhancedTable(props: { data: XesEvent[] , title: string}) {
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<string>('time:timestamp');
     const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -231,7 +227,7 @@ export default function EnhancedTable(props: { data: XesEvent[] }) {
     return (
         <Box sx={{width: '100%'}}>
             <Paper sx={{width: '100%', mb: 2}}>
-                <EnhancedTableToolbar numSelected={selected.length}/>
+                <EnhancedTableToolbar numSelected={selected.length} title={props.title}/>
                 <TableContainer>
                     <Table
                         sx={{minWidth: 750}}

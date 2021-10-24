@@ -18,6 +18,7 @@ import {action, autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import styled from "@emotion/styled";
 import EnhancedTable from "../../../shared/XesEventTableComponent";
+import {numberMonthArrayMapping} from "../../../shared/NumberToMonth";
 
 const ContainerDiv=styled.div`
                 padding: 10px;
@@ -31,6 +32,8 @@ const ContainerDiv=styled.div`
 let chart: Chart | null = null;
 export const ExecutionKPI = observer(() => {
     const executionKPIStore = datasourceStore.currentFileStore.executionKPIStore
+    //Count from 0, [month,day]
+    const [clickedDay, setClickedDay] = useState<[number,number]>([0,0])
     useEffect(() => autorun(() => {
         const ctx = document.getElementById('heatmap-chart') as HTMLCanvasElement;
         Chart.register(MatrixController, MatrixElement);
@@ -42,26 +45,53 @@ export const ExecutionKPI = observer(() => {
                     legend: false,
                     tooltip: {
                         callbacks: {
-                            title() {
-                                return '';
+                            title(context: any) {
+                                const v = context[0].raw;
+                                return `${numberMonthArrayMapping[v.y-1]} ${v.x}`; //Minus one because we plus one when creating data for humans
                             },
                             label(context: any) {
                                 const v = context.dataset.data[context.dataIndex];
-                                return ['x: ' + v.x, 'y: ' + v.y, 'v: ' + v.v];
+                                return ['Number of events: ' + v.v];
                             }
                         }
                     }
                 },
                 scales: {
                     x: {
+                        display: true,
                         ticks: {
                             stepSize: 1
+                        },
+                        title: {
+                            display: true,
+                            text: 'Day',
+                            color: '#191',
+                            font: {
+                                family: 'Comic Sans MS',
+                                size: 20,
+                                style: 'bold',
+                                lineHeight: 1.2
+                            },
+                            padding: {top: 30, left: 0, right: 0, bottom: 0}
                         },
                         grid: {
                             display: false
                         }
                     },
                     y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Month',
+                            color: '#911',
+                            font: {
+                                family: 'Comic Sans MS',
+                                size: 20,
+                                weight: 'bold',
+                                lineHeight: 1.2,
+                            },
+                            padding: {top: 20, left: 0, right: 0, bottom: 0}
+                        },
                         offset: true,
                         ticks: {
                             stepSize: 1
@@ -70,7 +100,11 @@ export const ExecutionKPI = observer(() => {
                             display: false
                         }
                     }
-                }
+                },
+                onClick: (event: any) => {
+                    const data = event.chart.tooltip.dataPoints[0].parsed;
+                    setClickedDay([data.y-1, data.x])
+                },
             }
         };
         if (chart !== null) {
@@ -94,7 +128,7 @@ export const ExecutionKPI = observer(() => {
     return <>
         <ContainerDiv>
             <canvas id="heatmap-chart">No canvas</canvas>
-            <EnhancedTable data={datasourceStore.currentFileStore.sortedEventList}/>
+            <EnhancedTable data={executionKPIStore.getEventListForDate(...clickedDay) ?? []} title={`XES Event Table for ${numberMonthArrayMapping[clickedDay[0]]} ${clickedDay[1]}`}/>
         </ContainerDiv>
         <div style={{marginLeft: 10, padding: 20, display:"flex", flexDirection: "column", gap: "25px"}}>
             <Stack spacing={2} direction="row" sx={{mb: 1, width: 320, marginTop: 10}} alignItems="center">

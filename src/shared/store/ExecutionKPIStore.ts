@@ -38,6 +38,10 @@ export class ExecutionKPIStore {
 
     public dispose: IReactionDisposer;
 
+    getEventListForDate(month: number, day: number) : XesEvent[] | undefined{
+        return this.constraint.get(`${day},${month},${this.perActivity},${this.perResource}`)
+    }
+
     @computed
     get heatMapData() {
         const dataArray = [];
