@@ -8,7 +8,7 @@ export default function ZoomSlider() {
     const [zoomState, setZoomState] = useState<number>(graphStore.getZoomLevel());
     const handleZoomLevelChange = (event: any, newValue: number | number[]) => {
         graphStore.changeZoomLevel(newValue as number);
-        setZoomState(graphStore.getZoomLevel());
+        setZoomState(newValue as number);
     };
     return <>
         <Typography id="zoom-slider" gutterBottom>

@@ -2,12 +2,14 @@ import {Theme} from "@mui/material/styles";
 import makeStyles from '@mui/styles/makeStyles';
 import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import 'chartjs-adapter-date-fns';
 import de from "date-fns/locale/de";
+import {XesEvent} from "../../../algorithm/parser/XESModels";
+import EnhancedTable from "../../../shared/XesEventTableComponent";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,6 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
 let chart: Chart | null = null;
 export const ClusterDistribution= observer(() => {
     console.log("Rerendering KPI Graphs");
+    const [clickedCluster, setClickedCluster] = useState<XesEvent[]>([]);
+    const [clickedTime, setClickedTime] = useState<Date>(new Date());
     const classes = useStyles();
     useEffect(() => autorun(() =>{
         const ctx = document.getElementById('boxplotChart') as HTMLCanvasElement;
@@ -33,6 +37,19 @@ export const ClusterDistribution= observer(() => {
             data: data,
             options: {
                 plugins: {
+                    title: {
+                        display: true,
+                        text: 'Simultaneous Cluster Time Distribution',
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        },
+                        color: 'red',
+                        font: {
+                            weight: 'bold',
+                            size: 20
+                        }
+                    },
                     tooltip: {
                         callbacks: {
                             title(context: any) {
@@ -80,7 +97,12 @@ export const ClusterDistribution= observer(() => {
                     y: {
                         display: false
                     }
-                }
+                },
+                onClick: (event: any) => {
+                    const data = event.chart.tooltip.dataPoints[0].raw;
+                    setClickedCluster(data.cluster);
+                    setClickedTime(data.x);
+                },
             },
         };
         if (chart !== null) {
@@ -93,6 +115,8 @@ export const ClusterDistribution= observer(() => {
     return <>
         <div className={classes.chartContainer} >
             <canvas id="boxplotChart">No canvas</canvas>
+            <EnhancedTable data={clickedCluster} title={clickedCluster.length===0 ? `XES Event Table` : `XES Event Table for cluster on ${clickedTime.toLocaleString()}`}/>
         </div>
+
     </>
 })

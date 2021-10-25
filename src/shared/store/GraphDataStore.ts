@@ -150,7 +150,7 @@ export class GraphDataStore {
         window.cy = this.cytoscapeReference
         this.cytoscapeReference.center();
         this.cytoscapeReference?.edges()?.toggleClass('hasLabel', this.isSimulLabelChecked);
-        this.cytoscapeReference.zoomingEnabled(false);
+        this.cytoscapeReference.userZoomingEnabled(false);
         this.refreshBubbleSet();
         return this.cytoscapeReference;
     }

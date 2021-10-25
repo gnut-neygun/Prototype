@@ -7,6 +7,7 @@ import {observer} from "mobx-react-lite";
 import {autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import de from "date-fns/locale/de";
+import {XesEvent} from "../../../algorithm/parser/XESModels";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,6 +32,19 @@ export const EventDistribution= observer(() => {
             data: data,
             options: {
                 plugins: {
+                    title: {
+                        display: true,
+                        text: 'Event Time Distribution',
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        },
+                        color: 'red',
+                        font: {
+                            weight: 'bold',
+                            size: 20
+                        }
+                    },
                     tooltip: {
                         callbacks: {
                             title(context: any) {
@@ -38,9 +52,8 @@ export const EventDistribution= observer(() => {
                                 return datetime.toLocaleString()
                             },
                             label: function(context: any) {
-                                const ret: string=
-                                    `Click to see event detail`
-                                return ret;
+                                const event: XesEvent = context.raw.event
+                                return [`Instance: ${event.instance()}`, `Lifecycle: ${event.lifecycle()}`, `Resource: ${event.resource()}`]
                             }
                         }
                     }

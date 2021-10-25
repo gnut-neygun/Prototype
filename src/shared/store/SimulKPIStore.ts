@@ -71,7 +71,8 @@ export class SimulKPIStore {
                         const y = Math.random() * 10;
                         return {
                             x: event.time().valueOf(),
-                            y: y
+                            y: y,
+                            event: event
                         }
                     }),
                     backgroundColor: colors[++colorIndex]
@@ -93,6 +94,7 @@ export class SimulKPIStore {
                     return {
                         x: new Date(cluster[Math.floor(cluster.length/2)].time()),
                         y: cluster.length,
+                        cluster: cluster,
                     }
                 }),
                 backgroundColor: colors[++colorIndex]

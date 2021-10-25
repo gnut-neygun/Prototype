@@ -42,6 +42,19 @@ export const ExecutionKPI = observer(() => {
             data: datasourceStore.currentFileStore.executionKPIStore.heatMapData,
             options: {
                 plugins: {
+                    title: {
+                        display: true,
+                        text: 'Execution Heat Map',
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        },
+                        color: 'red',
+                        font: {
+                            weight: 'bold',
+                            size: 20
+                        }
+                    },
                     legend: false,
                     tooltip: {
                         callbacks: {

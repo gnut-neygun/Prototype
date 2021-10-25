@@ -1,6 +1,7 @@
 declare global {
     interface Array<T> {
         pushSorted<T>(el: T, compareFn: (arg0: T, arg1: T) => number): void
+        popValue<T>(el: T): boolean
     }
 
     interface Map<K, V> {
@@ -30,6 +31,17 @@ Object.defineProperty(Array.prototype,"pushSorted", {value:  function<T>(el: T, 
 
     return this.length;
 }});
+
+// eslint-disable-next-line no-extend-native
+Object.defineProperty(Array.prototype,"popValue", {value:  function<T>(el: T): boolean {
+        const array = this as Array<T>;
+        const removeIndex = array.indexOf(el);
+        if (removeIndex === -1) {
+            return false;
+        }
+        array.splice(removeIndex,1)
+        return true;
+    }});
 
 // eslint-disable-next-line no-extend-native
 Object.defineProperty(Map.prototype, "pushIntoKey", {
