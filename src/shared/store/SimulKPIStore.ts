@@ -25,7 +25,7 @@ export class SimulKPIStore {
         this.dispose=reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
             this.computeConstraint();
             this.activitiesName = this.computeActivitiesName();
-            this.filteredLog=fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle())));
+            this.filteredLog=fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle() ?? "undefined")));
             this.computeAbsoluteOccurenceMap()
         })
     }
@@ -91,7 +91,7 @@ export class SimulKPIStore {
                 data: clusters.map(cluster => {
 
                     return {
-                        x: cluster[Math.floor(cluster.length/2)].time(),
+                        x: new Date(cluster[Math.floor(cluster.length/2)].time()),
                         y: cluster.length,
                     }
                 }),

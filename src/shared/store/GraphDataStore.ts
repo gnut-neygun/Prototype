@@ -5,7 +5,7 @@ import {layoutOptions} from "../../ui/main_content/graph/layout/defaultLayout";
 import {defaultGraphStyle} from "../../ui/main_content/graph/GraphDefaultStyle";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
 import {generateRandomColor} from "../../utilities/colorGenerator";
-import {generateGraph} from "../GraphVizDataParser";
+import {generateGraph} from "../GraphGenerators";
 
 export class GraphDataStore {
     @observable
@@ -37,18 +37,15 @@ export class GraphDataStore {
             if (fileStore.contentList.length===0)
                 return;
             this.setElements(generateGraph(this.fileStore.contentList));
+            if (window.location.pathname==="/" && this.cytoscapeContainer !== null)
+                this.initializeCytoscape(this.cytoscapeContainer);
+            this.isLoading = false; //It will be set to true in file store.
         })
     }
 
     @action
     public setElements(elements: ElementDefinition[]) {
         this.elements = elements;
-        //refresh cytoscape reference
-        //Cytoscape container can be null when the user goes directly to a non-graph route.
-        if (this.cytoscapeContainer !== null) {
-            this.initializeCytoscape(this.cytoscapeContainer);
-        }
-        this.isLoading = false; //It will be set to true in file store.
     }
 
     @action

@@ -6,6 +6,7 @@ import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
+import de from "date-fns/locale/de";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,18 +30,62 @@ export const EventDistribution= observer(() => {
             type: "scatter" as const,
             data: data,
             options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title(context: any) {
+                                const datetime = new Date(context[0].parsed.x);
+                                return datetime.toLocaleString()
+                            },
+                            label: function(context: any) {
+                                const ret: string=
+                                    `Click to see event detail`
+                                return ret;
+                            }
+                        }
+                    }
+                },
                 scales: {
                     x: {
-                        type: 'linear' as const,
-                        position: 'bottom' as const
+                        display:true,
+                        title: {
+                            display: true,
+                            text: 'Time',
+                            color: '#191',
+                            font: {
+                                family: 'Comic Sans MS',
+                                size: 20,
+                                weight: 'bold',
+                                lineHeight: 1.2
+                            },
+                            padding: {top: 30, left: 0, right: 0, bottom: 0}
+                        },
+                        time: {
+                            // Luxon format string
+                            tooltipFormat: 'dd T'
+                        },
+                        type: 'time',
+                        adapters: {
+                            date: {
+                                locale: de
+                            }
+                        },
+                        grid: {
+                            color: "#2a302b",
+                            lineWidth: 1,
+                        }
+                    },
+                    y: {
+                        display: false
                     }
                 }
-            }
+            },
         };
         if (chart !== null) {
             console.log("Freeing up reference to old charts");
             chart.destroy();
         }
+        // @ts-ignore
         chart = new Chart(ctx, config);
     }), []);
     return <>

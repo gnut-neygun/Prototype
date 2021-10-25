@@ -69,7 +69,7 @@ export const ExecutionKPI = observer(() => {
                             font: {
                                 family: 'Comic Sans MS',
                                 size: 20,
-                                style: 'bold',
+                                weight: 'bold',
                                 lineHeight: 1.2
                             },
                             padding: {top: 30, left: 0, right: 0, bottom: 0}

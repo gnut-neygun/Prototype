@@ -4,7 +4,7 @@ import {parseXesFromStrings} from "../../algorithm/parser/XESParser";
 import {SimulKPIStore} from "./SimulKPIStore";
 import {GraphDataStore} from "./GraphDataStore";
 import {GraphType, requestHeuristicMiner} from "../server_api/api";
-import {GraphGenerationInput} from "../GraphVizDataParser";
+import {GraphGenerationInput} from "../GraphGenerators";
 import {ExecutionKPIStore} from "./ExecutionKPIStore";
 import {mergeTrace} from "../../algorithm/MergeTrace";
 import {RegularityKPIStore} from "./RegularityKPIStore";
@@ -100,7 +100,7 @@ export class FileStore {
         const events: XesEvent[] = []
         for (let trace of this.mergedLog) {
             for (let event of trace.events) {
-                if (this.lifecycleOption.includes(event.lifecycle())) {
+                if (this.lifecycleOption.includes(event.lifecycle() ?? "undefined")) {
                     events.push(event)
                 }
             }
