@@ -8,7 +8,17 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {Button, Checkbox, Fab, FormControlLabel, FormGroup, Typography} from "@mui/material";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Button,
+    Checkbox,
+    Fab,
+    FormControlLabel,
+    FormGroup,
+    Typography
+} from "@mui/material";
 import DataSourceChooser from "./DataSourceChooser";
 import {FilePicker} from "./FilePicker";
 import {ResizeableSidebar} from "./ResizeableSidebar";
@@ -16,6 +26,7 @@ import {NavigationMenu} from "./NavigationMenu";
 import {datasourceStore} from "../../shared/store/DatasourceStore";
 import {observer} from "mobx-react-lite";
 import {action} from "mobx";
+import {ExpandMore} from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -110,32 +121,49 @@ export const DataPanel = observer(() => {
             <Divider/>
             <DataSourceChooser/>
             <FilePicker/>
-            <Typography variant={"h6"} align="center">Life cycle options</Typography>
-            <FormGroup>
-                <FormControlLabel control={<Checkbox checked={datasourceStore.currentFileStore.lifecycleOption.includes("start")} onChange={action((event) => {
-                    if (!event.target.checked) {
-                        datasourceStore.currentFileStore.lifecycleOption.popValue("start")
-                    } else datasourceStore.currentFileStore.lifecycleOption.push("start")
-                })}/>} label="Start"/>
-                <FormControlLabel control={<Checkbox checked={datasourceStore.currentFileStore.lifecycleOption.includes("complete")} onChange={action((event) => {
-                    if (!event.target.checked) {
-                        datasourceStore.currentFileStore.lifecycleOption.popValue("complete")
-                    } else datasourceStore.currentFileStore.lifecycleOption.push("complete")
-                })}/>} label="Complete"/>
-                <FormControlLabel control={<Checkbox checked={datasourceStore.currentFileStore.lifecycleOption.includes("undefined")}
-                                                     onChange={action((event) => {
-                                                         if (!event.target.checked) {
-                                                             datasourceStore.currentFileStore.lifecycleOption.popValue("undefined")
-                                                         } else datasourceStore.currentFileStore.lifecycleOption.push("undefined")
-                                                     })}/>}
-                                   label="Others"/>
-            </FormGroup>
-            <Divider/>
-            <FormGroup>
-                <FormControlLabel
-                    control={<Checkbox checked={fileStore.isMergeLog} onChange={handleMergeCheckboxChange}/>}
-                    label="Auto merge log"/>
-            </FormGroup>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMore/>}
+                    aria-controls="panel3a-content"
+                    id="panel3a-header"
+                >
+                    <Typography sx={{
+                        fontSize: theme.typography.pxToRem(15),
+                        fontWeight: theme.typography.fontWeightRegular,
+                    }}>Data configuration</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Typography sx={{
+                        fontSize: theme.typography.pxToRem(18),
+                        fontWeight: theme.typography.fontWeightRegular,
+                    }} align="center">Life cycle options</Typography>
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox checked={datasourceStore.currentFileStore.lifecycleOption.includes("start")} onChange={action((event) => {
+                            if (!event.target.checked) {
+                                datasourceStore.currentFileStore.lifecycleOption.popValue("start")
+                            } else datasourceStore.currentFileStore.lifecycleOption.push("start")
+                        })}/>} label="Start"/>
+                        <FormControlLabel control={<Checkbox checked={datasourceStore.currentFileStore.lifecycleOption.includes("complete")} onChange={action((event) => {
+                            if (!event.target.checked) {
+                                datasourceStore.currentFileStore.lifecycleOption.popValue("complete")
+                            } else datasourceStore.currentFileStore.lifecycleOption.push("complete")
+                        })}/>} label="Complete"/>
+                        <FormControlLabel control={<Checkbox checked={datasourceStore.currentFileStore.lifecycleOption.includes("undefined")}
+                                                             onChange={action((event) => {
+                                                                 if (!event.target.checked) {
+                                                                     datasourceStore.currentFileStore.lifecycleOption.popValue("undefined")
+                                                                 } else datasourceStore.currentFileStore.lifecycleOption.push("undefined")
+                                                             })}/>}
+                                          label="Others"/>
+                    </FormGroup>
+                    <Divider/>
+                    <FormGroup>
+                        <FormControlLabel
+                            control={<Checkbox checked={fileStore.isMergeLog} onChange={handleMergeCheckboxChange}/>}
+                            label="Auto merge log"/>
+                    </FormGroup>
+                </AccordionDetails>
+            </Accordion>
             <Button variant="contained" onClick={handleSubmit}>Submit</Button>
             <br/>
             <NavigationMenu/>

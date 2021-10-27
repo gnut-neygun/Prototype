@@ -34,7 +34,7 @@ export const Graph = observer(() =>{
         const cy= graphStore.initializeCytoscape(document.getElementById("cytoscape-container")!!)
         graphStore.clearBubbleSet();
         cy.edges().toggleClass("hasLabel", true);
-        if (graphStore.isSetViewChecked)
+        if (graphStore.isSetChecked)
             graphStore.refreshBubbleSet();
     }), [])
     return <GraphContainer>

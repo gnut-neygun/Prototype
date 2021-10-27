@@ -20,6 +20,12 @@ export class SimulKPIStore {
     @observable
     absoluteOccurenceMap: Map<string, XesEvent[]> = new Map()
 
+    /**
+     * Map activities cluster to a color for use in visualisation
+     * @private
+     */
+    private simulColorMap: Map<string, string> = new Map()
+
     constructor(private fileStore: FileStore) {
         makeObservable(this)
         this.dispose=reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
@@ -40,6 +46,18 @@ export class SimulKPIStore {
     @action
     computeConstraint() {
         this.constraint= fastDiscoverSimultaneousIsc(this.fileStore.mergedLog, this.timeDeltaInSec, this.relativeEventOccurence, this.fileStore.lifecycleOption);
+
+        //Generate color for each activity cluster
+        const map = new Map();
+        const array= Array.from(this.constraint.keys())
+        const colors = generateRandomColor(array.length)
+        let i = 0
+        for (let key of this.constraint.keys()) {
+            const activityString = key.split(";").sort().join(",");
+            map.set(activityString, colors[i])
+            i++;
+        }
+        this.simulColorMap = map;
     }
 
     @action
@@ -104,6 +122,11 @@ export class SimulKPIStore {
 
     @computed
     get simultaneousNodes() : string[][]{
-        return Array.from(this.constraint.keys()).map(string => string.split(";"));
+        return Array.from(this.constraint.keys()).map(string => string.split(";").sort());
+    }
+
+    public getColorFor(simulCluster: string[]): string {
+        const clusterString=simulCluster.sort().join(",");
+        return this.simulColorMap.get(clusterString) ?? 'black'
     }
 }

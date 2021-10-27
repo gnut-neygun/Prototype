@@ -14,8 +14,8 @@ export class XesEvent {
         return this["concept:name"]
     }
 
-    lifecycle(): string | undefined {
-        return this["lifecycle:transition"]
+    lifecycle(): string {
+        return this["lifecycle:transition"] ?? "undefined"
     }
 
     time(): number {

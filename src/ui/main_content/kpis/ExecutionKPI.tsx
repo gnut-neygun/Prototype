@@ -60,7 +60,7 @@ export const ExecutionKPI = observer(() => {
                         callbacks: {
                             title(context: any) {
                                 const v = context[0].raw;
-                                return `${numberMonthArrayMapping[v.y-1]} ${v.x}`; //Minus one because we plus one when creating data for humans
+                                return `${numberMonthArrayMapping[v.y]} ${v.x}`;
                             },
                             label(context: any) {
                                 const v = context.dataset.data[context.dataIndex];
@@ -73,7 +73,10 @@ export const ExecutionKPI = observer(() => {
                     x: {
                         display: true,
                         ticks: {
-                            stepSize: 1
+                            stepSize: 1,
+                            callback: function (val: number, index: number) {
+                                return val + 1;
+                            }
                         },
                         title: {
                             display: true,
@@ -107,7 +110,10 @@ export const ExecutionKPI = observer(() => {
                         },
                         offset: true,
                         ticks: {
-                            stepSize: 1
+                            stepSize: 1,
+                            callback: function (val: number, index: number) {
+                                return numberMonthArrayMapping[val];
+                            }
                         },
                         grid: {
                             display: false
@@ -116,12 +122,11 @@ export const ExecutionKPI = observer(() => {
                 },
                 onClick: (event: any) => {
                     const data = event.chart.tooltip.dataPoints[0].parsed;
-                    setClickedDay([data.y-1, data.x])
+                    setClickedDay([data.y, data.x])
                 },
             }
         };
         if (chart !== null) {
-            console.log("Freeing up reference to old charts");
             chart.destroy();
         }
         // @ts-ignore
@@ -189,10 +194,10 @@ export const ExecutionKPI = observer(() => {
                     value={executionKPIStore.perActivity === "" ? "none": executionKPIStore.perActivity}
                     label="Per activity"
                     onChange={action((event: SelectChangeEvent) => {
-                        if (event.target.value === "none") {
+                        if (event.target.value === "none")
                             executionKPIStore.perActivity=""
-                        }
-                        executionKPIStore.perActivity = event.target.value;
+                        else
+                            executionKPIStore.perActivity = event.target.value;
                     })}
                 >
                     {Array.from(new Set(datasourceStore.currentFileStore.contentList.map(element => element.activities).flat())).map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}

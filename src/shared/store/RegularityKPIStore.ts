@@ -30,5 +30,7 @@ export class RegularityKPIStore {
     @action
     updateConstraint() {
         this.constraint = detectRegularities(this.currentPair, this.relativeEventOccurence, this.timeDeltaInMilis);
+        console.log("Computed regularity constraint: ");
+        console.log(this.constraint);
     }
 }

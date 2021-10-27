@@ -32,6 +32,8 @@ export class ExecutionKPIStore {
             };
             runInAction(() => {
                 this.constraint= detectExecutionConstraint(fileStore.sortedEventList, this.relativeEventOccurence, groupFunction)
+                console.log("Computed execution constraint: ")
+                console.log(this.constraint)
             });
         })
     }
@@ -62,7 +64,7 @@ export class ExecutionKPIStore {
                 if (value > maxV) {
                     maxV = value;
                 }
-                dataArray.push({x: day+1, y: month+1, v: value});
+                dataArray.push({x: day, y: month, v: value});
             }
         }
         const data = {

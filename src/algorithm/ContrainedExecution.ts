@@ -4,6 +4,12 @@ import "../utilities/extensionFunctions"
 export type EventPair = [XesEvent, XesEvent, number]
 export type PairDict = Map<string, EventPair[]>
 
+/**
+ * begin_end: For each trace, find the begin and end event event in the merged log.
+ * start_start: Directly follow event
+ * start_complete: Start and complete lifecycle
+ * @param mergedLog
+ */
 export function createPairs(mergedLog: EventLog) {
     const begin_end: PairDict = new Map<string, EventPair[]>()
     const start_start: PairDict = new Map<string, EventPair[]>()

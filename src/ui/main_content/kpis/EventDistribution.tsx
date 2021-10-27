@@ -95,7 +95,6 @@ export const EventDistribution= observer(() => {
             },
         };
         if (chart !== null) {
-            console.log("Freeing up reference to old charts");
             chart.destroy();
         }
         // @ts-ignore

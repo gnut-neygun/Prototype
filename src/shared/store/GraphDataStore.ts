@@ -4,8 +4,8 @@ import cytoscape, {Core, ElementDefinition, LayoutOptions} from "cytoscape";
 import {layoutOptions} from "../../ui/main_content/graph/layout/defaultLayout";
 import {defaultGraphStyle} from "../../ui/main_content/graph/GraphDefaultStyle";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
-import {generateRandomColor} from "../../utilities/colorGenerator";
 import {generateGraph} from "../GraphGenerators";
+import {datasourceStore} from "./DatasourceStore";
 
 export class GraphDataStore {
     @observable
@@ -14,8 +14,6 @@ export class GraphDataStore {
     elements: ElementDefinition[] = []
     @observable
     isSimulLabelChecked: boolean = true;
-    @observable
-    isSetViewChecked: boolean = true;
     @observable
     selectedSimultaneousNodes : string[][]=[]
     @observable
@@ -88,7 +86,6 @@ export class GraphDataStore {
                 runInAction(() => {
                     const cy = this.cytoscapeReference!!;
                     this.bubbleSetPluginInstance = new BubbleSetsPlugin(cy);
-                    const randomColors = generateRandomColor(this.selectedSimultaneousNodes.length);
                     for (const [index, simulCluster] of this.selectedSimultaneousNodes.entries()) {
                         const myNodeCollection = simulCluster.reduce((accumulator, nodeId) => accumulator.union(cy.$id(nodeId)), cy.collection())
 
@@ -97,7 +94,7 @@ export class GraphDataStore {
                             // @ts-ignore
                             style: {
                                 fill: 'rgba(70, 130, 180, 0.2)',
-                                stroke: randomColors[index],
+                                stroke: datasourceStore.currentFileStore.simulKPIStore.getColorFor(simulCluster),
                                 // @ts-ignore
                                 "stroke-width": 2
                             },
@@ -117,6 +114,23 @@ export class GraphDataStore {
     @action
     public addSimultaneousNode(data: string[]) {
         this.selectedSimultaneousNodes.push(data);
+        // //adding a correspond set of edge to the graph
+        // //creat a cycle from start to end.
+        // debugger;
+        // for (let i = 0; i < data.length; i++) {
+        //     const source = data[0];
+        //     //Only circle to itself when it is the only node
+        //     if (i==0 && (data.length !=1 || this.isSetChecked))
+        //         continue;
+        //     const target = data[i+1] ?? data[0]; //circle back to start when its the last node
+        //     const addedElement= this.cytoscapeReference?.add({
+        //         group: 'edges',
+        //         data: {
+        //             id: `${source}-${target}`, source: source, target: target
+        //         }
+        //     })
+        //     this.simulColorMap.pushIntoKey(data, addedElement);
+        // }
         this.refreshBubbleSet();
     }
 
@@ -126,6 +140,13 @@ export class GraphDataStore {
         if (foundNode !== undefined) {
             this.selectedSimultaneousNodes.splice(this.selectedSimultaneousNodes.indexOf(foundNode), 1);
         }
+        // const addedNode=this.simulColorMap.get(key)
+        // //can happen if bubble set is checked
+        // if (addedNode===undefined)
+        //     return;
+        // addedNode?.forEach(node => this.cytoscapeReference?.remove(node))
+        // this.simulColorMap.delete(key);
+        // // console.log(this.selectedSimultaneousNodes);
         this.refreshBubbleSet();
     }
 
@@ -151,7 +172,7 @@ export class GraphDataStore {
         this.cytoscapeReference.center();
         this.cytoscapeReference?.edges()?.toggleClass('hasLabel', this.isSimulLabelChecked);
         this.cytoscapeReference.userZoomingEnabled(false);
-        this.refreshBubbleSet();
+        this.setSelectedSimultaneousNodes([]) //This also refreshes bublbleset
         return this.cytoscapeReference;
     }
 
