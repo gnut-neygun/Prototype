@@ -112,8 +112,8 @@ export class GraphDataStore {
     }
 
     @action
-    public addSimultaneousNode(data: string[]) {
-        this.selectedSimultaneousNodes.push(data);
+    public addSimultaneousNode(cluster: string[]) {
+        this.selectedSimultaneousNodes.push(cluster);
         // //adding a correspond set of edge to the graph
         // //creat a cycle from start to end.
         // debugger;
@@ -131,12 +131,19 @@ export class GraphDataStore {
         //     })
         //     this.simulColorMap.pushIntoKey(data, addedElement);
         // }
+        //Change color accordingly.
+        const cy = this.cytoscapeReference !!
+        const simulKPIStore= datasourceStore.currentFileStore.simulKPIStore
+        for (let node of cluster) {
+            const selectedNode = cy.$id(node)
+            selectedNode.style("background-color", simulKPIStore.getColorFor(cluster))
+        }
         this.refreshBubbleSet();
     }
 
     @action
-    removeSimultaneousNode(key: string[]) {
-        const foundNode = this.selectedSimultaneousNodes.find(node => node.length === key.length && node.every(value => key.indexOf(value) !== -1));
+    removeSimultaneousNode(cluster: string[]) {
+        const foundNode = this.selectedSimultaneousNodes.find(node => node.length === cluster.length && node.every(value => cluster.indexOf(value) !== -1));
         if (foundNode !== undefined) {
             this.selectedSimultaneousNodes.splice(this.selectedSimultaneousNodes.indexOf(foundNode), 1);
         }
@@ -147,6 +154,11 @@ export class GraphDataStore {
         // addedNode?.forEach(node => this.cytoscapeReference?.remove(node))
         // this.simulColorMap.delete(key);
         // // console.log(this.selectedSimultaneousNodes);
+        const cy = this.cytoscapeReference !!
+        for (let node of cluster) {
+            const selectedNode = cy.$id(node)
+            selectedNode.removeStyle("background-color")
+        }
         this.refreshBubbleSet();
     }
 
