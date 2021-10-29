@@ -15,6 +15,8 @@ import {defaultGraphStyle} from "../../ui/main_content/graph/GraphDefaultStyle";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
 import {generateGraph} from "../GraphGenerators";
 import {datasourceStore} from "./DatasourceStore";
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
 
 export class GraphDataStore {
     @observable
@@ -24,7 +26,7 @@ export class GraphDataStore {
     @observable
     isSimulLabelChecked: boolean = true;
     @observable
-    selectedSimultaneousNodes : string[][]=[]
+    selectedSimultaneousNodes: string[][] = []
     @observable
     cytoscapeReference: Core | null = null;
     @observable
@@ -228,7 +230,36 @@ export class GraphDataStore {
         this.cytoscapeReference?.edges()?.toggleClass('hasLabel', this.isSimulLabelChecked);
         this.cytoscapeReference.userZoomingEnabled(false);
         this.setSelectedSimultaneousNodes([]) //This also refreshes bublbleset
+        const cy = this.cytoscapeReference;
+        cy.nodes().forEach(node => {
+            // @ts-ignore
+            let ref = node.popperRef()
+            let dummyDomEle = document.createElement('div');
+            const tippyInstance = tippy(dummyDomEle, { // tippy props:
+                getReferenceClientRect: ref.getBoundingClientRect, // https://atomiks.github.io/tippyjs/v6/all-props/#getreferenceclientrect
+                trigger: 'manual', // mandatory, we cause the tippy to show programmatically.
+                placement: 'right-end',
+                arrow: true,
+                content: "",
+            });
+            node.data("tippy", tippyInstance)
+        });
+        cy.on('mouseover', 'node', function (event) {
+            const node = event.target;
+            const tippy = node.data("tippy");
+            tippy.show();
+        });
+        cy.on('mouseout', 'node', function (event) {
+            const node = event.target;
+            const tippy = node.data("tippy");
+            tippy.hide();
+        });
         return this.cytoscapeReference;
+    }
+
+    public setElementTooltip(id: string, content: string) {
+        const tippy = this.cytoscapeReference!!.$id(id).data("tippy");
+        tippy.setContent(content)
     }
 
     @action

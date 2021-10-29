@@ -45,11 +45,13 @@ export class SimulKPIStore {
 
     @action
     computeConstraint() {
-        this.constraint= fastDiscoverSimultaneousIsc(this.fileStore.mergedLog, this.timeDeltaInSec, this.relativeEventOccurence, this.fileStore.lifecycleOption);
+        this.constraint = fastDiscoverSimultaneousIsc(this.fileStore.mergedLog, this.timeDeltaInSec, this.relativeEventOccurence, this.fileStore.lifecycleOption);
+        console.log("Computed Simultaneous constraint: ");
+        console.log(this.constraint)
 
         //Generate color for each activity cluster
         const map = new Map();
-        const array= Array.from(this.constraint.keys())
+        const array = Array.from(this.constraint.keys())
         const colors = generateRandomColor(array.length)
         let i = 0
         for (let key of this.constraint.keys()) {

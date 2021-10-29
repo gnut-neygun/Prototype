@@ -1,6 +1,5 @@
 import cytoscape from "cytoscape";
 import React, {useEffect} from "react";
-// @ts-ignore
 import dagre from 'cytoscape-dagre';
 import {GraphControlPanel} from "./GraphControlPanel";
 import coseBilkent from 'cytoscape-cose-bilkent';
@@ -11,10 +10,13 @@ import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import {autorun} from "mobx";
 import {CircularProgress} from "@mui/material";
 import styled from "@emotion/styled";
+import popper from 'cytoscape-popper';
+
 
 cytoscape.use(dagre)
 cytoscape.use(coseBilkent);
 cytoscape.use(klay);
+cytoscape.use(popper);
 
 const GraphContainer = styled.div`
   padding-top: 20px;
