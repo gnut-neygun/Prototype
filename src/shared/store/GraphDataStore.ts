@@ -1,6 +1,15 @@
 import {action, IReactionDisposer, makeObservable, observable, reaction, runInAction,} from "mobx";
 import {FileStore} from "./FileStore";
-import cytoscape, {Core, ElementDefinition, LayoutOptions} from "cytoscape";
+import cytoscape, {
+    Collection,
+    Core,
+    EdgeCollection,
+    EdgeSingular,
+    ElementDefinition,
+    LayoutOptions,
+    NodeCollection,
+    NodeSingular
+} from "cytoscape";
 import {layoutOptions} from "../../ui/main_content/graph/layout/defaultLayout";
 import {defaultGraphStyle} from "../../ui/main_content/graph/GraphDefaultStyle";
 import {BubbleSetPath, BubbleSetsPlugin} from "cytoscape-bubblesets";
@@ -26,16 +35,19 @@ export class GraphDataStore {
     bubbleSetPluginInstance: BubbleSetsPlugin | null = null;
     @observable
     isLoading: boolean = false;
-
+    @observable
+    isDisplayRegularityEdges: boolean = false
+    private regEdgeCollection: Collection & EdgeCollection & NodeCollection & EdgeSingular & NodeSingular
     private cytoscapeContainer: HTMLElement | null = null;
     private readonly disposer: IReactionDisposer;
+
     constructor(public fileStore: FileStore) {
         makeObservable(this);
-        this.disposer=reaction(() => [fileStore.contentList] as const, () => {
-            if (fileStore.contentList.length===0)
+        this.disposer = reaction(() => [fileStore.contentList] as const, () => {
+            if (fileStore.contentList.length === 0)
                 return;
             this.setElements(generateGraph(this.fileStore.contentList));
-            if (window.location.pathname==="/" && this.cytoscapeContainer !== null)
+            if (window.location.pathname === "/" && this.cytoscapeContainer !== null)
                 this.initializeCytoscape(this.cytoscapeContainer);
             this.isLoading = false; //It will be set to true in file store.
         })
@@ -44,6 +56,37 @@ export class GraphDataStore {
     @action
     public setElements(elements: ElementDefinition[]) {
         this.elements = elements;
+    }
+
+    @action
+    public toggleRegularityEdge() {
+        debugger;
+        this.isDisplayRegularityEdges = !this.isDisplayRegularityEdges;
+        const cy = this.cytoscapeReference!!
+        if (this.isDisplayRegularityEdges) {
+            //Add edges to the graph that corresponds to the isc constraint.
+            const regConstraint = datasourceStore.currentFileStore.regularityKPIStore.currentConstraint ?? {};
+            this.regEdgeCollection = cy.collection();
+            for (let [key, value] of Object.entries(regConstraint)) {
+                const pair = key.split(",")
+                if (value) {
+                    const addedElement = cy.add({
+                        group: 'edges',
+                        data: {
+                            id: `${pair[0]}-${pair[1]}-reg`, source: pair[0], target: pair[1]
+                        }
+                    });
+                    this.regEdgeCollection = this.regEdgeCollection.union(addedElement)
+                }
+            }
+            this.regEdgeCollection.style({
+                "line-color": 'red',
+                "line-dash-pattern": [1, 1],
+                "target-arrow-color": 'red'
+            })
+        } else {
+            cy.remove(this.regEdgeCollection);
+        }
     }
 
     @action

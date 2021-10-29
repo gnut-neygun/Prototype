@@ -17,7 +17,12 @@
     "jsx": "react-jsx",
     "experimentalDecorators": true,
     "noImplicitAny": true,
-    "types": ["vite/client", "@emotion/react/types/css-prop", "jest"],
+    "types": [
+      "vite/client",
+      "@emotion/react/types/css-prop",
+      "jest"
+    ],
+    "strictPropertyInitialization": false
   },
   "include": ["./src"]
 }

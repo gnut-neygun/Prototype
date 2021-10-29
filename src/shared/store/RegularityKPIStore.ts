@@ -1,25 +1,27 @@
-import {action, IReactionDisposer, makeObservable, observable, reaction, runInAction} from "mobx";
+import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction} from "mobx";
 import {FileStore} from "./FileStore";
-import {createPairs, detectRegularities, PairDict} from "../../algorithm/ContrainedExecution";
+import {createPairs, detectRegularities} from "../../algorithm/ContrainedExecution";
 
+export enum PairType {
+    BEGIN_END, START_START, START_COMPLETE
+}
 export class RegularityKPIStore {
     @observable
     pairs: ReturnType<typeof createPairs> = []
     @observable
-    currentPair: PairDict = new Map();
+    currentPairType: PairType = PairType.START_START
     @observable
-    constraint: ReturnType<typeof detectRegularities> = new Map()
+    constraint: Map<PairType, Record<string, boolean>> = new Map()
     @observable
-    relativeEventOccurence: number | undefined =0.95
+    relativeEventOccurence: number = 0.95
     @observable
-    timeDeltaInMilis: number | undefined = 600_000
+    timeDeltaInMilis: number = 600_000
 
     constructor(private fileStore: FileStore) {
         makeObservable(this)
         this.dispose=reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInMilis] as const, ([mergedLog, relativeOccurence]) => {
             runInAction(() => {
                 this.pairs = createPairs(mergedLog)
-                this.currentPair = this.pairs[1]
             });
             this.updateConstraint();
         })
@@ -29,8 +31,15 @@ export class RegularityKPIStore {
 
     @action
     updateConstraint() {
-        this.constraint = detectRegularities(this.currentPair, this.relativeEventOccurence, this.timeDeltaInMilis);
+        this.constraint.set(PairType.BEGIN_END, detectRegularities(this.pairs[PairType.BEGIN_END.valueOf()], this.relativeEventOccurence, this.timeDeltaInMilis));
+        this.constraint.set(PairType.START_START, detectRegularities(this.pairs[PairType.START_START.valueOf()], this.relativeEventOccurence, this.timeDeltaInMilis));
+        this.constraint.set(PairType.START_COMPLETE, detectRegularities(this.pairs[PairType.START_COMPLETE.valueOf()], this.relativeEventOccurence, this.timeDeltaInMilis));
         console.log("Computed regularity constraint: ");
         console.log(this.constraint);
+    }
+
+    @computed
+    get currentConstraint(): Record<string, boolean> | undefined {
+        return this.constraint.get(this.currentPairType)
     }
 }

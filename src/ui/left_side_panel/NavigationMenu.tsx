@@ -5,6 +5,7 @@ import createStyles from '@mui/styles/createStyles';
 import {Link} from 'react-router-dom';
 import {ExpandMore} from "@mui/icons-material";
 import React from "react";
+import {observer} from "mobx-react-lite";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
     )
 );
 
-export function NavigationMenu() {
+export const NavigationMenu = observer(() => {
     const classes = useStyles();
     const theme = useTheme();
     return <>
@@ -77,5 +78,5 @@ export function NavigationMenu() {
                 </Typography>
             </AccordionDetails>
         </Accordion>
-    </>
-}
+    </>;
+})
