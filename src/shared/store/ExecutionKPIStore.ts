@@ -44,7 +44,7 @@ export class ExecutionKPIStore {
         return this.constraint.get(`${day},${month},${this.perActivity},${this.perResource}`)
     }
 
-    @computed
+    @computed({keepAlive: true})
     get heatMapData() {
         const dataArray = [];
         let maxV = 0;

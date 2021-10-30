@@ -42,6 +42,7 @@ export class GraphDataStore {
     private regEdgeCollection: Collection & EdgeCollection & NodeCollection & EdgeSingular & NodeSingular
     private cytoscapeContainer: HTMLElement | null = null;
     private readonly disposer: IReactionDisposer;
+    public pendingTasks: Array<CallableFunction> = [];
 
     constructor(public fileStore: FileStore) {
         makeObservable(this);
@@ -239,6 +240,7 @@ export class GraphDataStore {
                 getReferenceClientRect: ref.getBoundingClientRect, // https://atomiks.github.io/tippyjs/v6/all-props/#getreferenceclientrect
                 trigger: 'manual', // mandatory, we cause the tippy to show programmatically.
                 placement: 'right-end',
+                allowHTML: true,
                 arrow: true,
                 content: "",
             });
@@ -254,6 +256,9 @@ export class GraphDataStore {
             const tippy = node.data("tippy");
             tippy.hide();
         });
+        for (let task of this.pendingTasks) {
+            task();
+        }
         return this.cytoscapeReference;
     }
 

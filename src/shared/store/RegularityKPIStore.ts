@@ -1,7 +1,8 @@
-import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction} from "mobx";
+import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction, trace} from "mobx";
 import {FileStore} from "./FileStore";
 import {createPairs, detectRegularities} from "../../algorithm/ContrainedExecution";
 import {datasourceStore} from "./DatasourceStore";
+import {generateRandomColor} from "../../utilities/colorGenerator";
 
 export enum PairType {
     BEGIN_END, START_START, START_COMPLETE
@@ -42,22 +43,66 @@ export class RegularityKPIStore {
 
     private updateTooltips() {
         const cy = datasourceStore.currentFileStore.graphDataStore.cytoscapeReference
+        if (window.location.pathname !== "/") {
+            datasourceStore.currentFileStore.graphDataStore.pendingTasks.push(this.updateTooltips.bind(this))
+            return;
+        }
         if (cy === null || datasourceStore.currentFileStore.graphDataStore.isLoading) {
-            console.log(datasourceStore.currentFileStore.graphDataStore.isLoading)
-            setTimeout(this.updateTooltips.bind(this), 200)
+            console.log("Loading graph data, setting tooltip later.")
+            setTimeout(this.updateTooltips.bind(this), 1000);
             return;
         }
         const regResult = detectRegularities(this.pairs[PairType.START_COMPLETE.valueOf()], this.relativeEventOccurence) as unknown as Record<string, number>;
+        const regResult2 = detectRegularities(this.pairs[PairType.START_COMPLETE.valueOf()], undefined, this.timeDeltaInMilis)
+        const activityToTooltipString = new Map<string, string[]>();
         for (let entry of Object.entries(regResult)) {
             const activity = entry[0].split(",")[0];
             const duration = entry[1];
-            datasourceStore.currentFileStore.graphDataStore.setElementTooltip(activity, `${(this.relativeEventOccurence * 100).toFixed()}% of events finished within ${duration / 1000} seconds`)
+            activityToTooltipString.pushIntoKey(activity, `${(this.relativeEventOccurence * 100).toFixed()}% of events finished within ${duration / 1000} seconds`)
         }
-        console.log(regResult);
+
+        for (let entry of Object.entries(regResult2)) {
+            const activity = entry[0].split(",")[0];
+            const percentile = entry[1] as unknown as number;
+            activityToTooltipString.pushIntoKey(activity, `${(percentile * 100).toFixed()}% of events finished within ${this.timeDeltaInMilis / 1000} seconds`)
+        }
+        for (let [key, value] of activityToTooltipString.entries()) {
+            const tooltipString = value.join("<br/>")
+            datasourceStore.currentFileStore.graphDataStore.setElementTooltip(key, tooltipString)
+        }
     }
 
     @computed
     get currentConstraint(): Record<string, boolean> | undefined {
         return this.constraint.get(this.currentPairType)
+    }
+
+    @computed({keepAlive: true})
+    get traceChartData() {
+        const currentPair = this.pairs[this.currentPairType.valueOf()];
+        if (currentPair === undefined) {
+            return;
+        }
+        trace();
+        const colors = generateRandomColor(currentPair.size)
+        let colorIndex = 0;
+        const dataset = Array.from(currentPair.entries()).map(
+            entry => {
+                const [name, events] = entry;
+                return {
+                    label: name,
+                    data: events.map(event => {
+                        return {
+                            x: event[0].time(),
+                            y: event[2],
+                            eventPair: event
+                        }
+                    }),
+                    backgroundColor: colors[colorIndex++]
+                }
+            }
+        );
+        debugger;
+        return dataset;
     }
 }

@@ -2,13 +2,12 @@ import {Theme} from "@mui/material/styles";
 import makeStyles from '@mui/styles/makeStyles';
 import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
-import {useEffect, useState} from "react";
-import {MatrixController, MatrixElement} from "chartjs-chart-matrix";
-import {Slider, Stack, Typography} from "@mui/material";
-import {Palette} from "@mui/icons-material";
+import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
-import {autorun, runInAction} from "mobx";
+import {autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
+import de from "date-fns/locale/de";
+import {XesEvent} from "../../../algorithm/parser/XESModels";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,43 +22,99 @@ const useStyles = makeStyles((theme: Theme) =>
     )
 );
 let chart: Chart | null = null;
+
+function formatTimeDuration(timeDeltaInMillis: number) {
+    const timeDelta = timeDeltaInMillis / 1000;
+    let hours = Math.floor(timeDelta / 3600);
+    let minutes = Math.floor((timeDelta - (hours * 3600)) / 60);
+    let seconds = timeDelta - (hours * 3600) - (minutes * 60);
+
+    if (hours < 10) { // @ts-ignore
+        hours = "0" + hours.toString();
+    }
+    if (minutes < 10) { // @ts-ignore
+        minutes = "0" + minutes.toString();
+    }
+    if (seconds < 10) { // @ts-ignore
+        seconds = "0" + seconds.toString();
+    }
+    return hours + ':' + minutes + ':' + seconds;
+}
+
 export const RegularityKPI = observer(() => {
-    const executionKPIStore = datasourceStore.currentFileStore.executionKPIStore
+    const regularityKPIStore = datasourceStore.currentFileStore.regularityKPIStore
     const classes = useStyles();
     useEffect(() => autorun(() => {
-        const ctx = document.getElementById('heatmap-chart') as HTMLCanvasElement;
-        Chart.register(MatrixController, MatrixElement);
+        const ctx = document.getElementById('trace-chart') as HTMLCanvasElement;
         const config = {
-            type: 'matrix' as const,
-            data: datasourceStore.currentFileStore.executionKPIStore.heatMapData,
+            type: 'scatter' as const,
+            data: {
+                datasets: regularityKPIStore.traceChartData
+            },
             options: {
                 plugins: {
                     legend: false,
                     tooltip: {
                         callbacks: {
-                            title() {
-                                return '';
+                            title(context: any) {
+                                const datetime = new Date(context[0].parsed.x);
+                                return `Start at ${datetime.toLocaleString()}`
                             },
                             label(context: any) {
-                                const v = context.dataset.data[context.dataIndex];
-                                return ['x: ' + v.x, 'y: ' + v.y, 'v: ' + v.v];
+                                const pair: XesEvent = context.raw.eventPair
+                                return [`Start Event: ${pair[0].toString()}`, `End event: ${pair[1].toString()}`, `Time delta: ${formatTimeDuration(pair[2])}`];
                             }
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: {
-                            stepSize: 1
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Time Occurence',
+                            color: '#191',
+                            font: {
+                                family: 'Comic Sans MS',
+                                size: 20,
+                                weight: 'bold',
+                                lineHeight: 1.2
+                            },
+                            padding: {top: 30, left: 0, right: 0, bottom: 0}
+                        },
+                        time: {
+                            // Luxon format string
+                            tooltipFormat: 'dd T'
+                        },
+                        type: 'time',
+                        adapters: {
+                            date: {
+                                locale: de
+                            }
                         },
                         grid: {
-                            display: false
+                            color: "#2a302b",
+                            lineWidth: 1,
                         }
                     },
                     y: {
+                        title: {
+                            display: true,
+                            text: 'Time delta',
+                            color: '#911',
+                            font: {
+                                family: 'Comic Sans MS',
+                                size: 20,
+                                weight: 'bold',
+                                lineHeight: 1.2,
+                            },
+                            padding: {top: 20, left: 0, right: 0, bottom: 0}
+                        },
                         offset: true,
                         ticks: {
-                            stepSize: 1
+                            callback: function (val: number, index: number) {
+                                return formatTimeDuration(val);
+                            }
                         },
                         grid: {
                             display: false
@@ -74,26 +129,12 @@ export const RegularityKPI = observer(() => {
         // @ts-ignore
         chart = new Chart(ctx, config);
     }), []);
-    const [colorValue, setColorValue] = useState<number>(executionKPIStore.colorHue)
-
-    function handleColorChange(event: any, newValue: number | number[]) {
-        runInAction(() => {
-            executionKPIStore.colorHue = newValue as number;
-        });
-        setColorValue(newValue as number);
-    }
 
     return <>
         <div className={classes.chartContainer}>
-            <canvas id="heatmap-chart">No canvas</canvas>
+            <canvas id="trace-chart">No canvas</canvas>
         </div>
         <div style={{marginLeft: 10, padding: 20}}>
-            <Stack spacing={2} direction="row" sx={{mb: 1, width: 320, marginTop: 10}} alignItems="center">
-                <Palette/>
-                <Typography>Color</Typography>
-                <Slider aria-label="color" value={colorValue} min={0} max={360} onChange={handleColorChange}
-                        valueLabelDisplay={"auto"}/>
-            </Stack>
         </div>
     </>
 })

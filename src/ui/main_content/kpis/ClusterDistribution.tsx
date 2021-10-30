@@ -33,7 +33,7 @@ export const ClusterDistribution= observer(() => {
             datasets: datasourceStore.currentFileStore.simulKPIStore.clusterDistributionData,
         };
         const config = {
-            type: 'scatter' as const,
+            type: 'bubble' as const,
             data: data,
             options: {
                 plugins: {
@@ -58,7 +58,7 @@ export const ClusterDistribution= observer(() => {
                             },
                             label: function(context: any) {
                                 const ret: string=
-                                    `Events num: ${context.parsed.y}`
+                                    `Events num: ${context.raw.cluster.length}`
                                 return ret;
                             }
                         }

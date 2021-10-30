@@ -83,7 +83,7 @@ export class FileStore {
         }
     }
 
-    @computed
+    @computed({keepAlive: true})
     get mergedLog() {
         trace();
         if (this.isMergeLog)

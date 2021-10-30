@@ -77,7 +77,7 @@ export class SimulKPIStore {
         this.absoluteOccurenceMap = map;
     }
 
-    @computed
+    @computed({keepAlive: true})
     get eventDistributionPlotData(): ChartJSDataSet {
         trace();
         const colors= generateRandomColor(this.absoluteOccurenceMap.size)
@@ -101,7 +101,7 @@ export class SimulKPIStore {
         );
     }
 
-    @computed
+    @computed({keepAlive: true})
     get clusterDistributionData() {
         const colors= generateRandomColor(Array.from(this.constraint.keys()).length)
         let colorIndex = -1;
@@ -112,8 +112,9 @@ export class SimulKPIStore {
                 data: clusters.map(cluster => {
 
                     return {
-                        x: new Date(cluster[Math.floor(cluster.length/2)].time()),
-                        y: cluster.length,
+                        x: new Date(cluster[Math.floor(cluster.length / 2)].time()),
+                        y: Math.random() * 10,
+                        r: cluster.length / 5,
                         cluster: cluster,
                     }
                 }),
@@ -122,7 +123,7 @@ export class SimulKPIStore {
         })
     }
 
-    @computed
+    @computed({keepAlive: true})
     get simultaneousNodes() : string[][]{
         return Array.from(this.constraint.keys()).map(string => string.split(";").sort());
     }
