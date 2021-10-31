@@ -243,7 +243,7 @@ export default function EnhancedTable(props: { data: XesEvent[] , title: string}
                         />
                         <TableBody>
                             {rows.slice()
-                                .filter(e => e.instance().includes(instanceFilter) &&
+                                .filter(e => (e.instance()?.includes(instanceFilter) ?? true) &&
                                     e.name().includes(activityFilter) &&
                                     (e?.lifecycle()?.includes(lifecycleFilter) ?? (resourceFilter === "")) &&
                                     (e?.resource()?.includes(resourceFilter) ?? (resourceFilter === "")) &&

@@ -6,7 +6,7 @@ export class XesEvent {
     constructor(public trace: Trace) {
     }
 
-    instance(): string {
+    instance(): string | undefined {
         return this["concept:instance"]
     }
 
