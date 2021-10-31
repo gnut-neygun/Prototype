@@ -21,7 +21,7 @@ export class RegularityKPIStore {
 
     constructor(private fileStore: FileStore) {
         makeObservable(this)
-        this.dispose=reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInMilis] as const, ([mergedLog, relativeOccurence]) => {
+        this.dispose = reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInMilis] as const, ([mergedLog, relativeOccurence]) => {
             runInAction(() => {
                 this.pairs = createPairs(mergedLog)
             });
@@ -31,6 +31,15 @@ export class RegularityKPIStore {
     }
 
     public dispose: IReactionDisposer;
+
+    @action
+    setCurrentPairType(type: PairType) {
+        this.currentPairType = type;
+        if (window.location.pathname === "/")
+            //refresh the edges
+            datasourceStore.currentFileStore.graphDataStore.toggleRegularityEdge();
+        datasourceStore.currentFileStore.graphDataStore.toggleRegularityEdge();
+    }
 
     @action
     updateConstraint() {
@@ -77,6 +86,11 @@ export class RegularityKPIStore {
         return this.constraint.get(this.currentPairType)
     }
 
+    @computed
+    get currentPair() {
+        return this.pairs[this.currentPairType.valueOf()];
+    }
+
     @computed({keepAlive: true})
     get traceChartData() {
         const currentPair = this.pairs[this.currentPairType.valueOf()];
@@ -102,7 +116,6 @@ export class RegularityKPIStore {
                 }
             }
         );
-        debugger;
         return dataset;
     }
 }

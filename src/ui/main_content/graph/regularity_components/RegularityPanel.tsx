@@ -31,9 +31,9 @@ export const RegularityPanel = observer(() => {
                 id="pair-type-select"
                 value={datasourceStore.currentFileStore.regularityKPIStore.currentPairType}
                 label="Pair type"
-                onChange={action((event: SelectChangeEvent<PairType>) => {
-                    datasourceStore.currentFileStore.regularityKPIStore.currentPairType = event.target.value as PairType
-                })}
+                onChange={(event: SelectChangeEvent<PairType>) => {
+                    datasourceStore.currentFileStore.regularityKPIStore.setCurrentPairType(event.target.value)
+                }}
             >
                 <MenuItem value={PairType.START_START}>Start-Start (Directly follow event)</MenuItem>
                 <MenuItem value={PairType.START_COMPLETE}>Start-Complete</MenuItem>

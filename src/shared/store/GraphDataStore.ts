@@ -63,7 +63,6 @@ export class GraphDataStore {
 
     @action
     public toggleRegularityEdge() {
-        debugger;
         this.isDisplayRegularityEdges = !this.isDisplayRegularityEdges;
         const cy = this.cytoscapeReference!!
         if (this.isDisplayRegularityEdges) {

@@ -2,22 +2,24 @@ import {Theme} from "@mui/material/styles";
 import makeStyles from '@mui/styles/makeStyles';
 import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {observer} from "mobx-react-lite";
-import {autorun} from "mobx";
+import {action, autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import de from "date-fns/locale/de";
 import {XesEvent} from "../../../algorithm/parser/XESModels";
+import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import {PairType} from "../../../shared/store/RegularityKPIStore";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-            chartContainer: {
-                padding: 10,
-                marginTop: 45,
-                position: "relative",
-                height: "40vh",
-                width: "80vw",
-            }
+        chartContainer: {
+            padding: 10,
+            marginTop: 45,
+            position: "relative",
+            height: "40vh",
+            width: "80vw",
+        }
         }
     )
 );
@@ -49,11 +51,23 @@ export const RegularityKPI = observer(() => {
         const config = {
             type: 'scatter' as const,
             data: {
-                datasets: regularityKPIStore.traceChartData
+                datasets: datasourceStore.currentFileStore.regularityKPIStore.traceChartData
             },
             options: {
                 plugins: {
-                    legend: false,
+                    title: {
+                        display: true,
+                        text: 'Event Pair Graph',
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        },
+                        color: 'red',
+                        font: {
+                            weight: 'bold',
+                            size: 20
+                        }
+                    },
                     tooltip: {
                         callbacks: {
                             title(context: any) {
@@ -134,7 +148,28 @@ export const RegularityKPI = observer(() => {
         <div className={classes.chartContainer}>
             <canvas id="trace-chart">No canvas</canvas>
         </div>
-        <div style={{marginLeft: 10, padding: 20}}>
+        <div style={{marginLeft: 10, padding: 20, display: "flex", flexDirection: "column", gap: "25px"}}>
+            <FormControl fullWidth size="small">
+                <InputLabel id="pair-type-label">Pair type</InputLabel>
+                <Select
+                    id="pair-type-select"
+                    value={datasourceStore.currentFileStore.regularityKPIStore.currentPairType}
+                    label="Pair type"
+                    onChange={action((event: SelectChangeEvent<PairType>) => {
+                        datasourceStore.currentFileStore.regularityKPIStore.currentPairType = event.target.value as PairType
+                    })}
+                >
+                    <MenuItem value={PairType.START_START}>Start-Start (Directly follow event)</MenuItem>
+                    <MenuItem value={PairType.START_COMPLETE}>Start-Complete</MenuItem>
+                    <MenuItem value={PairType.BEGIN_END}>Begin-End</MenuItem>
+                </Select>
+            </FormControl>
+            <Typography>Number of pairs:</Typography>
+            <ul>
+                {Array.from((datasourceStore.currentFileStore.regularityKPIStore.currentPair ?? new Map()).entries()).map(entry => {
+                    return <li key={entry[0]}>{entry[0]} : {entry[1].length}</li>;
+                })}
+            </ul>
         </div>
-    </>
+    </>;
 })
