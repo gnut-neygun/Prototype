@@ -18,6 +18,8 @@ export class RegularityKPIStore {
     relativeEventOccurence: number = 0.95
     @observable
     timeDeltaInMilis: number = 600_000
+    @observable
+    selectedActivityName: string | undefined
 
     constructor(private fileStore: FileStore) {
         makeObservable(this)
@@ -31,6 +33,14 @@ export class RegularityKPIStore {
     }
 
     public dispose: IReactionDisposer;
+
+    @computed
+    get activityPairList(): string[] {
+        if (this.currentConstraint === undefined) {
+            return []
+        }
+        return Object.keys(this.currentConstraint)
+    }
 
     @action
     setCurrentPairType(type: PairType) {
@@ -88,6 +98,9 @@ export class RegularityKPIStore {
 
     @computed
     get currentPair() {
+        if (this.pairs.length === 0) {
+            return undefined
+        }
         return this.pairs[this.currentPairType.valueOf()];
     }
 
@@ -100,7 +113,7 @@ export class RegularityKPIStore {
         trace();
         const colors = generateRandomColor(currentPair.size)
         let colorIndex = 0;
-        const dataset = Array.from(currentPair.entries()).map(
+        const dataset = Array.from(currentPair.entries()).filter(entry => this.selectedActivityName === undefined ? true : (entry[0].length === this.selectedActivityName.length && this.selectedActivityName.includes(entry[0]))).map(
             entry => {
                 const [name, events] = entry;
                 return {

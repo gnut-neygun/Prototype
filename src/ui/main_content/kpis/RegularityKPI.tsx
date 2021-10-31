@@ -8,7 +8,16 @@ import {action, autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import de from "date-fns/locale/de";
 import {XesEvent} from "../../../algorithm/parser/XESModels";
-import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import {
+    Autocomplete,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    TextField,
+    Typography
+} from "@mui/material";
 import {PairType} from "../../../shared/store/RegularityKPIStore";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -164,6 +173,20 @@ export const RegularityKPI = observer(() => {
                     <MenuItem value={PairType.BEGIN_END}>Begin-End</MenuItem>
                 </Select>
             </FormControl>
+            <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={regularityKPIStore.activityPairList}
+                sx={{width: 300}}
+                value={regularityKPIStore.selectedActivityName ?? null}
+                onChange={action((event: any, newValue: string | null) => {
+                    if (newValue === null)
+                        regularityKPIStore.selectedActivityName = undefined
+                    else
+                        regularityKPIStore.selectedActivityName = newValue;
+                })}
+                renderInput={(params) => <TextField {...params} label="Activity pair list"/>}
+            />
             <Typography>Number of pairs:</Typography>
             <ul>
                 {Array.from((datasourceStore.currentFileStore.regularityKPIStore.currentPair ?? new Map()).entries()).map(entry => {
