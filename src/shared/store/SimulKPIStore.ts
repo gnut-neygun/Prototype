@@ -1,6 +1,6 @@
 import {EventLog, XesEvent} from "../../algorithm/parser/XESModels";
 import {fastDiscoverSimultaneousIsc} from "../../algorithm/SimulConstraint";
-import {action, computed, IReactionDisposer, makeObservable, observable, reaction, trace} from "mobx";
+import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction, trace} from "mobx";
 import {generateRandomColor} from "../../utilities/colorGenerator";
 import {FileStore} from "./FileStore";
 
@@ -17,6 +17,8 @@ export class SimulKPIStore {
     activitiesName: string[] = []
     filteredLog: EventLog = []
 
+    @observable
+    traceNameList: string[] = []
     @observable
     absoluteOccurenceMap: Map<string, XesEvent[]> = new Map()
 
@@ -35,16 +37,14 @@ export class SimulKPIStore {
             this.computeConstraint();
             this.activitiesName = this.computeActivitiesName();
             this.filteredLog = fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle() ?? "undefined")));
+            runInAction(() => {
+                this.traceNameList = this.filteredLog.map(trace => trace.name())
+            });
             this.computeAbsoluteOccurenceMap()
         })
     }
 
     public dispose: IReactionDisposer;
-
-    @computed({keepAlive: true})
-    get traceNameList() {
-        return this.filteredLog.map(trace => trace.name())
-    }
 
     private computeActivitiesName(): string[] {
         const stringArrayWithDuplicates = Array.from(this.constraint.keys()).map(stringKey => stringKey.split(";")).flat()

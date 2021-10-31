@@ -111,7 +111,7 @@ export const EventDistribution= observer(() => {
                 id="combo-box-demo"
                 options={datasourceStore.currentFileStore.simulKPIStore.traceNameList}
                 sx={{width: 300}}
-                value={datasourceStore.currentFileStore.simulKPIStore.traceFilterName === undefined ? "none" : datasourceStore.currentFileStore.simulKPIStore.traceFilterName}
+                value={datasourceStore.currentFileStore.simulKPIStore.traceFilterName}
                 onChange={action((event: any, newValue: string | null) => {
                     if (newValue === null)
                         datasourceStore.currentFileStore.simulKPIStore.traceFilterName = undefined
