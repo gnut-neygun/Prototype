@@ -54,7 +54,7 @@ export const EventDistribution= observer(() => {
                             },
                             label: function(context: any) {
                                 const event: XesEvent = context.raw.event
-                                return [`Instance: ${event.instance()}`, `Lifecycle: ${event.lifecycle()}`, `Resource: ${event.resource()}`]
+                                return [`Instance: ${event.instance()}`, `Activity: ${event.name()}`, `Lifecycle: ${event.lifecycle()}`, `Resource: ${event.resource()}`]
                             }
                         }
                     }

@@ -1,10 +1,12 @@
-import {EventLog, XesEvent} from "../../algorithm/parser/XESModels";
+import {XesEvent} from "../../algorithm/parser/XESModels";
 import {fastDiscoverSimultaneousIsc} from "../../algorithm/SimulConstraint";
 import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction, trace} from "mobx";
 import {generateRandomColor} from "../../utilities/colorGenerator";
 import {FileStore} from "./FileStore";
+import {datasourceStore} from "./DatasourceStore";
+import {groupBy} from "../../utilities/utilities";
 
-type ChartJSDataSet= {backgroundColor: string, data: {x: number, y: number}[], label: string}[]
+type ChartJSDataSet = { backgroundColor: string, data: { x: number, y: number }[], label: string }[]
 
 export class SimulKPIStore {
     @observable
@@ -15,7 +17,6 @@ export class SimulKPIStore {
     relativeEventOccurence: number = 0.95
 
     activitiesName: string[] = []
-    filteredLog: EventLog = []
 
     @observable
     traceNameList: string[] = []
@@ -36,7 +37,6 @@ export class SimulKPIStore {
         this.dispose = reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
             this.computeConstraint();
             this.activitiesName = this.computeActivitiesName();
-            this.filteredLog = fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle() ?? "undefined")));
             runInAction(() => {
                 this.traceNameList = this.filteredLog.map(trace => trace.name())
             });
@@ -45,6 +45,12 @@ export class SimulKPIStore {
     }
 
     public dispose: IReactionDisposer;
+
+    @computed({keepAlive: true})
+    get filteredLog() {
+        trace()
+        return datasourceStore.currentFileStore.mergedLog.map(trace => trace.cloneWithFilter(event => datasourceStore.currentFileStore.lifecycleOption.includes(event.lifecycle() ?? "undefined")));
+    }
 
     private computeActivitiesName(): string[] {
         const stringArrayWithDuplicates = Array.from(this.constraint.keys()).map(stringKey => stringKey.split(";")).flat()
@@ -88,24 +94,31 @@ export class SimulKPIStore {
     @computed({keepAlive: true})
     get eventDistributionPlotData(): ChartJSDataSet {
         trace();
-        const colors= generateRandomColor(this.absoluteOccurenceMap.size)
+        const dataSetArray = [];
+        debugger;
+        const currentTrace = this.filteredLog.find(trace => this.traceFilterName === undefined ? true : this.traceFilterName.includes(trace.name()) && this.traceFilterName.length === trace.name().length)//Need to do this instead of === because this.traceFilterName is an observable
+        if (currentTrace === undefined)
+            return [];
+        const traceGroupedByActivity = groupBy(currentTrace.events, event => event.name())
+        const entries = Object.entries(traceGroupedByActivity)
+        const colors = generateRandomColor(entries.length)
         let colorIndex = -1;
-        return Array.from(this.absoluteOccurenceMap.entries()).map(
+        return entries.map(
             entry => {
-                const [name, events] = entry;
+                const [activity, eventList] = entry
                 return {
-                    label: name,
-                    data: events.filter(event => this.traceFilterName === undefined || event.trace.name() === this.traceFilterName).map(event => {
+                    label: activity,
+                    data: eventList.map(event => {
                         return {
                             x: event.time().valueOf(),
-                            y: Math.random(10),
+                            y: 5,
                             event: event
                         }
                     }),
                     backgroundColor: colors[++colorIndex]
                 }
             }
-        )
+        );
     }
 
     @computed({keepAlive: true})
