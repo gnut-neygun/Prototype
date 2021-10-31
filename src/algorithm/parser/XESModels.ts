@@ -39,7 +39,14 @@ export class XesEvent {
 }
 
 export class Trace {
-    constructor(public attributes: { [key in string]: string } = {}, public events: XesEvent[] = []) {
+
+    /**
+     *
+     * @param attributes
+     * @param events
+     * @param uniqueId used to uniquely identify a trace on distribution graph. Generated internally
+     */
+    constructor(public uniqueId: number, public attributes: { [key in string]: string } = {}, public events: XesEvent[] = []) {
     }
 
     public append(event: XesEvent) {
@@ -47,15 +54,19 @@ export class Trace {
     }
 
     public appendSorted(event: XesEvent) {
-        this.events.pushSorted(event, (event1, event2) => event1.time().valueOf()-event2.time().valueOf())
+        this.events.pushSorted(event, (event1, event2) => event1.time().valueOf() - event2.time().valueOf())
     }
 
-    public cloneWithFilter(filter?: (x: XesEvent) => boolean ): Trace {
-        const cloned=[...this.events]
-        if (filter===undefined)
-            return new Trace(this.attributes, cloned);
+    public name() {
+        return this.attributes["concept:name"]
+    }
+
+    public cloneWithFilter(filter?: (x: XesEvent) => boolean): Trace {
+        const cloned = [...this.events]
+        if (filter === undefined)
+            return new Trace(this.uniqueId, this.attributes, cloned);
         else
-            return new Trace(this.attributes, cloned.filter(filter))
+            return new Trace(this.uniqueId, this.attributes, cloned.filter(filter))
     }
 }
 

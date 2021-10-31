@@ -8,8 +8,10 @@ export function parseXESFromString(xesContent: string): EventLog {
     if (log === null) {
         throw new Error("parse error");
     }
+    let traceId = 0;
     for (const trace of log.getElementsByTagName("trace")) {
-        const myTrace = new Trace();
+        const myTrace = new Trace(traceId);
+        traceId++;
         const traceChildren = trace.children;
         for (const child of traceChildren) {
             if (child.localName === "string") {

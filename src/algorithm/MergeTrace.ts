@@ -13,6 +13,7 @@ export function mergeTrace(oldLog: EventLog, mergeCriteria: (trace1 : Trace, tra
             const mergingTrace = log[n];
             if (mergeCriteria(trace, mergingTrace)) {
                 for (let event of mergingTrace.events) {
+                    event.trace = trace;
                     trace.append(event);
                 }
                 log.splice(n, 1);

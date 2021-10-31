@@ -87,9 +87,13 @@ export class FileStore {
     get mergedLog() {
         trace();
         if (this.isMergeLog)
-            return mergeTrace(this.parsedLog, (trace1, trace2) =>
-                trace1.events[0]["knr"]===trace2.events[0]["knr"]
-            )
+            return mergeTrace(this.parsedLog, (trace1, trace2) => {
+                if (trace1.events[0]["knr"] !== undefined) {
+                    return trace1.events[0]["knr"] === trace2.events[0]["knr"];
+                } else {
+                    return false
+                }
+            })
         else
             return this.parsedLog;
     }

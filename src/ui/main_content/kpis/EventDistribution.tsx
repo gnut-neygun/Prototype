@@ -4,10 +4,11 @@ import createStyles from '@mui/styles/createStyles';
 import Chart from 'chart.js/auto';
 import {useEffect} from "react";
 import {observer} from "mobx-react-lite";
-import {autorun} from "mobx";
+import {action, autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import de from "date-fns/locale/de";
 import {XesEvent} from "../../../algorithm/parser/XESModels";
+import {Autocomplete, TextField} from "@mui/material";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -101,8 +102,24 @@ export const EventDistribution= observer(() => {
         chart = new Chart(ctx, config);
     }), []);
     return <>
-        <div className={classes.chartContainer} >
+        <div className={classes.chartContainer}>
             <canvas id="chart">No canvas</canvas>
+        </div>
+        <div style={{marginLeft: 10, padding: 20, display: "flex", flexDirection: "column", gap: "25px"}}>
+            <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={datasourceStore.currentFileStore.simulKPIStore.traceNameList}
+                sx={{width: 300}}
+                value={datasourceStore.currentFileStore.simulKPIStore.traceFilterName === undefined ? "none" : datasourceStore.currentFileStore.simulKPIStore.traceFilterName}
+                onChange={action((event: any, newValue: string | null) => {
+                    if (newValue === null)
+                        datasourceStore.currentFileStore.simulKPIStore.traceFilterName = undefined
+                    else
+                        datasourceStore.currentFileStore.simulKPIStore.traceFilterName = newValue;
+                })}
+                renderInput={(params) => <TextField {...params} label="Trace filter"/>}
+            />
         </div>
     </>
 })

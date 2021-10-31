@@ -10,15 +10,18 @@ export class SimulKPIStore {
     @observable
     constraint: ReturnType<typeof fastDiscoverSimultaneousIsc> = new Map()
     @observable
-    timeDeltaInSec: number=0.1
+    timeDeltaInSec: number = 0.1
     @observable
-    relativeEventOccurence: number=0.95
+    relativeEventOccurence: number = 0.95
 
     activitiesName: string[] = []
     filteredLog: EventLog = []
 
     @observable
     absoluteOccurenceMap: Map<string, XesEvent[]> = new Map()
+
+    @observable
+    traceFilterName: string | undefined
 
     /**
      * Map activities cluster to a color for use in visualisation
@@ -28,18 +31,23 @@ export class SimulKPIStore {
 
     constructor(private fileStore: FileStore) {
         makeObservable(this)
-        this.dispose=reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
+        this.dispose = reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
             this.computeConstraint();
             this.activitiesName = this.computeActivitiesName();
-            this.filteredLog=fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle() ?? "undefined")));
+            this.filteredLog = fileStore.mergedLog.map(trace => trace.cloneWithFilter(event => fileStore.lifecycleOption.includes(event.lifecycle() ?? "undefined")));
             this.computeAbsoluteOccurenceMap()
         })
     }
 
     public dispose: IReactionDisposer;
 
+    @computed({keepAlive: true})
+    get traceNameList() {
+        return this.filteredLog.map(trace => trace.name())
+    }
+
     private computeActivitiesName(): string[] {
-         const stringArrayWithDuplicates=Array.from(this.constraint.keys()).map(stringKey => stringKey.split(";")).flat()
+        const stringArrayWithDuplicates = Array.from(this.constraint.keys()).map(stringKey => stringKey.split(";")).flat()
         return Array.from(new Set(stringArrayWithDuplicates))
     }
 
@@ -87,18 +95,17 @@ export class SimulKPIStore {
                 const [name, events] = entry;
                 return {
                     label: name,
-                    data: events.map(event => {
-                        const y = Math.random() * 10;
+                    data: events.filter(event => this.traceFilterName === undefined || event.trace.name() === this.traceFilterName).map(event => {
                         return {
                             x: event.time().valueOf(),
-                            y: y,
+                            y: Math.random(10),
                             event: event
                         }
                     }),
                     backgroundColor: colors[++colorIndex]
                 }
             }
-        );
+        )
     }
 
     @computed({keepAlive: true})

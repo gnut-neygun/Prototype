@@ -32,7 +32,7 @@ export const RegularityPanel = observer(() => {
                 value={datasourceStore.currentFileStore.regularityKPIStore.currentPairType}
                 label="Pair type"
                 onChange={(event: SelectChangeEvent<PairType>) => {
-                    datasourceStore.currentFileStore.regularityKPIStore.setCurrentPairType(event.target.value)
+                    datasourceStore.currentFileStore.regularityKPIStore.setCurrentPairType(event.target.value as unknown as PairType)
                 }}
             >
                 <MenuItem value={PairType.START_START}>Start-Start (Directly follow event)</MenuItem>
