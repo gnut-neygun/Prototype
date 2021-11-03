@@ -1,3 +1,8 @@
+/**
+ * From stack overflow
+ * @param data
+ * @param keyFunction
+ */
 export function groupBy<Item extends Record<string, any>>(data: Item[], keyFunction: (e: Item) => string): Record<string, Item[]> {
     // reduce runs this anonymous function on each element of `data` (the `item` parameter,
     // returning the `storage` parameter at the end
@@ -16,6 +21,10 @@ export function groupBy<Item extends Record<string, any>>(data: Item[], keyFunct
     }, {}); // {} is the initial value of the storage
 }
 
+/**
+ * From Stackoverflow
+ * @param timeDeltaInMillis
+ */
 export function formatTimeDuration(timeDeltaInMillis: number) {
     const timeDelta = timeDeltaInMillis / 1000;
     let hours = Math.floor(timeDelta / 3600);
@@ -32,4 +41,26 @@ export function formatTimeDuration(timeDeltaInMillis: number) {
         seconds = "0" + seconds.toFixed(0);
     }
     return hours + ':' + minutes + ':' + seconds;
+}
+
+/**
+ * https://stackoverflow.com/questions/4459928/how-to-deep-clone-in-javascript
+ * @param obj
+ * @param hash
+ */
+export function deepClone(obj: any, hash = new WeakMap()): any {
+    if (Object(obj) !== obj) return obj; // primitives
+    if (hash.has(obj)) return hash.get(obj); // cyclic reference
+    const result: any = obj instanceof Set ? new Set(obj) // See note about this!
+        : obj instanceof Map ? new Map(Array.from(obj, ([key, val]) =>
+                [key, deepClone(val, hash)]))
+            : obj instanceof Date ? new Date(obj)
+                : obj instanceof RegExp ? new RegExp(obj.source, obj.flags)
+                    // ... add here any specific treatment for other classes ...
+                    // and finally a catch-all:
+                    : obj.constructor ? new obj.constructor()
+                        : Object.create(null);
+    hash.set(obj, result);
+    return Object.assign(result, ...Object.keys(obj).map(
+        key => ({[key]: deepClone(obj[key], hash)})));
 }

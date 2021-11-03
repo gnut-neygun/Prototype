@@ -1,4 +1,4 @@
-import {action, computed, makeObservable, observable, runInAction, trace} from "mobx";
+import {action, computed, makeObservable, observable, runInAction} from "mobx";
 import {EventLog, XesEvent} from "../../algorithm/parser/XESModels";
 import {parseXesFromStrings} from "../../algorithm/parser/XESParser";
 import {SimulKPIStore} from "./SimulKPIStore";
@@ -85,7 +85,6 @@ export class FileStore {
 
     @computed({keepAlive: true})
     get mergedLog() {
-        trace();
         if (this.isMergeLog)
             return mergeTrace(this.parsedLog, (trace1, trace2) => {
                 if (trace1.events[0]["knr"] !== undefined) {
@@ -100,7 +99,6 @@ export class FileStore {
 
     @computed
     get sortedEventList(): XesEvent[] {
-        trace();
         const events: XesEvent[] = []
         for (let trace of this.mergedLog) {
             for (let event of trace.events) {

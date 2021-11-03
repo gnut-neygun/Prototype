@@ -1,12 +1,12 @@
 import {EventLog, Trace} from "./parser/XESModels";
-import _ from "lodash";
+import {deepClone} from "../utilities/utilities";
 
 export function findMergeAttribute(log: EventLog): string[] {
     return ["knr"]
 }
 
 export function mergeTrace(oldLog: EventLog, mergeCriteria: (trace1 : Trace, trace2: Trace) => boolean) {
-    const log= _.cloneDeep(oldLog)
+    const log: EventLog = deepClone(oldLog)
     for (let i = 0; i < log.length; i++) {
         const trace = log[i];
         for (let n = i + 1; n < log.length; n++) {
