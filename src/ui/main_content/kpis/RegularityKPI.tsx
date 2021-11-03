@@ -19,6 +19,7 @@ import {
     Typography
 } from "@mui/material";
 import {PairType} from "../../../shared/store/RegularityKPIStore";
+import {formatTimeDuration} from "../../../utilities/utilities";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,24 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
     )
 );
 let chart: Chart | null = null;
-
-function formatTimeDuration(timeDeltaInMillis: number) {
-    const timeDelta = timeDeltaInMillis / 1000;
-    let hours = Math.floor(timeDelta / 3600);
-    let minutes = Math.floor((timeDelta - (hours * 3600)) / 60);
-    let seconds = timeDelta - (hours * 3600) - (minutes * 60);
-
-    if (hours < 10) { // @ts-ignore
-        hours = "0" + hours.toString();
-    }
-    if (minutes < 10) { // @ts-ignore
-        minutes = "0" + minutes.toString();
-    }
-    if (seconds < 10) { // @ts-ignore
-        seconds = "0" + seconds.toString();
-    }
-    return hours + ':' + minutes + ':' + seconds;
-}
 
 export const RegularityKPI = observer(() => {
     const regularityKPIStore = datasourceStore.currentFileStore.regularityKPIStore

@@ -57,9 +57,10 @@ export const ClusterDistribution= observer(() => {
                                 return datetime.toLocaleString()
                             },
                             label: function(context: any) {
-                                const ret: string=
+                                const ret: string =
                                     `Events num: ${context.raw.cluster.length}`
-                                return ret;
+                                const ret2 = `Time spread: ${context.raw.duration}`
+                                return [ret, ret2]
                             }
                         }
                     }

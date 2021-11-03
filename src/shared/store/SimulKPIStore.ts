@@ -1,4 +1,4 @@
-import {XesEvent} from "../../algorithm/parser/XESModels";
+import {Trace, XesEvent} from "../../algorithm/parser/XESModels";
 import {fastDiscoverSimultaneousIsc} from "../../algorithm/SimulConstraint";
 import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction, trace} from "mobx";
 import {generateRandomColor} from "../../utilities/colorGenerator";
@@ -91,15 +91,27 @@ export class SimulKPIStore {
         this.absoluteOccurenceMap = map;
     }
 
+    @computed
+    get currentTrace(): Trace | undefined {
+        return this.filteredLog.find(trace => this.traceFilterName === undefined ? true : this.traceFilterName.includes(trace.name()) && this.traceFilterName.length === trace.name().length)//Need to do this instead of === because this.traceFilterName is an observable
+    }
+
+    @computed
+    get traceDuration(): number | undefined {
+        if (this.currentTrace === undefined)
+            return undefined;
+        const timeArray = this.currentTrace.events.map(event => event.time());
+        const max = Math.max(...timeArray);
+        const min = Math.min(...timeArray);
+        return max - min;
+    }
+
     @computed({keepAlive: true})
     get eventDistributionPlotData(): ChartJSDataSet {
         trace();
-        const dataSetArray = [];
-        debugger;
-        const currentTrace = this.filteredLog.find(trace => this.traceFilterName === undefined ? true : this.traceFilterName.includes(trace.name()) && this.traceFilterName.length === trace.name().length)//Need to do this instead of === because this.traceFilterName is an observable
-        if (currentTrace === undefined)
+        if (this.currentTrace === undefined)
             return [];
-        const traceGroupedByActivity = groupBy(currentTrace.events, event => event.name())
+        const traceGroupedByActivity = groupBy(this.currentTrace.events, event => event.name())
         const entries = Object.entries(traceGroupedByActivity)
         const colors = generateRandomColor(entries.length)
         let colorIndex = -1;
@@ -130,12 +142,17 @@ export class SimulKPIStore {
             return {
                 label: name,
                 data: clusters.map(cluster => {
-
+                    //Calculate time spread.
+                    const timeArray = cluster.map(event => event.time())
+                    const max = Math.max(...timeArray)
+                    const min = Math.min(...timeArray)
+                    const duration = max - min
                     return {
                         x: new Date(cluster[Math.floor(cluster.length / 2)].time()),
-                        y: Math.random() * 10,
-                        r: cluster.length / 5,
+                        y: cluster.length,
+                        r: 3 + duration * 15 / this.timeDeltaInSec,
                         cluster: cluster,
+                        duration: duration
                     }
                 }),
                 backgroundColor: colors[++colorIndex]

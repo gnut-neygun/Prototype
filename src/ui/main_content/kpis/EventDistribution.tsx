@@ -8,7 +8,8 @@ import {action, autorun} from "mobx";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
 import de from "date-fns/locale/de";
 import {XesEvent} from "../../../algorithm/parser/XESModels";
-import {Autocomplete, TextField} from "@mui/material";
+import {Autocomplete, TextField, Typography} from "@mui/material";
+import {formatTimeDuration} from "../../../utilities/utilities";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -111,7 +112,7 @@ export const EventDistribution= observer(() => {
                 id="combo-box-demo"
                 options={datasourceStore.currentFileStore.simulKPIStore.traceNameList}
                 sx={{width: 300}}
-                value={datasourceStore.currentFileStore.simulKPIStore.traceFilterName}
+                value={datasourceStore.currentFileStore.simulKPIStore.traceFilterName ?? null}
                 onChange={action((event: any, newValue: string | null) => {
                     if (newValue === null)
                         datasourceStore.currentFileStore.simulKPIStore.traceFilterName = undefined
@@ -120,6 +121,10 @@ export const EventDistribution= observer(() => {
                 })}
                 renderInput={(params) => <TextField {...params} label="Trace filter"/>}
             />
+            <Typography>Trace
+                duration: {formatTimeDuration(datasourceStore.currentFileStore.simulKPIStore.traceDuration ?? 0)} (hh:mm:ss)</Typography>
+            <Typography>Number of events in
+                trace: {datasourceStore.currentFileStore.simulKPIStore.currentTrace?.events?.length ?? 0}</Typography>
         </div>
     </>
 })
