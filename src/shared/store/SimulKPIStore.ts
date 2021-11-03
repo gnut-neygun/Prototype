@@ -34,14 +34,17 @@ export class SimulKPIStore {
 
     constructor(private fileStore: FileStore) {
         makeObservable(this)
-        this.dispose = reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInSec] as const, () => {
-            this.computeConstraint();
-            this.activitiesName = this.computeActivitiesName();
-            runInAction(() => {
-                this.traceNameList = this.filteredLog.map(trace => trace.name())
-            });
-            this.computeAbsoluteOccurenceMap()
-        })
+        this.dispose = reaction(() => [fileStore.mergedLog] as const, this.inititateConstraintRecompute.bind(this))
+    }
+
+    @action
+    inititateConstraintRecompute() {
+        this.computeConstraint();
+        this.activitiesName = this.computeActivitiesName();
+        runInAction(() => {
+            this.traceNameList = this.filteredLog.map(trace => trace.name())
+        });
+        this.computeAbsoluteOccurenceMap()
     }
 
     public dispose: IReactionDisposer;

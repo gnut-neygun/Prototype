@@ -5,7 +5,7 @@ import {LayoutMenu} from "./layout/LayoutMenu";
 import ZoomSlider from "./ZoomSlider";
 import {observer} from "mobx-react-lite";
 import {datasourceStore} from "../../../shared/store/DatasourceStore";
-import {runInAction} from "mobx";
+import {action, runInAction} from "mobx";
 
 export const GraphControlPanel = observer(() => {
     const graphStore = datasourceStore.currentFileStore.graphDataStore;
@@ -25,21 +25,26 @@ export const GraphControlPanel = observer(() => {
     };
 
     return <div id="graph-control-panel" style={{width: "20%"}}>
-                <LayoutMenu/>
-                <Divider/>
-                <ZoomSlider/>
-                <Button variant={"text"} style={{margin: "10px"}} onClick={graphStore.zoomFit.bind(graphStore)}>Zoom fit and center</Button>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={datasourceStore.currentFileStore.graphDataStore.isSetChecked}
-                            onChange={handleBubbleSetCheckbox}
-                            name="bubbleSetCheckbox"
-                            color="primary"
-                        />
-                    }
-                    label="Bubble set view"
+        <LayoutMenu/>
+        <Divider/>
+        <ZoomSlider/>
+        <Button variant="text" style={{margin: "10px"}} onClick={graphStore.zoomFit.bind(graphStore)}>Zoom fit and
+            center</Button>
+        <Button variant="contained" style={{margin: "10px"}} onClick={action(() => {
+            datasourceStore.currentFileStore.simulKPIStore.inititateConstraintRecompute();
+            datasourceStore.currentFileStore.regularityKPIStore.initiateConstraintRecompute();
+        })}>Recompute constraints</Button>
+        <FormControlLabel
+            control={
+                <Checkbox
+                    checked={datasourceStore.currentFileStore.graphDataStore.isSetChecked}
+                    onChange={handleBubbleSetCheckbox}
+                    name="bubbleSetCheckbox"
+                    color="primary"
                 />
-                <ISCPanel/>
-            </div>
+            }
+            label="Bubble set view"
+        />
+        <ISCPanel/>
+    </div>;
 })

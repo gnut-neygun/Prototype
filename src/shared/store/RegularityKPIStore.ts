@@ -1,4 +1,4 @@
-import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction, trace} from "mobx";
+import {action, computed, IReactionDisposer, makeObservable, observable, reaction, trace} from "mobx";
 import {FileStore} from "./FileStore";
 import {createPairs, detectRegularities} from "../../algorithm/ContrainedExecution";
 import {datasourceStore} from "./DatasourceStore";
@@ -23,14 +23,17 @@ export class RegularityKPIStore {
 
     constructor(private fileStore: FileStore) {
         makeObservable(this)
-        this.dispose = reaction(() => [fileStore.mergedLog, this.relativeEventOccurence, this.timeDeltaInMilis] as const, ([mergedLog, relativeOccurence]) => {
-            runInAction(() => {
-                this.pairs = createPairs(mergedLog)
-            });
-            this.updateConstraint();
-            this.updateTooltips();
-        })
+        this.dispose = reaction(() => [fileStore.mergedLog] as const, this.initiateConstraintRecompute.bind(this))
+        reaction(() => [this.relativeEventOccurence, this.timeDeltaInMilis], this.updateTooltips.bind(this))
     }
+
+    @action
+    initiateConstraintRecompute() {
+        this.pairs = createPairs(this.fileStore.mergedLog)
+        this.updateConstraint();
+        this.updateTooltips();
+    }
+
 
     public dispose: IReactionDisposer;
 
