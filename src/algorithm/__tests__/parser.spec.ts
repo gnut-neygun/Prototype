@@ -3,6 +3,7 @@ import {discoverSimultaneousIsc} from "../SimulConstraint";
 import * as fs from 'fs'
 import * as path from "path";
 import {createPairs} from "../ContrainedExecution";
+import {findMergeAttribute} from "../MergeTrace";
 
 export function readFile(type: string = "post", name: string): string {
     const options = {
@@ -42,4 +43,32 @@ it('create pairs', () => {
     const xesModel = parseXESFromString(content);
     const pairs = createPairs(xesModel)
     console.log("debug point");
+});
+
+it('discover attribute trace merge single file', () => {
+    const bill = readFile("post", "billinstances.xes");
+    const xesModel = parseXESFromString(bill);
+    const attributes = findMergeAttribute(xesModel).sort()
+    console.log(attributes);
+    expect(attributes).toEqual(['concept:instance', 'knr']);
+});
+
+it('discover attribute trace merge multiple files', () => {
+    const bill = readFile("post", "billinstances.xes");
+    const flyer = readFile("post", "flyerinstances.xes");
+    const post = readFile("post", "posterinstances.xes");
+    const billModel = parseXESFromString(bill);
+    const flyerModel = parseXesFromStrings(flyer);
+    const postModel = parseXesFromStrings(post);
+    const attributes = findMergeAttribute(billModel, flyerModel, postModel).sort()
+    expect(attributes).toEqual(['knr', 'concept:instance']);
+});
+
+it('discover attribute trace merge multiple files one argument', () => {
+    const bill = readFile("post", "billinstances.xes");
+    const flyer = readFile("post", "flyerinstances.xes");
+    const post = readFile("post", "posterinstances.xes");
+    const xesModel = parseXesFromStrings(post, flyer, post);
+    const attributes = findMergeAttribute(xesModel).sort()
+    expect(attributes).toEqual(['knr', 'concept:instance']);
 });

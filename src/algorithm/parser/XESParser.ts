@@ -26,7 +26,7 @@ export function parseXESFromString(xesContent: string): EventLog {
                 myXesEvent[stringAttribute.getAttribute("key")!!] = stringAttribute.getAttribute("value")
             }
             for (const stringAttribute of xesEvent.getElementsByTagName("date")) {
-                myXesEvent[stringAttribute.getAttribute("key")!!] = Date.parse(stringAttribute.getAttribute("value")!!);
+                myXesEvent[stringAttribute.getAttribute("key")!!] = Date.parse(stringAttribute.getAttribute("value")!!).valueOf();
             }
             myTrace.append(myXesEvent);
         }

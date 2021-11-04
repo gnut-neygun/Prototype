@@ -6,7 +6,7 @@ import {GraphDataStore} from "./GraphDataStore";
 import {GraphType, requestHeuristicMiner} from "../server_api/api";
 import {GraphGenerationInput} from "../GraphGenerators";
 import {ExecutionKPIStore} from "./ExecutionKPIStore";
-import {mergeTrace} from "../../algorithm/MergeTrace";
+import {findMergeAttribute, mergeTrace} from "../../algorithm/MergeTrace";
 import {RegularityKPIStore} from "./RegularityKPIStore";
 
 export class FileStore {
@@ -21,6 +21,8 @@ export class FileStore {
     contentList: GraphGenerationInput[] = []
     @observable
     isMergeLog: boolean = false;
+    @observable
+    mergeAttribute: string | undefined
 
     simulKPIStore: SimulKPIStore
     executionKPIStore: ExecutionKPIStore
@@ -39,6 +41,13 @@ export class FileStore {
     @action
     setFileList(fileList: FileList | null) {
         this.fileList = fileList;
+    }
+
+    @computed
+    get mergeAttributes(): string[] {
+        if (this.parsedLog.length === 0)
+            return [];
+        return findMergeAttribute(this.parsedLog).also(it => console.log(it))
     }
 
     @action
@@ -85,13 +94,10 @@ export class FileStore {
 
     @computed({keepAlive: true})
     get mergedLog() {
-        if (this.isMergeLog)
+        if (this.isMergeLog && this.mergeAttribute !== undefined)
             return mergeTrace(this.parsedLog, (trace1, trace2) => {
-                if (trace1.events[0]["knr"] !== undefined) {
-                    return trace1.events[0]["knr"] === trace2.events[0]["knr"];
-                } else {
-                    return false
-                }
+                const attr = this.mergeAttribute!!
+                return trace1.events[0][attr] === trace2.events[0][attr];
             })
         else
             return this.parsedLog;
