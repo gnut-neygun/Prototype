@@ -61,7 +61,7 @@ it('discover attribute trace merge multiple files', () => {
     const flyerModel = parseXesFromStrings(flyer);
     const postModel = parseXesFromStrings(post);
     const attributes = findMergeAttribute(billModel, flyerModel, postModel).sort()
-    expect(attributes).toEqual(['knr', 'concept:instance']);
+    expect(attributes).toEqual(['knr', 'concept:instance'].sort());
 });
 
 it('discover attribute trace merge multiple files one argument', () => {
@@ -70,5 +70,5 @@ it('discover attribute trace merge multiple files one argument', () => {
     const post = readFile("post", "posterinstances.xes");
     const xesModel = parseXesFromStrings(post, flyer, post);
     const attributes = findMergeAttribute(xesModel).sort()
-    expect(attributes).toEqual(['knr', 'concept:instance']);
+    expect(attributes).toEqual(['knr', 'concept:instance'].sort);
 });

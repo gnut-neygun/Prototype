@@ -1,5 +1,6 @@
 import {EventLog, XesEvent} from "./parser/XESModels";
 import "../utilities/extensionFunctions"
+import {getMean, getStandardDeviation} from "../utilities/utilities";
 
 export type EventPair = [XesEvent, XesEvent, number]
 export type PairDict = Map<string, EventPair[]>
@@ -79,4 +80,28 @@ export function detectExecutionConstraint(eventList: XesEvent[], relativeOccuren
         result.pushIntoKey(groupFunction(event), event);
     });
     return result;
+}
+
+export function detectOutliers(pairs: PairDict) {
+    const outliers = [];
+    for (const eventPairs of pairs.values()) {
+        const deltas = eventPairs.map(pair => pair[2]);
+        if (deltas.length < 2)
+            continue;
+        const mean = getMean(deltas);
+        const stdDeviation = getStandardDeviation(deltas);
+        const z_sc = [];
+        for (const delta of deltas) {
+            if (stdDeviation !== 0) {
+                z_sc.push((delta - mean) / stdDeviation);
+            } else {
+                z_sc.push(NaN);
+            }
+        }
+        for (let i = 0; i < deltas.length; i++) {
+            if (Math.abs(z_sc[i]) > 3)
+                outliers.push(eventPairs[i])
+        }
+    }
+    return outliers;
 }

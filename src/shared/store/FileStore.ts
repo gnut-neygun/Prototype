@@ -103,6 +103,12 @@ export class FileStore {
             return this.parsedLog;
     }
 
+    @computed({keepAlive: true})
+    get resourceList(): string[] {
+        const resourceArray = this.sortedEventList.filter(e => e.resource() !== undefined).map(e => e.resource()!!)
+        return [...new Set(resourceArray)]
+    }
+
     @computed
     get sortedEventList(): XesEvent[] {
         const events: XesEvent[] = []

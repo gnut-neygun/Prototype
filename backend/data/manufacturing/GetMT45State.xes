@@ -1,5 +1,4 @@
-<log xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.xes-standard.org/" xes.version="2.0"
-     xes.features="nested-attributes" xsi:schemaLocation="http://www.xes-standard.org/ ">
+<log xmlns="http://www.xes-standard.org/" xes.version="2.0" xes.features="nested-attributes">
     <extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
     <extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
     <extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext"/>
@@ -7,17 +6,17 @@
     <extension name="cpee" uri="http://cpee.org/cpee.xesext"/>
     <global scope="trace">
         <string key="concept:name" value="__INVALID__"/>
-        <string key="cpee:name=" value="__INVALID__"/>
+        <string key="cpee:name" value="__INVALID__"/>
     </global>
     <global scope="event">
-        <string key="concept:instance=" value="-1"/>
-        <string key="concept:name=" value="__INVALID__"/>
-        <string key="concept:endpoint="/>
-        <string key="id:id="/>
-        <string key="cpee:uuid="/>
+        <string key="concept:instance" value="-1"/>
+        <string key="concept:name" value="__INVALID__"/>
+        <string key="concept:endpoint"/>
+        <string key="id:id"/>
+        <string key="cpee:uuid"/>
         <string key="lifecycle:transition" value="complete"/>
         <string key="cpee:lifecycle:transition" value="activity/calling"/>
-        <string key="time:timestamp="/>
+        <string key="time:timestamp"/>
     </global>
     <classifier name="Data" keys="data_send data_received data_changed data_values"/>
     <classifier name="Data_Received" keys="data_receiver"/>

@@ -64,3 +64,19 @@ export function deepClone(obj: any, hash = new WeakMap()): any {
     return Object.assign(result, ...Object.keys(obj).map(
         key => ({[key]: deepClone(obj[key], hash)})));
 }
+
+
+export function getMean(array: number[]) {
+    const sum = array.reduce((sum, value) => sum + value, 0);
+    return sum / array.length;
+}
+
+/**
+ * https://stackoverflow.com/questions/7343890/standard-deviation-javascript
+ * @param array
+ */
+export function getStandardDeviation(array: number[]) {
+    const n = array.length
+    const mean = array.reduce((a, b) => a + b) / n
+    return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+}

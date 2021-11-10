@@ -5,18 +5,18 @@
     <extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
     <extension name="cpee" uri="http://cpee.org/cpee.xesext"/>
     <global scope="trace">
-        <string concept:name="__INVALID__"/>
-        <string cpee:name="__INVALID__"/>
+        <string key="concept:name" value="__INVALID__"/>
+        <string key="cpee:name" value="__INVALID__"/>
     </global>
     <global scope="event">
-        <string concept:instance="-1"/>
-        <string concept:name="__INVALID__"/>
-        <string concept:endpoint=""/>
-        <string id:id=""/>
-        <string cpee:uuid=""/>
-        <string lifecycle:transition="complete"/>
-        <string cpee:lifecycle :transition="activity/calling"/>
-        <string time:timestamp=""/>
+        <string key="concept:instance" value="-1"/>
+        <string key="concept:name" value="__INVALID__"/>
+        <string key="concept:endpoint"/>
+        <string key="id:id"/>
+        <string key="cpee:uuid"/>
+        <string key="lifecycle:transition" value="complete"/>
+        <string key="cpee:lifecycle:transition" value="activity/calling"/>
+        <string key="time:timestamp"/>
     </global>
     <classifier name="Data" keys="data_send data_received data_changed data_values"/>
     <classifier name="Data_Received" keys="data_receiver"/>

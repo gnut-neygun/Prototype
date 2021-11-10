@@ -96,7 +96,23 @@ export const ClusterDistribution= observer(() => {
                         }
                     },
                     y: {
-                        display: false
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Number of events',
+                            color: '#911',
+                            font: {
+                                family: 'Comic Sans MS',
+                                size: 20,
+                                weight: 'bold',
+                                lineHeight: 1.2,
+                            },
+                            padding: {top: 20, left: 0, right: 0, bottom: 0}
+                        },
+                        offset: true,
+                        grid: {
+                            display: false
+                        }
                     }
                 },
                 onClick: (event: any) => {

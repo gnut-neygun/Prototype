@@ -134,7 +134,7 @@ export const ExecutionKPI = observer(() => {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Execution Heat Map',
+                        text: 'Execution Bar Chart',
                         padding: {
                             top: 10,
                             bottom: 30
@@ -298,7 +298,30 @@ export const ExecutionKPI = observer(() => {
                             executionKPIStore.perActivity = event.target.value;
                     })}
                 >
-                    {Array.from(new Set(datasourceStore.currentFileStore.contentList.map(element => element.activities).flat())).map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}
+                    {Array.from(new Set(datasourceStore.currentFileStore.contentList.map(element => element.activities).flat())).map(value =>
+                        <MenuItem key={value} value={value}>{value}</MenuItem>)}
+                    <MenuItem key="none" value={"none"}>
+                        <em>None</em>
+                    </MenuItem>
+                </Select>
+                <FormHelperText>Per activity</FormHelperText>
+            </FormControl>
+            <FormControl sx={{m: 1, minWidth: 120}}>
+                <InputLabel id="per-activity">Per resource</InputLabel>
+                <Select
+                    labelId="per-resource"
+                    id="per-resource"
+                    value={executionKPIStore.perResource === "" ? "none" : executionKPIStore.perResource}
+                    label="Per activity"
+                    onChange={action((event: SelectChangeEvent) => {
+                        if (event.target.value === "none")
+                            executionKPIStore.perResource = ""
+                        else
+                            executionKPIStore.perResource = event.target.value;
+                    })}
+                >
+                    {datasourceStore.currentFileStore.resourceList.map(value => <MenuItem key={value}
+                                                                                          value={value}>{value}</MenuItem>)}
                     <MenuItem key="none" value={"none"}>
                         <em>None</em>
                     </MenuItem>
