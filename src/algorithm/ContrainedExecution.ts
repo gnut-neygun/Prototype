@@ -82,11 +82,11 @@ export function detectExecutionConstraint(eventList: XesEvent[], relativeOccuren
     return result;
 }
 
-export function detectOutliers(pairsArray: EventPair[]) {
+export function detectOutliers(pairsArray: EventPair[]): EventPair[] {
     const outliers = [];
     const deltas = pairsArray.map(pair => pair[2]);
     if (deltas.length < 2)
-        return;
+        return [];
     const mean = getMean(deltas);
     const stdDeviation = getStandardDeviation(deltas);
     const z_sc = [];

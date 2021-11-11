@@ -68,7 +68,12 @@ export const RegularityKPI = observer(() => {
                             },
                             label(context: any) {
                                 const pair: XesEvent = context.raw.eventPair
-                                return [`Start Event: ${pair[0].toString()}`, `End event: ${pair[1].toString()}`, `Time delta: ${formatTimeDuration(pair[2])}`];
+                                const zScore = context.raw.zScore as number
+                                if (!isFinite(zScore)) {
+                                    return [`Start Event: ${pair[0].toString()}`, `End event: ${pair[1].toString()}`, `Time delta: ${formatTimeDuration(pair[2])}`];
+                                } else {
+                                    return [`Start Event: ${pair[0].toString()}`, `End event: ${pair[1].toString()}`, `Time delta: ${formatTimeDuration(pair[2])}`, `Z-Score: ${zScore}`];
+                                }
                             }
                         }
                     }

@@ -1,6 +1,6 @@
 import {action, computed, IReactionDisposer, makeObservable, observable, reaction} from "mobx";
 import {FileStore} from "./FileStore";
-import {createPairs, detectRegularities} from "../../algorithm/ContrainedExecution";
+import {createPairs, detectOutliers, detectRegularities, EventPair} from "../../algorithm/ContrainedExecution";
 import {datasourceStore} from "./DatasourceStore";
 import {generateRandomColor} from "../../utilities/colorGenerator";
 import {formatTimeDuration, getMean, getStandardDeviation} from "../../utilities/utilities";
@@ -121,6 +121,13 @@ export class RegularityKPIStore {
         return returnMap;
     }
 
+    @computed
+    get currentPairArrayForCurrentActivity(): EventPair[] | undefined {
+        if (this.selectedActivityName === undefined || this.pairs.length === 0)
+            return;
+        return this.pairs[this.currentPairType.valueOf()].get(this.selectedActivityName)
+    }
+
     @computed({keepAlive: true})
     get eventPairChartData() {
         if (this.pairs.length === 0)
@@ -129,24 +136,46 @@ export class RegularityKPIStore {
         if (currentPair === undefined) {
             return;
         }
-        const colors = generateRandomColor(currentPair.size)
+        const colors = generateRandomColor(currentPair.size + 1)
         let colorIndex = 0;
-        const dataset = Array.from(currentPair.entries()).filter(entry => this.selectedActivityName === undefined ? true : (entry[0].length === this.selectedActivityName.length && this.selectedActivityName.includes(entry[0]))).map(
+        const outLierArray = detectOutliers(this.currentPairArrayForCurrentActivity ?? []).also(it => {
+            console.log("Computed outliers: ")
+            console.log(it);
+        });
+        const arrayNumber = this.currentPairArrayForCurrentActivity?.map(event => event[2]) ?? [-1]
+        const mean = getMean(arrayNumber)
+        const standardDeviation = getStandardDeviation(arrayNumber)
+        const datasets = Array.from(currentPair.entries()).filter(entry => this.selectedActivityName === undefined ? true : (entry[0].length === this.selectedActivityName.length && this.selectedActivityName.includes(entry[0]))).map(
             entry => {
                 const [name, events] = entry;
                 return {
                     label: name,
-                    data: events.map(event => {
+                    data: events.filter(event => !outLierArray.includes(event)).map(event => {
                         return {
                             x: event[0].time(),
                             y: event[2],
-                            eventPair: event
+                            eventPair: event,
+                            zScore: (event[2] - mean) / standardDeviation
                         }
                     }),
                     backgroundColor: colors[colorIndex++]
                 }
             }
         );
-        return dataset;
+        const outLierDataset = {
+            label: "outliers",
+            data: outLierArray.map(event => {
+                return {
+                    x: event[0].time(),
+                    y: event[2],
+                    eventPair: event,
+                    zScore: (event[2] - mean) / standardDeviation
+                }
+            }),
+            backgroundColor: colors[colorIndex++]
+        }
+        if (outLierArray.length !== 0)
+            datasets.push(outLierDataset);
+        return datasets;
     }
 }
