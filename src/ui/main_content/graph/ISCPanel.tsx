@@ -6,6 +6,7 @@ import React from "react";
 import {SimultaneousPanel} from "./simul_components/SimultaneousPanel";
 import {observer} from "mobx-react-lite";
 import {RegularityPanel} from "./regularity_components/RegularityPanel";
+import {DataConstraintPanel} from "./data_components/RegularityPanel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,10 +44,7 @@ export const ISCPanel = observer(() => {
                 <Typography className={classes.heading}>Data constraints</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                    sit amet blandit leo lobortis eget.
-                </Typography>
+                <DataConstraintPanel/>
             </AccordionDetails>
         </Accordion>
         <Accordion>

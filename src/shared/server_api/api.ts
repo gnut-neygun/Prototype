@@ -24,10 +24,23 @@ export enum GraphType {
     alpha_miner = "alpha_miner"
 }
 
+export interface RequestDataConstraintMessage {
+    content: string,
+    merge_attribute: string
+}
+
 export async function requestHeuristicMiner(type: GraphType = GraphType.heuristic_net, xesString: string) {
-    const data : ClientMessage = {
+    const data: ClientMessage = {
         graph_type: GraphType.heuristic_net,
         data: xesString
     }
     return await myAxios.post<ServerResponse>("/heuristic_miner", data);
+}
+
+export async function requestDataConstraint(serializedEventPair: string, mergeAttribute: string) {
+    const payload: RequestDataConstraintMessage = {
+        content: serializedEventPair,
+        merge_attribute: mergeAttribute
+    }
+    return await myAxios.post("/data_constraint", payload)
 }

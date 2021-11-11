@@ -39,6 +39,8 @@ export class GraphDataStore {
     isLoading: boolean = false;
     @observable
     isDisplayRegularityEdges: boolean = false
+    @observable
+    isDisplayDataConstraint: boolean = false
     private regEdgeCollection: Collection & EdgeCollection & NodeCollection & EdgeSingular & NodeSingular
     private cytoscapeContainer: HTMLElement | null = null;
     private readonly disposer: IReactionDisposer;
@@ -88,6 +90,50 @@ export class GraphDataStore {
             })
         } else {
             cy.remove(this.regEdgeCollection);
+        }
+    }
+
+    @action
+    public toggleDataConstraintEdge() {
+        this.isDisplayDataConstraint = !this.isDisplayDataConstraint;
+        const cy = this.cytoscapeReference!!
+        const entries = Object.entries(datasourceStore.currentFileStore.dataKPIStore.constraint);
+        if (this.isDisplayDataConstraint) {
+            for (const entry of entries) {
+                const edgePair = entry[0].split(",");
+                const edgePairInString = edgePair.join("-");
+                const edgeEle = cy.$id(edgePairInString);
+                if (edgeEle.empty()) {
+                    const addedElement = cy.add({
+                        group: 'edges',
+                        data: {
+                            id: `${edgePairInString}-data`, source: edgePair[0], target: edgePair[1]
+                        }
+                    });
+                    addedElement.style({
+                        "line-color": "blue",
+                        "line-style": "dotted"
+                    });
+                } else {
+                    edgeEle.style({
+                        "line-color": "blue",
+                        "line-style": "dotted"
+                    })
+                }
+            }
+        } else {
+            for (const entry of entries) {
+                const edgePair = entry[0].split(",");
+                const edgePairInString = edgePair.join("-");
+                const edgeEle = cy.$id(edgePairInString);
+                if (edgeEle.empty()) {
+                    const addedElement = cy.$id(edgePairInString + "-data")
+                    cy.remove(addedElement);
+                } else {
+                    edgeEle.removeStyle("line-color")
+                    edgeEle.removeStyle("line-style");
+                }
+            }
         }
     }
 

@@ -33,6 +33,7 @@ export const GraphControlPanel = observer(() => {
         <Button variant="contained" style={{margin: "10px"}} onClick={action(() => {
             datasourceStore.currentFileStore.simulKPIStore.inititateConstraintRecompute();
             datasourceStore.currentFileStore.regularityKPIStore.initiateConstraintRecompute();
+            datasourceStore.currentFileStore.dataKPIStore.initiateConstraintRecompute();
         })}>Recompute constraints</Button>
         <FormControlLabel
             control={

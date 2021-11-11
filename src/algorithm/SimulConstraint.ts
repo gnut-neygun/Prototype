@@ -79,7 +79,7 @@ export function discoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeconds:
         }
         if (cluster.length > 1) {
             const eventNameClusterSet = new Set(cluster.map(event => event.name()));
-            const key = [...eventNameClusterSet].join(";")
+            const key = [...eventNameClusterSet].sort().join(";")
             if (simActivities.get(key) === undefined)
                 simActivities.set(key, []);
             else {
@@ -158,7 +158,7 @@ export function fastDiscoverSimultaneousIsc(mergedLog: EventLog, timeDeltaInSeco
             }
             if (cluster.length > 1 && hasChanged) {
                 const eventNameClusterSet = new Set(cluster.map(event => event.name()));
-                const key = [...eventNameClusterSet].join(";")
+                const key = [...eventNameClusterSet].sort().join(";")
                 if (simActivities.get(key) === undefined)
                     simActivities.set(key, []);
                 else {

@@ -22,11 +22,17 @@ export function parseXESFromString(xesContent: string): EventLog {
         }
         for (const xesEvent of trace.getElementsByTagName("event")) {
             const myXesEvent = new XesEvent(myTrace);
-            for (const stringAttribute of xesEvent.getElementsByTagName("string")) {
-                myXesEvent[stringAttribute.getAttribute("key")!!] = stringAttribute.getAttribute("value")
-            }
-            for (const stringAttribute of xesEvent.getElementsByTagName("date")) {
-                myXesEvent[stringAttribute.getAttribute("key")!!] = Date.parse(stringAttribute.getAttribute("value")!!).valueOf();
+            for (const eventNode of xesEvent.children) {
+                if (eventNode.localName === "int") {
+                    const value = eventNode.getAttribute("value");
+                    if (value === null)
+                        throw new Error("No value for attribute of event")
+                    myXesEvent[eventNode.getAttribute("key")!!] = parseInt(value);
+                } else if (eventNode.localName === "date") {
+                    myXesEvent[eventNode.getAttribute("key")!!] = Date.parse(eventNode.getAttribute("value")!!).valueOf();
+                } else {
+                    myXesEvent[eventNode.getAttribute("key")!!] = eventNode.getAttribute("value")!!;
+                }
             }
             myTrace.append(myXesEvent);
         }

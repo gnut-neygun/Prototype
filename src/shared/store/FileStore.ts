@@ -8,6 +8,7 @@ import {GraphGenerationInput} from "../GraphGenerators";
 import {ExecutionKPIStore} from "./ExecutionKPIStore";
 import {findMergeAttribute, mergeTrace} from "../../algorithm/MergeTrace";
 import {RegularityKPIStore} from "./RegularityKPIStore";
+import {DataKPIStore} from "./DataKPIStore";
 
 export class FileStore {
 
@@ -27,6 +28,7 @@ export class FileStore {
     simulKPIStore: SimulKPIStore
     executionKPIStore: ExecutionKPIStore
     regularityKPIStore: RegularityKPIStore
+    dataKPIStore: DataKPIStore
     graphDataStore: GraphDataStore
 
     constructor() {
@@ -36,6 +38,7 @@ export class FileStore {
         this.graphDataStore = new GraphDataStore(this);
         this.executionKPIStore = new ExecutionKPIStore(this);
         this.regularityKPIStore = new RegularityKPIStore(this);
+        this.dataKPIStore = new DataKPIStore(this);
     }
 
     @action
