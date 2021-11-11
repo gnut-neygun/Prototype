@@ -6,7 +6,7 @@ import React from "react";
 import {SimultaneousPanel} from "./simul_components/SimultaneousPanel";
 import {observer} from "mobx-react-lite";
 import {RegularityPanel} from "./regularity_components/RegularityPanel";
-import {DataConstraintPanel} from "./data_components/RegularityPanel";
+import {DataConstraintPanel} from "./data_components/DataConstraintPanel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

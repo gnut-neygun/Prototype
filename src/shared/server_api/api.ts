@@ -42,5 +42,5 @@ export async function requestDataConstraint(serializedEventPair: string, mergeAt
         content: serializedEventPair,
         merge_attribute: mergeAttribute
     }
-    return await myAxios.post("/data_constraint", payload)
+    return await myAxios.post("/data_constraint", payload, {timeout: 20_000})
 }

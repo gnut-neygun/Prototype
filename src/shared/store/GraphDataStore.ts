@@ -99,6 +99,8 @@ export class GraphDataStore {
     @action
     public toggleDataConstraintEdge() {
         this.isDisplayDataConstraint = !this.isDisplayDataConstraint;
+        if (!datasourceStore.currentFileStore.dataKPIStore.constraint)
+            return;
         const cy = this.cytoscapeReference!!
         const entries = Object.entries(datasourceStore.currentFileStore.dataKPIStore.constraint);
         if (this.isDisplayDataConstraint) {

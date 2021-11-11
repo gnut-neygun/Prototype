@@ -10,6 +10,7 @@ import {
     FormGroup,
     InputLabel,
     MenuItem,
+    Paper,
     Select,
     SelectChangeEvent,
     Stack,
@@ -45,7 +46,7 @@ export const NavigationMenu = observer(() => {
                 id="panel3a-header"
             >
                 <Typography className={classes.heading}>
-                    <Link to="/">Main graph</Link>
+                    <Link to="/">Main Graph</Link>
                 </Typography>
             </AccordionSummary>
         </Accordion>
@@ -112,48 +113,14 @@ export const NavigationMenu = observer(() => {
                 </FormControl>}
             </AccordionDetails>
         </Accordion>
-        <Accordion>
-            <AccordionSummary
-                expandIcon={<ExpandMore/>}
-                aria-controls="panel3a-content"
-                id="panel3a-header"
-            >
-                <Typography className={classes.heading}>Simultaneous Constraints</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-                <Stack spacing={2}>
-                    <Link to="/simul/events">Event Distribution</Link>
-                    <Link to="/simul/boxplot">Simultaneous Clusters</Link>
-                </Stack>
-            </AccordionDetails>
-        </Accordion>
-        <Accordion>
-            <AccordionSummary
-                expandIcon={<ExpandMore/>}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-            >
-                <Typography className={classes.heading}>Execution constraints</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-                <Typography>
-                    <Link to="/execution">Execution Chart</Link>
-                </Typography>
-            </AccordionDetails>
-        </Accordion>
-        <Accordion>
-            <AccordionSummary
-                expandIcon={<ExpandMore/>}
-                aria-controls="panel3a-content"
-                id="panel3a-header"
-            >
-                <Typography className={classes.heading}>Regularity Constraints</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-                <Typography>
-                    <Link to="/regularity/raw">Event pair graph</Link>
-                </Typography>
-            </AccordionDetails>
-        </Accordion>
+        <Paper>
+            <Stack spacing={2} sx={{marginTop: "20px", padding: "10px"}}>
+                <Link to="/events">Event Distribution</Link>
+                <Link to="/clusters">Simultaneous Clusters</Link>
+                <Link to="/execution">Execution Chart</Link>
+                <Link to="/pairs">Event Pair Graph</Link>
+            </Stack>
+        </Paper>
+
     </>;
 })

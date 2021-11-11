@@ -24,16 +24,16 @@ export const App= observer(() =>{
                 <Route exact path="/">
                   <Graph/>
                 </Route>
-                <Route exact path="/simul/events">
+                <Route exact path="/events">
                   <EventDistribution/>
                 </Route>
                 <Route exact path="/execution">
                   <ExecutionKPI/>
                 </Route>
-                <Route exact path="/simul/boxplot">
+                <Route exact path="/clusters">
                   <ClusterDistribution/>
                 </Route>
-                <Route exact path="/regularity/raw">
+                <Route exact path="/pairs">
                   <RegularityKPI/>
                 </Route>
               </Switch>
