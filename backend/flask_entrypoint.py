@@ -58,6 +58,7 @@ def dataConstraintEndPoint():
     pairs = json.loads(json_object["content"])
     outliers = detectOutliers(pairs)
     dataConstraint = detectDataLimitation(pairs, outliers, mergeAttribute)
+    print("Computed Data Constraint:" + json.dumps(dataConstraint))
     return dataConstraint
 
 

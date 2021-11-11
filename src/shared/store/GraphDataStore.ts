@@ -93,6 +93,9 @@ export class GraphDataStore {
         }
     }
 
+    /**
+     * Also update tooltip accordingly
+     */
     @action
     public toggleDataConstraintEdge() {
         this.isDisplayDataConstraint = !this.isDisplayDataConstraint;
@@ -101,25 +104,44 @@ export class GraphDataStore {
         if (this.isDisplayDataConstraint) {
             for (const entry of entries) {
                 const edgePair = entry[0].split(",");
-                const edgePairInString = edgePair.join("-");
-                const edgeEle = cy.$id(edgePairInString);
+                let edgePairInString = edgePair.join("-");
+                let edgeEle = cy.$id(edgePairInString);
                 if (edgeEle.empty()) {
-                    const addedElement = cy.add({
+                    edgePairInString += "-data"
+                    edgeEle = cy.add({
                         group: 'edges',
                         data: {
-                            id: `${edgePairInString}-data`, source: edgePair[0], target: edgePair[1]
+                            id: `${edgePairInString}`, source: edgePair[0], target: edgePair[1]
                         }
                     });
-                    addedElement.style({
-                        "line-color": "blue",
-                        "line-style": "dotted"
-                    });
-                } else {
-                    edgeEle.style({
-                        "line-color": "blue",
-                        "line-style": "dotted"
-                    })
                 }
+                //Set tool tip for this element
+                // @ts-ignore
+                let ref = edgeEle.popperRef()
+                let dummyDomEle = document.createElement('div');
+                const tippyInstance = tippy(dummyDomEle, { // tippy props:
+                    getReferenceClientRect: ref.getBoundingClientRect, // https://atomiks.github.io/tippyjs/v6/all-props/#getreferenceclientrect
+                    trigger: 'manual', // mandatory, we cause the tippy to show programmatically.
+                    placement: 'right-end',
+                    allowHTML: true,
+                    arrow: true,
+                    content: JSON.stringify(entry[1]),
+                });
+                edgeEle.data("tippy", tippyInstance)
+                edgeEle.on('mouseover', function (event) {
+                    const node = event.target;
+                    const tippy = node.data("tippy");
+                    tippy.show();
+                });
+                edgeEle.on('mouseout', function (event) {
+                    const node = event.target;
+                    const tippy = node.data("tippy");
+                    tippy.hide();
+                });
+                edgeEle.style({
+                    "line-color": "blue",
+                    "line-style": "dotted"
+                })
             }
         } else {
             for (const entry of entries) {
