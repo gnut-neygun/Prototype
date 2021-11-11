@@ -1,8 +1,9 @@
-import {action, computed, IReactionDisposer, makeObservable, observable, reaction, trace} from "mobx";
+import {action, computed, IReactionDisposer, makeObservable, observable, reaction} from "mobx";
 import {FileStore} from "./FileStore";
 import {createPairs, detectRegularities} from "../../algorithm/ContrainedExecution";
 import {datasourceStore} from "./DatasourceStore";
 import {generateRandomColor} from "../../utilities/colorGenerator";
+import {formatTimeDuration, getMean, getStandardDeviation} from "../../utilities/utilities";
 
 export enum PairType {
     BEGIN_END, START_START, START_COMPLETE
@@ -107,13 +108,27 @@ export class RegularityKPIStore {
         return this.pairs[this.currentPairType.valueOf()];
     }
 
+    @computed
+    get pairStatistics(): Map<string, string> {
+        const returnMap = new Map()
+        const activityName = this.selectedActivityName !!
+        if (this.pairs.length === 0)
+            return returnMap;
+        const pairArray = this.pairs[this.currentPairType.valueOf()].get(activityName)!!;
+        returnMap.set("Number of pairs", pairArray.length);
+        returnMap.set("Pair mean duration", formatTimeDuration(getMean(pairArray.map(pair => pair[2]))))
+        returnMap.set("Pair standard deviation of duration", formatTimeDuration(getStandardDeviation(pairArray.map(pair => pair[2]))))
+        return returnMap;
+    }
+
     @computed({keepAlive: true})
     get traceChartData() {
+        if (this.pairs.length === 0)
+            return;
         const currentPair = this.pairs[this.currentPairType.valueOf()];
         if (currentPair === undefined) {
             return;
         }
-        trace();
         const colors = generateRandomColor(currentPair.size)
         let colorIndex = 0;
         const dataset = Array.from(currentPair.entries()).filter(entry => this.selectedActivityName === undefined ? true : (entry[0].length === this.selectedActivityName.length && this.selectedActivityName.includes(entry[0]))).map(

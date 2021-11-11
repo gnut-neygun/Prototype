@@ -170,10 +170,12 @@ export const RegularityKPI = observer(() => {
                 })}
                 renderInput={(params) => <TextField {...params} label="Activity pair list"/>}
             />
-            <Typography>Number of pairs:</Typography>
+            <Typography>Pair statistics:</Typography>
             <ul>
-                {Array.from((datasourceStore.currentFileStore.regularityKPIStore.currentPair ?? new Map()).entries()).map(entry => {
+                {regularityKPIStore.selectedActivityName === undefined ? Array.from((regularityKPIStore.currentPair ?? new Map()).entries()).map(entry => {
                     return <li key={entry[0]}>{entry[0]} : {entry[1].length}</li>;
+                }) : Array.from(regularityKPIStore.pairStatistics.entries()).map(entry => {
+                    return <li key={entry[0]}>{entry[0]} : {entry[1]}</li>;
                 })}
             </ul>
         </div>

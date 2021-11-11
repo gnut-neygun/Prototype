@@ -25,7 +25,7 @@ export function groupBy<Item extends Record<string, any>>(data: Item[], keyFunct
  * From Stackoverflow
  * @param timeDeltaInMillis
  */
-export function formatTimeDuration(timeDeltaInMillis: number) {
+export function formatTimeDuration(timeDeltaInMillis: number): string {
     const timeDelta = timeDeltaInMillis / 1000;
     let hours = Math.floor(timeDelta / 3600);
     let minutes = Math.floor((timeDelta - (hours * 3600)) / 60);
@@ -39,8 +39,11 @@ export function formatTimeDuration(timeDeltaInMillis: number) {
     }
     if (seconds < 10) { // @ts-ignore
         seconds = "0" + seconds.toFixed(0);
+    } else {
+        // @ts-ignore
+        seconds = seconds.toFixed(0)
     }
-    return hours + ':' + minutes + ':' + seconds;
+    return hours + 'h:' + minutes + 'm:' + seconds + "s";
 }
 
 /**
