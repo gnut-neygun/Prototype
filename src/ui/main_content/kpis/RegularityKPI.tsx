@@ -43,7 +43,7 @@ export const RegularityKPI = observer(() => {
         const config = {
             type: 'scatter' as const,
             data: {
-                datasets: datasourceStore.currentFileStore.regularityKPIStore.traceChartData
+                datasets: datasourceStore.currentFileStore.regularityKPIStore.eventPairChartData
             },
             options: {
                 plugins: {

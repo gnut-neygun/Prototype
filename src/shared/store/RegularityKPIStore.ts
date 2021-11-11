@@ -122,7 +122,7 @@ export class RegularityKPIStore {
     }
 
     @computed({keepAlive: true})
-    get traceChartData() {
+    get eventPairChartData() {
         if (this.pairs.length === 0)
             return;
         const currentPair = this.pairs[this.currentPairType.valueOf()];

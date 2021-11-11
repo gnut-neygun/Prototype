@@ -82,26 +82,24 @@ export function detectExecutionConstraint(eventList: XesEvent[], relativeOccuren
     return result;
 }
 
-export function detectOutliers(pairs: PairDict) {
+export function detectOutliers(pairsArray: EventPair[]) {
     const outliers = [];
-    for (const eventPairs of pairs.values()) {
-        const deltas = eventPairs.map(pair => pair[2]);
-        if (deltas.length < 2)
-            continue;
-        const mean = getMean(deltas);
-        const stdDeviation = getStandardDeviation(deltas);
-        const z_sc = [];
-        for (const delta of deltas) {
-            if (stdDeviation !== 0) {
-                z_sc.push((delta - mean) / stdDeviation);
-            } else {
-                z_sc.push(NaN);
-            }
+    const deltas = pairsArray.map(pair => pair[2]);
+    if (deltas.length < 2)
+        return;
+    const mean = getMean(deltas);
+    const stdDeviation = getStandardDeviation(deltas);
+    const z_sc = [];
+    for (const delta of deltas) {
+        if (stdDeviation !== 0) {
+            z_sc.push((delta - mean) / stdDeviation);
+        } else {
+            z_sc.push(NaN);
         }
-        for (let i = 0; i < deltas.length; i++) {
-            if (Math.abs(z_sc[i]) > 3)
-                outliers.push(eventPairs[i])
-        }
+    }
+    for (let i = 0; i < deltas.length; i++) {
+        if (Math.abs(z_sc[i]) > 3)
+            outliers.push(pairsArray[i])
     }
     return outliers;
 }
