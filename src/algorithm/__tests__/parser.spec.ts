@@ -6,11 +6,8 @@ import {createPairs} from "../ContrainedExecution";
 import {findMergeAttribute} from "../MergeTrace";
 
 export function readFile(type: string = "post", name: string): string {
-    const options = {
-        encoding: "utf8",
 
-    }
-    return fs.readFileSync(path.resolve(__dirname, "data", type, name), options);
+    return fs.readFileSync(path.resolve(__dirname, "data", type, name), "utf8")
 }
 
 it('parser', () => {

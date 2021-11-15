@@ -122,7 +122,7 @@ export const EventDistribution= observer(() => {
                 renderInput={(params) => <TextField {...params} label="Trace filter"/>}
             />
             <Typography>Trace
-                duration: {formatTimeDuration(datasourceStore.currentFileStore.simulKPIStore.traceDuration ?? 0)} (hh:mm:ss)</Typography>
+                duration: {formatTimeDuration(datasourceStore.currentFileStore.simulKPIStore.traceDuration ?? 0)}</Typography>
             <Typography>Number of events in
                 trace: {datasourceStore.currentFileStore.simulKPIStore.currentTrace?.events?.length ?? 0}</Typography>
         </div>
