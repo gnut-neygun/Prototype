@@ -11,4 +11,10 @@ export default defineConfig({
       babelrc: true,
     }
   })],
+  build: {
+    commonjsOptions: {
+      // @ts-ignore
+      ignoreTryCatch: false,
+    }
+  }
 })

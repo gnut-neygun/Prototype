@@ -1,6 +1,6 @@
 import {Trace, XesEvent} from "../../algorithm/parser/XESModels";
 import {fastDiscoverSimultaneousIsc} from "../../algorithm/SimulConstraint";
-import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction, trace} from "mobx";
+import {action, computed, IReactionDisposer, makeObservable, observable, reaction, runInAction} from "mobx";
 import {generateRandomColor} from "../../utilities/colorGenerator";
 import {FileStore} from "./FileStore";
 import {datasourceStore} from "./DatasourceStore";
@@ -51,7 +51,6 @@ export class SimulKPIStore {
 
     @computed({keepAlive: true})
     get filteredLog() {
-        trace()
         return datasourceStore.currentFileStore.mergedLog.map(trace => trace.cloneWithFilter(event => datasourceStore.currentFileStore.lifecycleOption.includes(event.lifecycle() ?? "undefined")));
     }
 
@@ -111,7 +110,6 @@ export class SimulKPIStore {
 
     @computed({keepAlive: true})
     get eventDistributionPlotData(): ChartJSDataSet {
-        trace();
         if (this.currentTrace === undefined)
             return [];
         const traceGroupedByActivity = groupBy(this.currentTrace.events, event => event.name())

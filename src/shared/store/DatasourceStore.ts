@@ -1,4 +1,4 @@
-import {action, computed, makeObservable, observable, runInAction, trace} from "mobx";
+import {action, computed, makeObservable, observable, runInAction} from "mobx";
 import {FileStore} from "./FileStore";
 import {PrinterGraphData} from "../PrinterGraphData";
 import {generateGraphDataList} from "../GraphGenerators";
@@ -29,7 +29,6 @@ class DatasourceStore {
 
     @computed
     get currentFileStore() : FileStore{
-        trace()
         return this.fileStoreMap.get(this.currentDataSource)!!;
     }
 }

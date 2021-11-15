@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const REACT_APP_SERVER_ENDPOINT = "http://localhost:5000/"
+let REACT_APP_SERVER_ENDPOINT = "http://localhost:5000/"
+if (!import.meta.env.DEV) {
+    REACT_APP_SERVER_ENDPOINT = "https://isc-prototype.herokuapp.com/"
+}
 const myAxios = axios.create({
     baseURL: REACT_APP_SERVER_ENDPOINT,
     timeout: 10_000,
