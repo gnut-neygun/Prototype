@@ -7,7 +7,7 @@ from pm4py.algo.filtering.log.attributes import attributes_filter
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 
-from backend.log_filter import filter_lifecycle_transition
+from log_filter import filter_lifecycle_transition
 
 
 def inductive_miner_with_petri_net(log):
