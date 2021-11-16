@@ -6,9 +6,9 @@ from flask_cors import CORS
 from flask_restful import Api, fields, marshal_with
 from pm4py.objects.log.importer.xes import importer as xes_importer
 
-from backend.detect_data_constraint import detectOutliers, detectDataLimitation
-from backend.process_mining import inductive_miner_with_heuristic_net
+from detect_data_constraint import detectOutliers, detectDataLimitation
 from enums import GraphType
+from process_mining import inductive_miner_with_heuristic_net
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all route
